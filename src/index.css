@@ -1,0 +1,33 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Shippori+Antique+B1&display=swap');
+
+html, body, #root, .app{
+    height: 100%;
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    @apply bg-[#294240];
+    @apply text-slate-200;
+    scroll-behavior: smooth;
+}
+
+body {
+    opacity: 0;
+    animation: fadeIn 400ms ease-in forwards;
+    animation-delay: 100ms;
+}
+
+
+@theme {
+    --breakpoint-sm: 700px;
+    --breakpoint-md: 850px;
+    --breakpoint-lg: 1280px;
+  }
+
+button:hover{
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
