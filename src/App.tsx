@@ -8,8 +8,6 @@ import Projects from "@/scenes/projects";
 import ToolsSection from "@/scenes/tools"
 import { FaLinkedin, FaGithub, FaEnvelope, FaSquareXTwitter } from "react-icons/fa6";
 import GoopyAngel from "@/assets/goopyangelcoder.png";
-import { SelectedPage } from "@/utils/types";
-
 
 const AnimatedSection = ({
   id,
