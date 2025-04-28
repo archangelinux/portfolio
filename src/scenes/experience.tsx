@@ -1,5 +1,12 @@
 import { AnimatePresence, motion, useInView, useScroll, useTransform } from "framer-motion";
 import React, { useState, useRef } from "react";
+import SSPrev from "@/assets/ss-prev.svg";
+import GGPrev from "@/assets/gg-group.svg";
+import DBFBPrev from "@/assets/db-truck.svg";
+import HondaPrev from "@/assets/honda.svg";
+
+
+
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -19,7 +26,7 @@ const experienceData = [
     title: "Project Development Intern",
     company: "Springboard Services",
     story: "During the pandemic, I began my first job at the age of 15, working remotely to develop rehabilitative module content that supported at-risk groups in employment, finance, anger management, and mental health. It was a valuable opportunity to solve immediate real-world challenges creatively while using data-driven approaches to ensure that high-risk clients received the targeted support they needed. Through this experience, my passion for working with data to drive meaningful impact and frame creative solutions began to grow.",
-    image: "src/assets/ss-prev.svg",
+    image: SSPrev,
     link: "https://www.communitylearninghub.ca/",
   },
   {
@@ -28,7 +35,7 @@ const experienceData = [
     title: "Computer Programming Tutor",
     company: "Go Green Youth Centre",
     story: "During March Break, I worked full-time as a tutor and camp counsellor for a non-profit sports and academics camp, where I designed curriculum for large student cohorts and mentored participants through hands-on projects that blended learning with creativity. Guiding students with bright ideas and tremendous potential was especially meaningful to me, as someone who discovered coding later on but was shaped by small early experiences with simple concepts and robotics. It felt meaningful to help spark curiosity in a new generation, knowing firsthand how even simple introductions to tech at a young age can open life-changing opportunities. I continued my love for teaching code through Canada Learning Code as a Teen Ambassador, and taught web development for school clubs.",
-    image: "src/assets/gg-group.svg",
+    image: GGPrev,
     link: "https://www.gogreenyouthcentre.ca/",
   },
   {
@@ -37,7 +44,7 @@ const experienceData = [
     title: "Data/Development Intern",
     company: "Corporate & Community Partnerships | Daily Bread Food Bank",
     story: "Across two summer internships and volunteer work (2023-2024), I contributed to both frontline community support and internal process optimization. I led data analysis projects to re-engage major donors, developed automation solutions that eliminated manual errors and improved operational efficiency by over 95%, and designed programs to foster new corporate partnerships. Beyond technical contributions, I worked closely with independent organizers to resolve inquiries and supported broader community initiatives to address food insecurity. Working with the team at Daily Bread not only deepened my belief in thoughtful systems design but moreover the power of collaboration and a shared vision.",
-    image: "src/assets/db-truck.svg",
+    image: DBFBPrev,
     link: "https://www.dailybread.ca/",
   },
   {
@@ -46,7 +53,7 @@ const experienceData = [
     title: "Cloud Engineering Student",
     company: "Honda Canada Inc.",
     story: "Preheating...",
-    image: "src/assets/honda.svg",
+    image: HondaPrev,
     link: "https://www.hondacanada.ca/home",
   },
   {

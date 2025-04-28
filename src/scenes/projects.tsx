@@ -1,6 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Droplets, BoomBox, Sprout, NotebookPen, Dumbbell, Film, Grid, List } from 'lucide-react';
+import LooTN from "@/assets/loolooloo-thumbnail.svg";
+import ThoughtMirrorTN from "@/assets/thoughtmirror-thumbnail.svg";
+import BeFitTN from "@/assets/befit-thumbnail-1.svg";
+import RadBotTN from "@/assets/radiobot-thumbnail.svg";
+import WamTN from "@/assets/sample-wam-thumbnail.svg";
+import GrdupTN from "@/assets/gdup-thumbnail.png";
 
 type ViewMode = "spotlight" | "grid";
 
@@ -28,7 +34,7 @@ const Projects: React.FC = () => {
             id: 1,
             title: "ThoughtMirror",
             description: "GenAI Genesis 2025 Winner | An AI-powered journaling assistant designed to help users recognize and reframe cognitive distortions in real time. ThoughtMirror enhances the journaling experience by identifying distortions within entries, offering therapist-inspired guidance, and visually tracking thought patterns over time. Built by fine-tuning Gemini-2.0 on clinician-annotated data and integrating a RAG pipeline using LangChain and real therapist responses to deliver personalized, judgment-free feedback. Winner of Best Generative AI Technology Hack (🥇 1st place out of 160+ projects and 600+ participants).",
-            image: "src/assets/thoughtmirror-thumbnail.svg",
+            image: ThoughtMirrorTN,
             icon: <NotebookPen className="w-6 h-6" />,
             button1: "Devpost",
             button2: "Github",
@@ -40,7 +46,7 @@ const Projects: React.FC = () => {
             id: 2,
             title: "www.LooLooLoo",
             description: "Hack The North 2024 - Sponsor Award Winner (Defang) | A full-stack web app that detects nearby water fountains and routes users to bathrooms using a ESP32-based Bluetooth beacon. Features a notification system (Twilio's API), dynamic routing (MappedIn's API), and a mobile UI for hydration tracking. Built for reliable scaling through deployment using Defang",
-            image: "src/assets/loolooloo-thumbnail.svg",
+            image: LooTN,
             icon: <Droplets className="w-6 h-6" />,
             button1: "Devpost",
             button2: "Github",
@@ -52,7 +58,7 @@ const Projects: React.FC = () => {
             id: 3,
             title: "Befit",
             description: "Hack Western 2024 - Sponsor Award Winner (Tempolabs) | An AI-driven fitness trainer designed to enhance workouts through real-time form correction and scoring with OpenCV. Compares user performance against workout videos using Mediapipe, generates gamified workout plans, and integrates intuitive hand-gesture controls.",
-            image: "src/assets/befit-thumbnail-1.svg",
+            image: BeFitTN,
             icon: <Dumbbell className="w-6 h-6" />,
             button1: "DoraHacks",
             button2: "Github",
@@ -64,7 +70,7 @@ const Projects: React.FC = () => {
             id: 4,
             title: "Wat-A-Moment",
             description: "A digital photo booth platform that enables users to instantly upload and share photos with their social networks. Features automated metadata management, secure token-based authentication, and cloud storage - integrating the digital and physical photobooth experience.",
-            image: "src/assets/sample-wam-thumbnail.svg",
+            image: WamTN,
             icon: <Film className="w-6 h-6" />,
             button1: "",
             button2: "",
@@ -76,7 +82,7 @@ const Projects: React.FC = () => {
             id: 5,
             title: "RadBot",
             description: "A portable FM radio system paired with a rotary encoder and TEA5767 module, enhanced with a car attachment that uses ultrasonic and infrared sensors to autonomously follow the user.",
-            image: "src/assets/radiobot-thumbnail.svg",
+            image: RadBotTN,
             icon: <BoomBox className="w-6 h-6" />,
             button1: "",
             button2: "Github",
@@ -88,7 +94,7 @@ const Projects: React.FC = () => {
             id: 6,
             title: "Ground Up",
             description: "Designed & developed an educational tool that motivates diligent note-taking and promotes healthy study habits for all ages. Integrated nested React components to achieve functional minimalistic gamification for a rewarding and dynamic experience. Serves as a paperless visual aid, allowing users to track and address important questions to better prepare for assessments.",
-            image: "src/assets/gdup-thumbnail.png",
+            image: GrdupTN,
             icon: <Sprout className="w-6 h-6" />,
             button1: "",
             button2: "Github",
