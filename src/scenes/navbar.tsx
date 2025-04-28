@@ -2,11 +2,7 @@ import React, {useState } from 'react';
 import { Bars3Icon, XMarkIcon, CloudIcon } from "@heroicons/react/24/solid";
 import GitLogo from "@/assets/github.svg";
 import LinkedinLogo from "@/assets/linkedin.svg";
-
-import { SelectedPage } from "@/utils/types.ts";
 import useMediaQuery from "@/hooks/useMediaQuery.ts";
-
-
 
 const Navbar: React.FC = () => {
     const flexBetween = "flex justify-between items-center"; // moves to opposite ends
