@@ -395,7 +395,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onClick }) =>
                 transition: { type: "spring", stiffness: 400, damping: 40 }
             }}
             onClick={onClick}
-            className="bg-[#3F534E] rounded-xl overflow-hidden shadow-lg flex flex-col w-full max-w-lg cursor-pointer"
+            className="bg-[#3F534E] rounded-xl overflow-hidden shadow-lg flex flex-col w-full max-w-full self-stretch cursor-pointer"
         >
             <div className="h-48 overflow-hidden">
                 <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
@@ -419,15 +419,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onClick }) =>
                     ))}
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 min-w-full">
                     {project.button1 === "" && project.button2 === "" ? (
                         <div className="w-full h-10" />
                     ) : project.button1 !== "" && project.button2 !== "" ? (
                         // two buttons
                         <>
-                            <a href={project.b1src} target="_blank" rel="noopener noreferrer">
+                            <a href={project.b1src} target="_blank" rel="noopener noreferrer" className = "flex-1 w-full">
                                 <motion.button
-                                    className="flex-1 py-2 text-xs sm:text-sm bg-[#FDECBF] text-[#294240] font-medium rounded-lg hover:bg-[#fdecbfd9]"
+                                    className="flex-1 py-2 text-xs sm:text-sm bg-[#FDECBF] text-[#294240] font-medium rounded-lg hover:bg-[#fdecbfd9] w-full"
                                     onClick={(e) => e.stopPropagation()}
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.95 }}
@@ -435,9 +435,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onClick }) =>
                                     {project.button1}
                                 </motion.button>
                             </a>
-                            <a href={project.b2src} target="_blank" rel="noopener noreferrer">
+                            <a href={project.b2src} target="_blank" rel="noopener noreferrer" className = "flex-1 w-full">
                                 <motion.button
-                                    className="flex-1 py-2 text-xs sm:text-sm bg-[#FDECBF] text-[#294240] font-medium rounded-lg hover:bg-[#fdecbfd9]"
+                                    className="flex-1 py-2 text-xs sm:text-sm bg-[#FDECBF] text-[#294240] font-medium rounded-lg hover:bg-[#fdecbfd9] w-full"
                                     onClick={(e) => e.stopPropagation()}
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.95 }}
@@ -448,14 +448,21 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onClick }) =>
                         </>
                     ) : (
                         //one button, take full width
-                        <motion.button
-                            className="flex-1 py-2 text-xs sm:text-sm bg-[#FDECBF] text-[#294240] font-medium rounded-lg hover:bg-[#fdecbfd9]"
-                            onClick={(e) => e.stopPropagation()}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.95 }}
+                        <a
+                            href={project.b1src || project.b2src}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 w-full"
                         >
-                            {project.button1 || project.button2}
-                        </motion.button>
+                            <motion.button
+                                className="flex-1 py-2 text-xs sm:text-sm bg-[#FDECBF] text-[#294240] font-medium rounded-lg hover:bg-[#fdecbfd9] w-full"
+                                onClick={(e) => e.stopPropagation()}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                {project.button1 || project.button2}
+                            </motion.button>
+                        </a>
                     )}
                 </div>
             </div>
