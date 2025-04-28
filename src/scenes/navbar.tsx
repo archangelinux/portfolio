@@ -6,18 +6,15 @@ import LinkedinLogo from "@/assets/linkedin.svg";
 import { SelectedPage } from "@/utils/types.ts";
 import useMediaQuery from "@/hooks/useMediaQuery.ts";
 
-type NavbarProps = {
-    setSelectedPage: (value: SelectedPage) => void;
-};
 
-const Navbar: React.FC<NavbarProps> = ({setSelectedPage }) => {
+
+const Navbar: React.FC = () => {
     const flexBetween = "flex justify-between items-center"; // moves to opposite ends
     const [isMenuToggled, setIsMenuToggled] = useState<boolean>(false);
     const isAboveMediumScreens = useMediaQuery("(min-width: 1060px)");
 
     const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
         e.preventDefault();
-        setSelectedPage(id as SelectedPage);
 
         //smooth scroll to the element
         const element = document.querySelector(id);
@@ -107,7 +104,6 @@ const Navbar: React.FC<NavbarProps> = ({setSelectedPage }) => {
                             href="#experience"
                             className="font-semibold hover:text-[#ff6600] transition duration-300"
                             onClick={() => {
-                                setSelectedPage(SelectedPage.Experience);
                                 setIsMenuToggled(false);
                             }}
                         >
@@ -117,7 +113,6 @@ const Navbar: React.FC<NavbarProps> = ({setSelectedPage }) => {
                             href="#projects"
                             className="font-semibold hover:text-[#ff6600] transition duration-300"
                             onClick={() => {
-                                setSelectedPage(SelectedPage.Projects);
                                 setIsMenuToggled(false);
                             }}
                         >
@@ -127,7 +122,6 @@ const Navbar: React.FC<NavbarProps> = ({setSelectedPage }) => {
                             href="#connect"
                             className="font-semibold hover:text-[#ff6600] transition duration-300"
                             onClick={() => {
-                                setSelectedPage(SelectedPage.Connect);
                                 setIsMenuToggled(false);
                             }}
                         >

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useInView, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import "keen-slider/keen-slider.min.css";
 import Navbar from "@/scenes/navbar";
 import Experience from "@/scenes/experience";
@@ -131,7 +131,6 @@ const AnimatedListItem = ({
 };
 
 const App: React.FC = () => {
-  const [selectedPage, setSelectedPage] = useState<SelectedPage>(SelectedPage.Home);
   const [showNavbar, setShowNavbar] = useState<boolean>(true);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
 
@@ -145,7 +144,6 @@ const App: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY === 0) {
-        setSelectedPage(SelectedPage.Home);
         setShowNavbar(true);
       } else {
         if (window.scrollY > lastScrollY) {
@@ -193,7 +191,7 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <div className={`fixed top-0 left-0 w-full z-50 ${showNavbar ? "navbar-pop-in" : "navbar-pop-out"}`} style={{ perspective: "1000px" }}>
-        <Navbar setSelectedPage={setSelectedPage} />
+        <Navbar/>
       </div>
 
       <AnimatedSection id="home" className="flex flex-col items-center justify-center min-h-screen pt-16">
