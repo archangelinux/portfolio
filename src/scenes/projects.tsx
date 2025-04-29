@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Droplets, BoomBox, Sprout, NotebookPen, Dumbbell, Film, Grid, List } from 'lucide-react';
 import LooTN from "@/assets/loolooloo-thumbnail.svg";
