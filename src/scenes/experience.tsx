@@ -41,7 +41,7 @@ const experienceData = [
   {
     year: 2024,
     growth: 35,
-    title: "Data/Development Intern",
+    title: "Data / Development Intern",
     company: "Corporate & Community Partnerships | Daily Bread Food Bank",
     story: "Across two summer internships and volunteer work (2023-2024), I contributed to both frontline community support and internal process optimization. I led data analysis projects to re-engage major donors, developed automation solutions that eliminated manual errors and improved operational efficiency by over 95%, and designed programs to foster new corporate partnerships. Beyond technical contributions, I worked closely with independent organizers to resolve inquiries and supported broader community initiatives to address food insecurity. Working with the team at Daily Bread not only deepened my belief in thoughtful systems design but moreover the power of collaboration and a shared vision.",
     image: DBFBPrev,
@@ -191,9 +191,9 @@ const Experience: React.FC = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
-              <h3 className="text-2xl text-slate-100 font-semibold underline mb-4">{selected.title}</h3>
-              <h3 className="text-xl text-slate-100 font-semibold mb-4">{selected.company}</h3>
-              <p>{selected.story}</p>
+              <h3 className="text-lg min-[450px]:text-2xl text-slate-100 font-semibold underline mb-4">{selected.title}</h3>
+              <h3 className="text-md min-[450px]:text-xl text-slate-100 font-semibold mb-4">{selected.company}</h3>
+              <p className = "hidden min-[450px]:block">{selected.story}</p>
             </motion.div>
           </AnimatePresence>
         </motion.div>

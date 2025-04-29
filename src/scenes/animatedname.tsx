@@ -41,7 +41,7 @@ export default function AnimatedName() {
   return (
     <div className="flex items-center justify-center h-4/5 mb-[50px]">
       <LayoutGroup>
-        <motion.div layout className="inline-flex text-[7vw] font-bold lowercase">
+        <motion.div layout className="inline-flex text-[clamp(2.5rem,7vw,8rem)] font-bold lowercase">
           {letters.map(({ char, id, isNew }) => {
             //overridden variants
             let color: string;

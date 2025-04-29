@@ -26,7 +26,6 @@ interface Project {
 const Projects: React.FC = () => {
     const [activeProject, setActiveProject] = useState<number>(0); //set by Project id
     const [viewMode, setViewMode] = useState<ViewMode>('spotlight');
-    const [isVisible, setIsVisible] = useState<boolean>(false);
     const sectionRef = useRef<HTMLDivElement>(null);
 
     const projects = [
@@ -104,29 +103,6 @@ const Projects: React.FC = () => {
         }
     ];
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                setIsVisible(entry.isIntersecting);
-            },
-            {
-                root: null, //use viewport as root
-                rootMargin: '0px',
-                threshold: 0.2, //trigger at 20% visible
-            }
-        );
-
-        if (sectionRef.current) {
-            observer.observe(sectionRef.current);
-        }
-
-        return () => {
-            if (sectionRef.current) {
-                observer.unobserve(sectionRef.current);
-            }
-        };
-    }, []);
-
     const handleProjectClick = (index: number) => {
         setActiveProject(index);
         //switch to spotlight mode when a project is clicked in grid view
@@ -150,119 +126,113 @@ const Projects: React.FC = () => {
         <div
             ref={sectionRef}
             id="projects"
-            className="flex flex-col items-center w-full px-4 sm:px-10 min-h-[70vh]"
+            className="flex flex-col items-center w-[90vw] px-4 sm:px-10 min-h-[70vh] mx-auto"
         >
-            <AnimatePresence>
-                {isVisible && (
-                    <motion.div
-                        className="w-full"
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -50 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <motion.div
-                            className="w-full max-w-full mb-20 flex justify-between items-center ml-20"
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.2, delay: 0.2 }}
-                        >
-                            <motion.button
-                                onClick={toggleViewMode}
-                                className="flex items-center gap-2 px-4 py-2 border-slate-100 border-2 rounded-lg hover:border-[#ff6600] transition-colors"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.5 }}
+                className="w-full"
+            >
+
+
+                <motion.button
+                    onClick={toggleViewMode}
+                    className="flex items-center gap-2 px-4 py-2 border-slate-100 border-2 rounded-lg hover:border-[#ff6600] transition-colors mt-15 mb-10"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: 0.2 }}
+                >
+                    {viewMode === 'spotlight' ? (
+                        <>
+                            <Grid className="w-5 h-5" />
+                            <span>Grid View</span>
+                        </>
+                    ) : (
+                        <>
+                            <List className="w-5 h-5" />
+                            <span>Spotlight View</span>
+                        </>
+                    )}
+                </motion.button>
+
+                <div className="flex flex-col justify-left items-left sm:flex-row max-w-full w-full min-w-[300px]">
+                    <AnimatePresence>
+                        {viewMode === 'spotlight' && (
+                            <motion.div
+                                className="w-full sm:w-20 sm:mr-8 mb-6 sm:mb-0"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                transition={{ duration: 0.2 }}
                             >
-                                {viewMode === 'spotlight' ? (
-                                    <>
-                                        <Grid className="w-5 h-5" />
-                                        <span>Grid View</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <List className="w-5 h-5" />
-                                        <span>Spotlight View</span>
-                                    </>
-                                )}
-                            </motion.button>
-                        </motion.div>
-
-                        <div className="flex flex-col justify-left items-left sm:flex-row max-w-full w-full min-w-[300px]">
-                            <AnimatePresence>
-                                {viewMode === 'spotlight' && (
-                                    <motion.div
-                                        className="w-full sm:w-20 sm:mr-8 mb-6 sm:mb-0"
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        transition={{ duration: 0.2 }}
-                                    >
-                                        {/*icon menu - hide when in grid view*/}
-                                        <div className="sm:top-24 flex flex-row sm:flex-col justify-center sm:justify-start items-center space-y-0 space-x-4 sm:space-x-0 sm:space-y-8">
-                                            {projects.map((project, index) => (
-                                                <motion.div
-                                                    key={project.id}
-                                                    onClick={() => handleProjectClick(index)}
-                                                    className={`w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 
+                                {/*icon menu - hide when in grid view*/}
+                                <div className="sm:top-24 flex flex-row sm:flex-col justify-center sm:justify-start items-center space-y-0 space-x-4 sm:space-x-0 sm:space-y-8">
+                                    {projects.map((project, index) => (
+                                        <motion.div
+                                            key={project.id}
+                                            onClick={() => handleProjectClick(index)}
+                                            className={`w-12 h-12 flex items-center justify-center rounded-full cursor-pointer transition-all duration-300 
                                                               ${activeProject === index ? 'bg-[#FFB347] text-white' : 'bg-[#3F534E] text-slate-100 hover:bg-gray-300'}`}
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    animate={{
-                                                        scale: activeProject === index ? 1.1 : 1,
-                                                        transition: { type: "spring", stiffness: 300, damping: 15 }
-                                                    }}
-                                                >
-                                                    {project.icon}
-                                                </motion.div>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
+                                            animate={{
+                                                scale: activeProject === index ? 1.1 : 1,
+                                                transition: { type: "spring", stiffness: 300, damping: 15 }
+                                            }}
+                                        >
+                                            {project.icon}
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                            <AnimatePresence mode="wait">
-                                {viewMode === 'spotlight' ? (
-                                    <motion.div
-                                        key="spotlight-view"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="flex-1 w-full"
-                                    >
-                                        {/*spotlighted project panel*/}
-                                        <div className="flex-1">
-                                            <AnimatePresence mode="wait">
-                                                <ProjectSpotlight key={projects[activeProject].id} project={projects[activeProject]} />
-                                            </AnimatePresence>
-                                        </div>
-                                    </motion.div>
-                                ) : (
-                                    <motion.div
-                                        key="grid-view"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="w-full max-w-full"
-                                    >
-                                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center">
-                                            {projects.map((project, index) => (
-                                                <ProjectCard
-                                                    key={project.id}
-                                                    project={project}
-                                                    index={index}
-                                                    onClick={() => handleProjectClick(index)}
-                                                />
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    <AnimatePresence mode="wait">
+                        {viewMode === 'spotlight' ? (
+                            <motion.div
+                                key="spotlight-view"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="flex-1 w-full"
+                            >
+                                {/*spotlighted project panel*/}
+                                <div className="flex-1">
+                                    <AnimatePresence mode="wait">
+                                        <ProjectSpotlight key={projects[activeProject].id} project={projects[activeProject]} />
+                                    </AnimatePresence>
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                key="grid-view"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="w-full max-w-full"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 justify-items-center">
+                                    {projects.map((project, index) => (
+                                        <ProjectCard
+                                            key={project.id}
+                                            project={project}
+                                            index={index}
+                                            onClick={() => handleProjectClick(index)}
+                                        />
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+            </motion.div>
         </div>
     );
 }
@@ -425,7 +395,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onClick }) =>
                     ) : project.button1 !== "" && project.button2 !== "" ? (
                         // two buttons
                         <>
-                            <a href={project.b1src} target="_blank" rel="noopener noreferrer" className = "flex-1 w-full">
+                            <a href={project.b1src} target="_blank" rel="noopener noreferrer" className="flex-1 w-full">
                                 <motion.button
                                     className="flex-1 py-2 text-xs sm:text-sm bg-[#FDECBF] text-[#294240] font-medium rounded-lg hover:bg-[#fdecbfd9] w-full"
                                     onClick={(e) => e.stopPropagation()}
@@ -435,7 +405,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, onClick }) =>
                                     {project.button1}
                                 </motion.button>
                             </a>
-                            <a href={project.b2src} target="_blank" rel="noopener noreferrer" className = "flex-1 w-full">
+                            <a href={project.b2src} target="_blank" rel="noopener noreferrer" className="flex-1 w-full">
                                 <motion.button
                                     className="flex-1 py-2 text-xs sm:text-sm bg-[#FDECBF] text-[#294240] font-medium rounded-lg hover:bg-[#fdecbfd9] w-full"
                                     onClick={(e) => e.stopPropagation()}

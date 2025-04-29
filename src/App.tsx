@@ -70,7 +70,7 @@ const SectionHeading = ({
   const fontSizeClasses = {
     h1: "text-[7vh]",
     h2: "text-[6vh]",
-    h3: "text-[5vh]",
+    h3: "text-[4vh] min-[450px]:text-[5vh]",
     h4: "text-[4vh]",
     h5: "text-[3vh]",
     h6: "text-[2.5vh]"
@@ -82,7 +82,7 @@ const SectionHeading = ({
     <motion.div
       ref={ref}
       style={{ opacity }}
-      className={`ml-20 ${fontSize} font-semibold decoration-slate-200 mb-4`}
+      className={`ml-[5vw] ${fontSize} font-semibold decoration-slate-200 mb-4`}
     >
       {React.createElement(as, {}, children)}
     </motion.div>
@@ -214,7 +214,7 @@ const App: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative inline-block text-center z-5"
+          className="relative inline-block text-center z-5 mx-5"
         >
           <div className="absolute inset-0 border-2 border-white rounded-lg pointer-events-none"></div>
           <div className="relative px-6 py-8">
@@ -227,18 +227,18 @@ const App: React.FC = () => {
         </motion.div>
       </AnimatedSection>
 
-      <AnimatedSection id="experience" className="pt-40 mx-20 px-4">
+      <AnimatedSection id="experience" className="pt-40 mx-auto px-4">
         <SectionHeading as="h3">Experience</SectionHeading>
         <Experience />
       </AnimatedSection>
-
-      <AnimatedSection id="projects" className="pt-40 mt-20 mx-20 px-4">
+      <AnimatedSection id="projects" className="pt-40 mt-20 mx-auto px-4 mb-30">
         <SectionHeading as="h3">Projects</SectionHeading>
         <Projects />
-        <ToolsSection />
       </AnimatedSection>
+      <ToolsSection />
 
-      <AnimatedSection id="connect" className="pt-40 mt-20 mx-20 px-4">
+
+      <AnimatedSection id="connect" className="pt-40 mt-20 mx-auto px-4">
         <SectionHeading as="h3">Connect</SectionHeading>
 
         <motion.div
