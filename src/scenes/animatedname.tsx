@@ -27,7 +27,10 @@ export default function AnimatedName() {
 
   //advance every 1.5s
   useEffect(() => {
-    const iv = setInterval(() => setStep((s) => (s + 1) % nameVariants.length), 1500);
+    const iv = setInterval(
+      () => setStep((s) => (s + 1) % nameVariants.length),
+      1500
+    );
     return () => clearInterval(iv);
   }, []);
 
@@ -41,7 +44,10 @@ export default function AnimatedName() {
   return (
     <div className="flex items-center justify-center h-4/5 mb-[50px]">
       <LayoutGroup>
-        <motion.div layout className="inline-flex text-[clamp(2.5rem,7vw,8rem)] font-bold lowercase">
+        <motion.div
+          layout
+          className="inline-flex text-[clamp(1.5rem,7vw,8rem)] font-bold lowercase"
+        >
           {letters.map(({ char, id, isNew }) => {
             //overridden variants
             let color: string;
@@ -64,8 +70,11 @@ export default function AnimatedName() {
   );
 }
 
-function diffAssign(prev: Letter[], nextStr: string, idCounter: React.RefObject<number>): Letter[] {
-
+function diffAssign(
+  prev: Letter[],
+  nextStr: string,
+  idCounter: React.RefObject<number>
+): Letter[] {
   const m = prev.length;
   const n = nextStr.length;
 
@@ -75,7 +84,10 @@ function diffAssign(prev: Letter[], nextStr: string, idCounter: React.RefObject<
     .map(() => Array(n + 1).fill(0));
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      dp[i][j] = (prev[i - 1].char === nextStr[j - 1]) ? (dp[i - 1][j - 1] + 1) : (Math.max(dp[i - 1][j], dp[i][j - 1]));
+      dp[i][j] =
+        prev[i - 1].char === nextStr[j - 1]
+          ? dp[i - 1][j - 1] + 1
+          : Math.max(dp[i - 1][j], dp[i][j - 1]);
     }
   }
 
@@ -83,7 +95,7 @@ function diffAssign(prev: Letter[], nextStr: string, idCounter: React.RefObject<
   const matches: { prevIndex: number; newIndex: number }[] = [];
   let i = m;
   let j = n;
-  while (i > 0 && j > 0) { 
+  while (i > 0 && j > 0) {
     //chars equal => part of LCS
     if (prev[i - 1].char === nextStr[j - 1]) {
       matches.unshift({ prevIndex: i - 1, newIndex: j - 1 }); //push front
@@ -97,7 +109,9 @@ function diffAssign(prev: Letter[], nextStr: string, idCounter: React.RefObject<
   }
 
   const matchMap = new Map<number, number>();
-  matches.forEach(({ prevIndex, newIndex }) => matchMap.set(newIndex, prevIndex));
+  matches.forEach(({ prevIndex, newIndex }) =>
+    matchMap.set(newIndex, prevIndex)
+  );
 
   //build new letters array
   const out: Letter[] = [];

@@ -10,7 +10,7 @@ import {
   FaAws,
   FaGoogle,
   FaFigma,
-  FaReact
+  FaReact,
 } from "react-icons/fa";
 import {
   SiTypescript,
@@ -22,7 +22,7 @@ import {
   SiFastapi,
   SiTerraform,
   SiFirebase,
-  SiTableau
+  SiTableau,
 } from "react-icons/si";
 
 import AzureLogo from "@/assets/azure.svg";
@@ -31,7 +31,10 @@ import CLogo from "@/assets/c.svg";
 const tools = [
   { icon: <FaJava />, label: "Java" },
   { icon: <FaPython />, label: "Python" },
-  { icon: <img src={CLogo} alt="C" className="h-6 w-6 text-[#E87A30]" />, label: "C" },
+  {
+    icon: <img src={CLogo} alt="C" className="h-6 w-6 text-[#E87A30]" />,
+    label: "C",
+  },
   { icon: <SiCplusplus />, label: "C++" },
   { icon: <SiMysql />, label: "SQL" },
   { icon: <FaJs />, label: "JavaScript" },
@@ -46,16 +49,27 @@ const tools = [
   { icon: <SiFastapi />, label: "FastAPI" },
 
   { icon: <FaAws />, label: "AWS" },
-  { icon: <img src={AzureLogo} alt="Azure" className="h-6 w-6 text-[#E87A30]" />, label: "Azure" },
+  {
+    icon: (
+      <img src={AzureLogo} alt="Azure" className="h-6 w-6 text-[#E87A30]" />
+    ),
+    label: "Azure",
+  },
   { icon: <FaGoogle />, label: "GCP" },
   { icon: <FaDocker />, label: "Docker" },
   { icon: <SiTerraform />, label: "Terraform" },
   { icon: <SiFirebase />, label: "Firebase" },
   { icon: <FaFigma />, label: "Figma" },
-  { icon: <SiTableau />, label: "Tableau" }
+  { icon: <SiTableau />, label: "Tableau" },
 ];
 
-const ToolItem = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
+const ToolItem = ({
+  icon,
+  label,
+}: {
+  icon: React.ReactNode;
+  label: string;
+}) => (
   <motion.div
     whileHover={{ y: -3 }}
     className="flex items-center space-x-2 px-4 py-2 border-[#3F534E] border-2 rounded-full"
@@ -71,9 +85,9 @@ const ToolsSection: React.FC = () => (
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: false, margin: "-100px" }}
     transition={{ duration: 0.6 }}
-    className="mt-12 mb-20 w-full max-w-6xl mx-auto"
+    className="mb-20 w-full max-w-6xl mx-auto"
   >
-    <h4 className = "text-2xl text-center">Tools</h4>
+    <h4 className="text-2xl text-center">Tools</h4>
     <div className="p-6 ">
       <div className="flex flex-wrap gap-3 justify-center">
         {tools.map((tool, i) => (

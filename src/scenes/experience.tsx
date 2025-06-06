@@ -1,11 +1,15 @@
-import { AnimatePresence, motion, useInView, useScroll, useTransform } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import React, { useState, useRef } from "react";
 import SSPrev from "@/assets/ss-prev.svg";
 import GGPrev from "@/assets/gg-group.svg";
 import DBFBPrev from "@/assets/db-truck.svg";
 import HondaPrev from "@/assets/honda.svg";
-
-
 
 import {
   ResponsiveContainer,
@@ -25,7 +29,8 @@ const experienceData = [
     growth: 12,
     title: "Project Development Intern",
     company: "Springboard Services",
-    story: "During the pandemic, I began my first job at the age of 15, working remotely to develop rehabilitative module content that supported at-risk groups in employment, finance, anger management, and mental health. It was a valuable opportunity to solve immediate real-world challenges creatively while using data-driven approaches to ensure that high-risk clients received the targeted support they needed. Through this experience, my passion for working with data to drive meaningful impact and frame creative solutions began to grow.",
+    story:
+      "During the pandemic, I began my first job at 15, working remotely to develop rehabilitative module content that supported at-risk groups in employment, finance, anger management, and mental health. It was a valuable opportunity to solve immediate real-world challenges creatively while using data-driven approaches to ensure that high-risk clients received the targeted support they needed. Through this experience, my passion for working with data to drive meaningful impact and frame creative solutions began to grow.",
     image: SSPrev,
     link: "https://www.communitylearninghub.ca/",
   },
@@ -34,7 +39,8 @@ const experienceData = [
     growth: 25,
     title: "Computer Programming Tutor",
     company: "Go Green Youth Centre",
-    story: "During March Break, I worked full-time as a tutor and camp counsellor for a non-profit sports and academics camp, where I designed curriculum for large student cohorts and mentored participants through hands-on projects that blended learning with creativity. Guiding students with bright ideas and tremendous potential was especially meaningful to me, as someone who discovered coding later on but was shaped by small early experiences with simple concepts and robotics. It felt meaningful to help spark curiosity in a new generation, knowing firsthand how even simple introductions to tech at a young age can open life-changing opportunities. I continued my love for teaching code through Canada Learning Code as a Teen Ambassador, and taught web development for school clubs.",
+    story:
+      "During March Break, I worked full-time as a tutor and camp counsellor for a non-profit sports and academics camp, where I designed curriculum for large student cohorts and mentored participants through hands-on projects that blended learning with creativity. Guiding students with bright ideas and tremendous potential was especially meaningful to me, as someone who discovered coding later on but was shaped by small early experiences with simple concepts and robotics. It felt meaningful to help spark curiosity in a new generation, knowing firsthand how even simple introductions to tech at a young age can open life-changing opportunities. I continued my love for teaching code through Canada Learning Code as a Teen Ambassador, and taught web development for school clubs.",
     image: GGPrev,
     link: "https://www.gogreenyouthcentre.ca/",
   },
@@ -43,7 +49,8 @@ const experienceData = [
     growth: 35,
     title: "Data / Development Intern",
     company: "Corporate & Community Partnerships | Daily Bread Food Bank",
-    story: "Across two summer internships and volunteer work (2023-2024), I contributed to both frontline community support and internal process optimization. I led data analysis projects to re-engage major donors, developed automation solutions that eliminated manual errors and improved operational efficiency by over 95%, and designed programs to foster new corporate partnerships. Beyond technical contributions, I worked closely with independent organizers to resolve inquiries and supported broader community initiatives to address food insecurity. Working with the team at Daily Bread not only deepened my belief in thoughtful systems design but moreover the power of collaboration and a shared vision.",
+    story:
+      "Across two summer internships and volunteer work (2023-2024), I contributed to both frontline community support and internal process optimization. I led data analysis projects to re-engage major donors, developed automation solutions that eliminated manual errors and improved operational efficiency by over 95%, and designed programs to foster new corporate partnerships. Beyond technical contributions, I worked closely with independent organizers to resolve inquiries and supported broader community initiatives to address food insecurity. Working with the team at Daily Bread not only deepened my belief in thoughtful systems design but moreover the power of collaboration and a shared vision.",
     image: DBFBPrev,
     link: "https://www.dailybread.ca/",
   },
@@ -52,7 +59,8 @@ const experienceData = [
     growth: 60,
     title: "Cloud Engineering Student",
     company: "Honda Canada Inc.",
-    story: "Preheating...",
+    story:
+      "Spearheading a cost-optimization project; working with IBM to adopt Turbonomic for auto-scaling Redhat OpenShift on AWS-managed Kubernetes clusters. Preparing analyses and system design documents for cloud resources, DevOps pipelines, and VDI configurations for an Azure migration project to align with Honda's global cloud architecture.",
     image: HondaPrev,
     link: "https://www.hondacanada.ca/home",
   },
@@ -60,7 +68,7 @@ const experienceData = [
     year: 2026,
     growth: 80,
     title: "TBD",
-    company: "Your Company",
+    company: "?",
     story: "Coming soon!",
     image: "",
     link: "",
@@ -68,14 +76,16 @@ const experienceData = [
 ];
 
 const Experience: React.FC = () => {
-  const [selected, setSelected] = useState(experienceData[2]); //default to DBFB
-  const [hovered, setHovered] = useState<typeof experienceData[0] | null>(null);
+  const [selected, setSelected] = useState(experienceData[3]); //default to Honda
+  const [hovered, setHovered] = useState<(typeof experienceData)[0] | null>(
+    null
+  );
   const thisRef = useRef<HTMLDivElement>(null);
-  
+
   //scroll animations
   const { scrollYProgress } = useScroll({
     target: thisRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
   const chartOpacity = useTransform(
     scrollYProgress,
@@ -88,12 +98,13 @@ const Experience: React.FC = () => {
     [50, 0, 0, -50]
   );
   const isChartVisible = useInView(thisRef, { once: false, margin: "-50px" });
-  
+
   return (
     <div ref={thisRef} className="mt-12 mx-10 rounded-2xl">
       <motion.div
         style={{ opacity: chartOpacity, y: chartY }}
-        transition={{ duration: 0.5, delay: 0.2 }}>
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         <ResponsiveContainer width="100%" height={350}>
           <ComposedChart
             data={experienceData}
@@ -191,9 +202,13 @@ const Experience: React.FC = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
-              <h3 className="text-lg min-[450px]:text-2xl text-slate-100 font-semibold underline mb-4">{selected.title}</h3>
-              <h3 className="text-md min-[450px]:text-xl text-slate-100 font-semibold mb-4">{selected.company}</h3>
-              <p className = "hidden min-[450px]:block">{selected.story}</p>
+              <h3 className="text-lg min-[450px]:text-2xl text-slate-100 font-semibold underline mb-4">
+                {selected.title}
+              </h3>
+              <h3 className="text-md min-[450px]:text-xl text-slate-100 font-semibold mb-4">
+                {selected.company}
+              </h3>
+              <p className="hidden min-[450px]:block">{selected.story}</p>
             </motion.div>
           </AnimatePresence>
         </motion.div>
@@ -204,7 +219,7 @@ const Experience: React.FC = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: false, margin: "-150px" }}
-          transition={{duration: 0.3}}
+          transition={{ duration: 0.3 }}
           className="w-full md:w-1/3 flex"
         >
           <AnimatePresence mode="wait">
@@ -220,9 +235,9 @@ const Experience: React.FC = () => {
                 className="rounded-lg overflow-hidden shadow-xl flex-1 flex self-stretch"
                 style={{
                   perspective: 900,
-                  transformStyle: 'preserve-3d',
-                  minHeight: '40vh',
-                  alignSelf: 'stretch'
+                  transformStyle: "preserve-3d",
+                  minHeight: "40vh",
+                  alignSelf: "stretch",
                 }}
               >
                 <a
