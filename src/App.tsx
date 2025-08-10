@@ -53,42 +53,7 @@ const AnimatedSection = ({
   );
 };
 
-const SectionHeading = ({
-  children,
-  as = "h3",
-}: {
-  children: React.ReactNode;
-  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-}) => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0, 1, 1, 0]);
-
-  const fontSizeClasses = {
-    h1: "text-[7vh]",
-    h2: "text-[6vh] text-center",
-    h3: "text-[4vh] min-[450px]:text-[5vh]",
-    h4: "text-[4vh]",
-    h5: "text-[3vh]",
-    h6: "text-[2.5vh]",
-  };
-
-  const fontSize = fontSizeClasses[as] || fontSizeClasses.h3;
-
-  return (
-    <motion.div
-      ref={ref}
-      style={{ opacity }}
-      className={`${fontSize} font-semibold decoration-slate-200 mb-4`}
-    >
-      {React.createElement(as, {}, children)}
-    </motion.div>
-  );
-};
 
 // Create a reusable component for animating individual list items
 const AnimatedListItem = ({

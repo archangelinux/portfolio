@@ -121,7 +121,7 @@ const Experience: React.FC = () => {
             <ComposedChart
               data={experienceData}
               margin={{ top: 20, right: 40, bottom: 20, left: 20 }}
-              onMouseMove={(state: any) => {
+              onMouseMove={(state: { isTooltipActive?: boolean; activePayload?: Array<{ payload: { year: number; growth: number; title: string; company: string; story: string; image: string; link: string } }> }) => {
                 if (state.isTooltipActive && state.activePayload?.length) {
                   setHovered(state.activePayload[0].payload);
                 } else {
@@ -173,8 +173,8 @@ const Experience: React.FC = () => {
               />
               <Scatter
                 data={experienceData}
-                shape={(props: any) => {
-                  const { cx, cy, payload } = props;
+                shape={(props: unknown) => {
+                  const { cx, cy, payload } = props as { cx: number; cy: number; payload: { year: number; growth: number; title: string; company: string; story: string; image: string; link: string } };
                   const isActive = payload.year === selected.year;
                   return (
                     <Dot
@@ -190,7 +190,7 @@ const Experience: React.FC = () => {
                 isAnimationActive={isChartVisible}
                 animationBegin={0}
                 animationDuration={600}
-                onClick={(e: any) => setSelected(e.payload)}
+                onClick={(e: { payload: { year: number; growth: number; title: string; company: string; story: string; image: string; link: string } }) => setSelected(e.payload)}
               />
             </ComposedChart>
           </ResponsiveContainer>
