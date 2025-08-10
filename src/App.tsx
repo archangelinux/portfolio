@@ -230,97 +230,116 @@ const App: React.FC = () => {
       </AnimatedSection>
 
       <AnimatedSection id="experience" className="pt-40 px-4">
-        <SectionHeading as="h2">Experience</SectionHeading>
         <Experience />
       </AnimatedSection>
       <AnimatedSection
         id="projects"
-        className="pt-40 mt-20 mx-auto px-4 mb-20 "
+        className="pt-40 mt-32 mx-auto px-4 mb-20 "
       >
-        <SectionHeading as="h2">Projects</SectionHeading>
+        <div className="mb-8">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-center">
+            &lt;Build/&gt;
+          </h2>
+        </div>
         <Projects />
       </AnimatedSection>
       <ToolsSection />
 
-      <AnimatedSection id="connect" className="pt-40 mt-20 px-4">
-        <SectionHeading as="h2">Connect</SectionHeading>
+      <AnimatedSection id="connect" className="pt-40 mt-20 relative">
+        <div className="relative overflow-hidden">
+          {/* Light rounded background container - zoomed in circle */}
+          <div className="absolute inset-0 bg-gray-100 z-0" style={{ 
+            left: '50%', 
+            transform: 'translateX(-50%)', 
+            width: '300vw', 
+            height: '300vw', 
+            borderRadius: '50%',
+          }}></div>
+          
+          {/* Content container */}
+          <div className="max-w-[1400px] mx-auto relative z-10 mt-30 px-8 md:px-16 lg:px-24">
+            {/* Section heading */}
+            <div className="mb-8">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-800 text-center">
+                &lt;Connect/&gt;
+              </h2>
+            </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center justify-center mb-20 mt-20"
-        >
-          <div className="border border-[#d3cbb8] rounded-lg p-8 text-center space-y-6 w-full max-w-md">
-            <ul className="space-y-4 text-lg">
-              {[
-                {
-                  icon: <FaLinkedin className="text-[#E87A30] text-3xl" />,
-                  href: "https://www.linkedin.com/in/angelinabai/",
-                  text: "/angelinabai",
-                },
-                {
-                  icon: <FaGithub className="text-[#E87A30] text-3xl" />,
-                  href: "https://github.com/archangelinux",
-                  text: "/archangelinux",
-                },
-                {
-                  icon: (
-                    <FaSquareXTwitter className="text-[#E87A30] text-3xl" />
-                  ),
-                  href: "https://x.com/angie_bw",
-                  text: "/angie_bw",
-                },
-                {
-                  icon: <FaEnvelope className="text-[#E87A30] text-3xl" />,
-                  href: "mailto:a498wang@uwaterloo.ca",
-                  text: "a498wang@uwaterloo.ca",
-                },
-              ].map((item, index) => (
-                <AnimatedListItem key={index} index={index}>
-                  {item.icon}
-                  <a
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#E87A30] underline italic"
-                  >
-                    {item.text}
-                  </a>
-                </AnimatedListItem>
-              ))}
-            </ul>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, margin: "-100px" }}
+              transition={{ duration: 0.6 }}
+              className="flex items-center justify-center mb-20 mt-20"
+            >
+              <div className="border border-slate-300 rounded-lg p-8 text-center space-y-6 w-full max-w-md bg-white/50 backdrop-blur-sm">
+                <ul className="space-y-4 text-lg">
+                  {[
+                    {
+                      icon: <FaLinkedin className="text-[#E87A30] text-3xl" />,
+                      href: "https://www.linkedin.com/in/angelinabai/",
+                      text: "/angelinabai",
+                    },
+                    {
+                      icon: <FaGithub className="text-[#E87A30] text-3xl" />,
+                      href: "https://github.com/archangelinux",
+                      text: "/archangelinux",
+                    },
+                    {
+                      icon: (
+                        <FaSquareXTwitter className="text-[#E87A30] text-3xl" />
+                      ),
+                      href: "https://x.com/angie_bw",
+                      text: "/angie_bw",
+                    },
+                    {
+                      icon: <FaEnvelope className="text-[#E87A30] text-3xl" />,
+                      href: "mailto:a498wang@uwaterloo.ca",
+                      text: "a498wang@uwaterloo.ca",
+                    },
+                  ].map((item, index) => (
+                    <AnimatedListItem key={index} index={index}>
+                      {item.icon}
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#E87A30] underline italic"
+                      >
+                        {item.text}
+                      </a>
+                    </AnimatedListItem>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+            
+            {/* Footer content on light background */}
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: false, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex items-center justify-center"
+            >
+              <img src={GoopyAngel} className="h-[300px]" alt="Goopy Angel" />
+            </motion.div>
+            
+            {/* Thin line divider */}
+            <div className="w-full h-px bg-slate-300 mb-4"></div>
+            
+            <motion.footer
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: false }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="py-5 text-center text-sm text-slate-700"
+            >
+              &copy; 2025 Angelina Wang
+            </motion.footer>
           </div>
-        </motion.div>
+        </div>
       </AnimatedSection>
-
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.8 }}
-        className="bg-gradient-to-t from-[#3F534E] to-[#294240]"
-      >
-        <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex items-center justify-center"
-        >
-          <img src={GoopyAngel} className="h-[300px]" alt="Goopy Angel" />
-        </motion.div>
-        <motion.footer
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="py-5 text-center text-sm text-[#d3cbb8]"
-        >
-          &copy; 2025 Angelina Wang
-        </motion.footer>
-      </motion.section>
     </div>
   );
 };

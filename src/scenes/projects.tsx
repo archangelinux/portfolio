@@ -42,7 +42,7 @@ const Projects: React.FC = () => {
       id: 1,
       title: "ThoughtMirror",
       description:
-        "GenAI Genesis 2025 Winner | An AI-powered journaling assistant designed to help users recognize and reframe cognitive distortions in real time. ThoughtMirror enhances the journaling experience by identifying distortions within entries, offering therapist-inspired guidance, and visually tracking thought patterns over time. Built by fine-tuning Gemini-2.0 on clinician-annotated data and integrating a RAG pipeline using LangChain and real therapist responses to deliver personalized, judgment-free feedback. Winner of Best Generative AI Technology Hack (🥇 1st place out of 160+ projects and 600+ participants).",
+        "An AI-powered journaling assistant that identifies cognitive distortions within in real-time, offering therapist-inspired guidance, and visually tracking thought patterns over time. Built by fine-tuning Gemini-2.0 on clinician-annotated data and integrating a RAG pipeline using LangChain and real therapist responses to deliver personalized, judgment-free feedback. Winner of Best Generative AI Technology Hack (🥇 1st place out of 160+ projects and 600+ participants).",
       image: ThoughtMirrorTN,
       icon: <NotebookPen className="w-6 h-6" />,
       button1: "Devpost",

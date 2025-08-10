@@ -100,162 +100,174 @@ const Experience: React.FC = () => {
   const isChartVisible = useInView(thisRef, { once: false, margin: "-50px" });
 
   return (
-    <div ref={thisRef} className="mt-12 mx-10 rounded-2xl">
-      <motion.div
-        style={{ opacity: chartOpacity, y: chartY }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <ResponsiveContainer width="100%" height={350}>
-          <ComposedChart
-            data={experienceData}
-            margin={{ top: 20, right: 40, bottom: 20, left: 20 }}
-            onMouseMove={(state: any) => {
-              if (state.isTooltipActive && state.activePayload?.length) {
-                setHovered(state.activePayload[0].payload);
-              } else {
-                setHovered(null);
-              }
-            }}
-            // clear when you mouse out
-            onMouseLeave={() => setHovered(null)}
-            // click anywhere in the chart => swap in the hovered point
-            onClick={() => {
-              if (hovered) setSelected(hovered);
-            }}
-          >
-            <CartesianGrid stroke="#555" strokeDasharray="3 3" />
-            <XAxis
-              dataKey="year"
-              type="number"
-              domain={[2021, 2027]}
-              tickFormatter={(y) => String(y)}
-              axisLine={{ stroke: "#C0B283" }}
-              tick={{ fill: "#EEE", fontSize: 12 }}
-            />
-            <YAxis
-              dataKey="growth"
-              type="number"
-              domain={[0, 100]}
-              axisLine={{ stroke: "#C0B283" }}
-              tick={{ fill: "#EEE", fontSize: 12 }}
-              label={{
-                value: "Growth-to-date (%)",
-                angle: -90,
-                position: "insideLeft",
-                fill: "#EEE",
-              }}
-            />
-            <Tooltip
-              cursor={{ stroke: "#ff6600", strokeWidth: 1.5 }}
-              contentStyle={{ backgroundColor: "#333", borderColor: "#555" }}
-            />
-            <Line
-              type="linear"
-              dataKey="growth"
-              isAnimationActive={isChartVisible}
-              animationBegin={0}
-              animationDuration={800}
-              stroke="#ff6600"
-              strokeWidth={2}
-              dot={false}
-            />
-            <Scatter
+    <div className="relative max-w-[1400px] mx-auto">
+      {/* Light rounded background container */}
+      <div className="absolute inset-0 bg-gray-100 rounded-t-[3rem] md:rounded-t-[4rem] lg:rounded-t-[5rem] rounded-b-[3rem] md:rounded-b-[4rem] lg:rounded-b-[5rem] -mt-20 md:-mt-24 lg:-mt-32 -mb-20 md:-mb-24 lg:-mb-32 z-0 px-12 md:px-20 lg:px-32"></div>
+      
+      {/* Content container */}
+      <div ref={thisRef} className="relative z-10 mt-12 mx-8 md:mx-16 lg:mx-24 rounded-2xl">
+        {/* Section heading */}
+        <div className="mb-8">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-800 text-center">
+            &lt;Work/&gt;
+          </h2>
+        </div>
+        
+        <motion.div
+          style={{ opacity: chartOpacity, y: chartY }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <ResponsiveContainer width="100%" height={350}>
+            <ComposedChart
               data={experienceData}
-              shape={(props: any) => {
-                const { cx, cy, payload } = props;
-                const isActive = payload.year === selected.year;
-                return (
-                  <Dot
-                    cx={cx}
-                    cy={cy}
-                    r={isActive ? 10 : 6}
-                    fill={isActive ? "#FDAA35" : "#ff6666"}
-                    stroke={isActive ? "#fff" : undefined}
-                    strokeWidth={isActive ? 2 : 0}
-                  />
-                );
+              margin={{ top: 20, right: 40, bottom: 20, left: 20 }}
+              onMouseMove={(state: any) => {
+                if (state.isTooltipActive && state.activePayload?.length) {
+                  setHovered(state.activePayload[0].payload);
+                } else {
+                  setHovered(null);
+                }
               }}
-              isAnimationActive={isChartVisible}
-              animationBegin={0}
-              animationDuration={600}
-              onClick={(e: any) => setSelected(e.payload)}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </motion.div>
-
-      <div ref={thisRef} className="mt-8 flex flex-col md:flex-row gap-10 p-5">
-        <motion.div
-          ref={thisRef}
-          layout
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false, margin: "-150px" }}
-          transition={{ duration: 0.3 }}
-          className="flex-1 p-8 border-2 border-slate-100 rounded-lg"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={selected.title}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
+              // clear when you mouse out
+              onMouseLeave={() => setHovered(null)}
+              // click anywhere in the chart => swap in the hovered point
+              onClick={() => {
+                if (hovered) setSelected(hovered);
+              }}
             >
-              <h3 className="text-lg min-[450px]:text-2xl text-slate-100 font-semibold underline mb-4">
-                {selected.title}
-              </h3>
-              <h3 className="text-md min-[450px]:text-xl text-slate-100 font-semibold mb-4">
-                {selected.company}
-              </h3>
-              <p className="hidden min-[450px]:block">{selected.story}</p>
-            </motion.div>
-          </AnimatePresence>
+              <CartesianGrid stroke="#666" strokeDasharray="3 3" />
+              <XAxis
+                dataKey="year"
+                type="number"
+                domain={[2021, 2027]}
+                tickFormatter={(y) => String(y)}
+                axisLine={{ stroke: "#294240" }}
+                tick={{ fill: "#294240", fontSize: 12 }}
+              />
+              <YAxis
+                dataKey="growth"
+                type="number"
+                domain={[0, 100]}
+                axisLine={{ stroke: "#294240" }}
+                tick={{ fill: "#294240", fontSize: 12 }}
+                label={{
+                  value: "Growth-to-date (%)",
+                  angle: -90,
+                  position: "insideLeft",
+                  fill: "#294240",
+                }}
+              />
+              <Tooltip
+                cursor={{ stroke: "#ff6600", strokeWidth: 1.5 }}
+                contentStyle={{ backgroundColor: "#f8fafc", borderColor: "#cbd5e1", color: "#1e293b" }}
+              />
+              <Line
+                type="linear"
+                dataKey="growth"
+                isAnimationActive={isChartVisible}
+                animationBegin={0}
+                animationDuration={800}
+                stroke="#ff6600"
+                strokeWidth={2}
+                dot={false}
+              />
+              <Scatter
+                data={experienceData}
+                shape={(props: any) => {
+                  const { cx, cy, payload } = props;
+                  const isActive = payload.year === selected.year;
+                  return (
+                    <Dot
+                      cx={cx}
+                      cy={cy}
+                      r={isActive ? 10 : 6}
+                      fill={isActive ? "#FDAA35" : "#ff6666"}
+                      stroke={isActive ? "#fff" : undefined}
+                      strokeWidth={isActive ? 2 : 0}
+                    />
+                  );
+                }}
+                isAnimationActive={isChartVisible}
+                animationBegin={0}
+                animationDuration={600}
+                onClick={(e: any) => setSelected(e.payload)}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
         </motion.div>
 
-        <motion.div
-          layout
-          ref={thisRef}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false, margin: "-150px" }}
-          transition={{ duration: 0.3 }}
-          className="w-full md:w-1/3 flex"
-        >
-          <AnimatePresence mode="wait">
-            {selected.image && (
+
+
+        <div className="mt-8 flex flex-col md:flex-row gap-10 p-5">
+          <motion.div
+            layout
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: false, margin: "-150px" }}
+            transition={{ duration: 0.3 }}
+            className="flex-1 p-8 border-2 border-slate-300 rounded-lg bg-white/50 backdrop-blur-sm"
+          >
+            <AnimatePresence mode="wait">
               <motion.div
-                ref={thisRef}
-                key={`image-${selected.title}`}
-                initial={{ opacity: 0, scale: 0.7 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.7 }}
-                whileHover={{ scale: 1.03 }}
+                key={selected.title}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="rounded-lg overflow-hidden shadow-xl flex-1 flex self-stretch"
-                style={{
-                  perspective: 900,
-                  transformStyle: "preserve-3d",
-                  minHeight: "40vh",
-                  alignSelf: "stretch",
-                }}
               >
-                <a
-                  href={selected.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full h-full"
-                >
-                  <img
-                    src={selected.image}
-                    alt={selected.company}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </a>
+                <h3 className="text-lg min-[450px]:text-2xl text-slate-800 font-semibold underline mb-4">
+                  {selected.title}
+                </h3>
+                <h3 className="text-md min-[450px]:text-xl text-slate-700 font-semibold mb-4">
+                  {selected.company}
+                </h3>
+                <p className="hidden min-[450px]:block text-slate-600">{selected.story}</p>
               </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+            </AnimatePresence>
+          </motion.div>
+
+          <motion.div
+            layout
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: false, margin: "-150px" }}
+            transition={{ duration: 0.3 }}
+            className="w-full md:w-1/3 flex"
+          >
+            <AnimatePresence mode="wait">
+              {selected.image && (
+                                 <motion.div
+                   key={`image-${selected.title}`}
+                   initial={{ opacity: 0, scale: 0.7 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   exit={{ opacity: 0, scale: 0.7 }}
+                   whileHover={{ scale: 1.03 }}
+                   transition={{ duration: 0.3 }}
+                   className="rounded-lg overflow-hidden shadow-xl flex-1 flex self-stretch"
+                   style={{
+                     perspective: 900,
+                     transformStyle: "preserve-3d",
+                     minHeight: "40vh",
+                     alignSelf: "stretch",
+                   }}
+                 >
+                  <a
+                    href={selected.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full h-full"
+                  >
+                    <img
+                      src={selected.image}
+                      alt={selected.company}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  </a>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
