@@ -13,6 +13,7 @@ import {
   FaSquareXTwitter,
 } from "react-icons/fa6";
 import GoopyAngel from "@/assets/goopyangelcoder.png";
+import headshot from "@/assets/headshot_db_nobg.png";
 
 const AnimatedSection = ({
   id,
@@ -194,15 +195,15 @@ const App: React.FC = () => {
               <div className="bg-[#294240] rounded-3xl pt-5 pb-1 px-1 md:pt-0 md:pb-2 md:px-2 shadow-[inset_0_-2px_8px_rgba(255,255,255,0.15),inset_0_6px_12px_rgba(0,0,0,0.25)] overflow-hidden -mt-20 md:-mt-28 h-95 md:h-110">
                 <div className="transform rotate-12 translate-x-2 translate-y-8 -mt-8">
                   <div className="relative">
-                    <img
-                      src="/src/assets/headshot_db_nobg.png"
-                      alt="Angelina Wang"
-                      className="w-96 h-[28rem] md:w-[28rem] md:h-[32rem] object-cover object-top"
-                      style={{
-                        filter:
-                          "brightness(1.02) contrast(0.92) saturate(0.88) blur(0.8px) sepia(0.1)",
-                      }}
-                    />
+                                         <img
+                       src={headshot}
+                       alt="Angelina Wang"
+                       className="w-96 h-[28rem] md:w-[28rem] md:h-[32rem] object-cover object-top"
+                       style={{
+                         filter:
+                           "brightness(1.02) contrast(0.92) saturate(0.88) blur(0.8px) sepia(0.1)",
+                       }}
+                     />
                                           {/* Gradient fade overlay for bottom and left edges */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#294240] opacity-90"></div>
                       <div className="absolute inset-0 bg-gradient-to-r from-[#294240] via-transparent to-transparent opacity-30"></div>
