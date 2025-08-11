@@ -34,7 +34,7 @@ interface Project {
 
 const Projects: React.FC = () => {
   const [activeProject, setActiveProject] = useState<number>(0); //set by Project id
-  const [viewMode, setViewMode] = useState<ViewMode>("spotlight");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const projects = [
@@ -156,7 +156,7 @@ const Projects: React.FC = () => {
     <div
       ref={sectionRef}
       id="projects"
-      className="flex flex-col items-center w-[90vw] md:w-[80vw] px-4 sm:px-10 min-h-[70vh] mx-auto"
+      className="flex flex-col items-center w-full px-4 sm:px-10 min-h-[70vh] mx-auto"
     >
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -297,7 +297,7 @@ const ProjectSpotlight: React.FC<SpotlightProps> = ({ project }) => {
       layout
       className="flex flex-wrap gap-4 md:gap-6 lg:gap-8 p-10 h-full max-w-full bg-[#3F534E] rounded-xl shadow-lg"
     >
-      <div className="w-full flex-[1_1_400px] max-w-[600px]">
+      <div className="w-full flex-[1_1_400px] max-w-[800px]">
         <motion.div
           className="w-full rounded-lg overflow-hidden shadow-xl"
           initial={{ opacity: 0, scale: 0.95 }}

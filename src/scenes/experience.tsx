@@ -100,15 +100,15 @@ const Experience: React.FC = () => {
   const isChartVisible = useInView(thisRef, { once: false, margin: "-50px" });
 
   return (
-    <div className="relative max-w-[1400px] mx-auto">
+          <div className="relative w-full">
       {/* Light rounded background container */}
-      <div className="absolute inset-0 bg-gray-100 rounded-t-[3rem] md:rounded-t-[4rem] lg:rounded-t-[5rem] rounded-b-[3rem] md:rounded-b-[4rem] lg:rounded-b-[5rem] -mt-20 md:-mt-24 lg:-mt-32 -mb-20 md:-mb-24 lg:-mb-32 z-0 px-12 md:px-20 lg:px-32"></div>
+      <div className="absolute inset-0 mx-4 md:mx-8 lg:mx-12 bg-gray-100 rounded-t-[3rem] md:rounded-t-[4rem] lg:rounded-t-[5rem] rounded-b-[3rem] md:rounded-b-[4rem] lg:rounded-b-[5rem] -mt-20 md:-mt-24 lg:-mt-32 -mb-20 md:-mb-24 lg:-mb-32 z-0"></div>
       
-      {/* Content container */}
-      <div ref={thisRef} className="relative z-10 mt-12 mx-8 md:mx-16 lg:mx-24 rounded-2xl">
+              {/* Content container */}
+        <div ref={thisRef} className="relative z-10 mt-12 mx-8 md:mx-16 lg:mx-24 rounded-2xl">
         {/* Section heading */}
-        <div className="mb-8">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-800 text-center">
+        <div className="mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-semibold text-slate-800 text-center">
             &lt;Work/&gt;
           </h2>
         </div>
@@ -117,10 +117,10 @@ const Experience: React.FC = () => {
           style={{ opacity: chartOpacity, y: chartY }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <ResponsiveContainer width="100%" height={350}>
+          <ResponsiveContainer width="100%" height={250}>
             <ComposedChart
               data={experienceData}
-              margin={{ top: 20, right: 40, bottom: 20, left: 20 }}
+              margin={{ top: 25, right: 20, bottom: 10, left: 10 }}
               onMouseMove={(state: { isTooltipActive?: boolean; activePayload?: Array<{ payload: { year: number; growth: number; title: string; company: string; story: string; image: string; link: string } }> }) => {
                 if (state.isTooltipActive && state.activePayload?.length) {
                   setHovered(state.activePayload[0].payload);
@@ -142,19 +142,21 @@ const Experience: React.FC = () => {
                 domain={[2021, 2027]}
                 tickFormatter={(y) => String(y)}
                 axisLine={{ stroke: "#294240" }}
-                tick={{ fill: "#294240", fontSize: 12 }}
+                tick={{ fill: "#294240", fontSize: 10 }}
               />
               <YAxis
                 dataKey="growth"
                 type="number"
                 domain={[0, 100]}
                 axisLine={{ stroke: "#294240" }}
-                tick={{ fill: "#294240", fontSize: 12 }}
+                tick={{ fill: "#294240", fontSize: 10 }}
                 label={{
                   value: "Growth-to-date (%)",
                   angle: -90,
                   position: "insideLeft",
                   fill: "#294240",
+                  fontSize: 12,
+                  offset: 10,
                 }}
               />
               <Tooltip
@@ -198,14 +200,14 @@ const Experience: React.FC = () => {
 
 
 
-        <div className="mt-8 flex flex-col md:flex-row gap-10 p-5">
+        <div className="mt-6 md:mt-8 flex flex-col md:flex-row gap-6 md:gap-10 p-3 md:p-5">
           <motion.div
             layout
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: false, margin: "-150px" }}
             transition={{ duration: 0.3 }}
-            className="flex-1 p-8 border-2 border-slate-300 rounded-lg bg-white/50 backdrop-blur-sm"
+            className="flex-1 p-4 md:p-8 border-2 border-slate-300 rounded-lg bg-white/50 backdrop-blur-sm"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -215,13 +217,13 @@ const Experience: React.FC = () => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <h3 className="text-lg min-[450px]:text-2xl text-slate-800 font-semibold underline mb-4">
+                <h3 className="text-base md:text-lg min-[450px]:text-2xl text-slate-800 font-semibold underline mb-3 md:mb-4">
                   {selected.title}
                 </h3>
-                <h3 className="text-md min-[450px]:text-xl text-slate-700 font-semibold mb-4">
+                <h3 className="text-sm md:text-md min-[450px]:text-xl text-slate-700 font-semibold mb-3 md:mb-4">
                   {selected.company}
                 </h3>
-                <p className="hidden min-[450px]:block text-slate-600">{selected.story}</p>
+                <p className="hidden min-[450px]:block text-slate-600 text-sm md:text-base">{selected.story}</p>
               </motion.div>
             </AnimatePresence>
           </motion.div>
@@ -247,7 +249,7 @@ const Experience: React.FC = () => {
                    style={{
                      perspective: 900,
                      transformStyle: "preserve-3d",
-                     minHeight: "40vh",
+                     minHeight: "30vh",
                      alignSelf: "stretch",
                    }}
                  >

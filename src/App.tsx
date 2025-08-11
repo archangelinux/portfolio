@@ -53,8 +53,6 @@ const AnimatedSection = ({
   );
 };
 
-
-
 // Create a reusable component for animating individual list items
 const AnimatedListItem = ({
   index = 0,
@@ -88,6 +86,7 @@ const AnimatedListItem = ({
 const App: React.FC = () => {
   const [showNavbar, setShowNavbar] = useState<boolean>(true);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
+  const [isAtTop, setIsAtTop] = useState<boolean>(true);
 
   useEffect(() => {
     setTimeout(() => {
@@ -98,16 +97,21 @@ const App: React.FC = () => {
   //navbar scroll response
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY === 0) {
+      const scrollY = window.scrollY;
+
+      // Check if we're at the very top
+      if (scrollY === 0) {
+        setIsAtTop(true);
         setShowNavbar(true);
       } else {
-        if (window.scrollY > lastScrollY) {
+        setIsAtTop(false);
+        if (scrollY > lastScrollY) {
           setShowNavbar(false);
-        } else if (window.scrollY + 30 < lastScrollY) {
+        } else if (scrollY + 30 < lastScrollY) {
           setShowNavbar(true);
         }
       }
-      setLastScrollY(window.scrollY);
+      setLastScrollY(scrollY);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -145,51 +149,87 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
+      {/* Dynamic rotating text placed above the navbar - only visible at top */}
       <div
-        className={`fixed top-0 left-0 w-full z-50 ${
-          showNavbar ? "navbar-pop-in" : "navbar-pop-out"
+        className={`relative z-40 mt-8 flex justify-center transition-all duration-500 ease-out overflow-hidden ${
+          isAtTop ? "opacity-100 max-h-20" : "opacity-0 max-h-0"
         }`}
+      >
+        <div className="text-white/80 text-2xl md:text-3xl font-semibold">
+          <AnimatedName />
+        </div>
+      </div>
+
+      <div
+        className={`fixed left-0 w-full z-50 transition-all duration-500 ease-out ${
+          isAtTop ? "top-16" : "top-0"
+        } ${showNavbar ? "navbar-pop-in" : "navbar-pop-out"}`}
         style={{ perspective: "1000px" }}
       >
         <Navbar />
       </div>
 
+      {/* Spacer div that pushes content down when navbar is pushed down */}
+      <div
+        className={`transition-all duration-500 ease-out ${
+          isAtTop ? "h-16" : "h-0"
+        }`}
+      />
+
       <AnimatedSection
         id="home"
-        className="flex flex-col items-center justify-center min-h-screen pt-16"
+        className="flex flex-col items-center justify-center min-h-[80vh] pt-32"
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-        >
-          <AnimatedName />
-        </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0.5, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="inline-block bg-[#294240] px-2 mb-[-40px] py-6 text-lg font-medium text-white z-10"
-        >
-          Angelina Wang
-        </motion.p>
-
+        {/* Main hero content - everything in one neomorphic container */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative inline-block text-center z-5 mx-5"
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="max-w-6xl mx-auto px-4 pr-0 md:pr-4"
         >
-          <div className="absolute inset-0 border-2 border-white rounded-lg pointer-events-none"></div>
-          <div className="relative px-6 py-8">
-            <ul className="mt-2 list-inside space-y-2 text-base text-white">
-              <li>
-                Studying Software Engineering at the University of Waterloo{" "}
-              </li>
-              <li>Interning in Cloud Engineering at Honda Canada Inc.</li>
-              <li>Building 🪸 ? </li>
-            </ul>
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
+            {/* Portrait headshot - rotated and positioned, larger to get cut off */}
+            <div className="relative flex-shrink-0 w-fit max-w-sm pr-4 md:pr-0 mb-10">
+              {/* Neomorphic container wrapping just the image */}
+              <div className="bg-[#294240] rounded-3xl pt-5 pb-1 px-1 md:pt-0 md:pb-2 md:px-2 shadow-[inset_0_-2px_8px_rgba(255,255,255,0.15),inset_0_6px_12px_rgba(0,0,0,0.25)] overflow-hidden -mt-20 md:-mt-28 h-95 md:h-110">
+                <div className="transform rotate-12 translate-x-2 translate-y-8 -mt-8">
+                  <div className="relative">
+                    <img
+                      src="/src/assets/headshot_db_nobg.png"
+                      alt="Angelina Wang"
+                      className="w-96 h-[28rem] md:w-[28rem] md:h-[32rem] object-cover object-top"
+                      style={{
+                        filter:
+                          "brightness(1.02) contrast(0.92) saturate(0.88) blur(0.8px) sepia(0.1)",
+                      }}
+                    />
+                                          {/* Gradient fade overlay for bottom and left edges */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#294240] opacity-90"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#294240] via-transparent to-transparent opacity-30"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Name and description text - moved much more down */}
+                         <div className="text-white text-left lg:-ml-20 space-y-3 -mt-64 lg:-mt-60 relative z-20 w-full max-w-lg px-4 lg:px-0">
+              <div className="space-y-1">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mt-55 mb-10 ">
+                  Angelina Wang
+                </h1>
+              </div>
+              <p className="text-sm md:text-base text-white/90 leading-relaxed -mt-2">
+                Hi, I'm <b>Angelina (or Angie)</b>, a 2nd year{" "}
+                <b>Software Engineering</b> student at the University of
+                Waterloo.
+                <br /> I'm always looking for ideas that help me understand the world
+                better, and oftentimes they become my best creative inspirations.
+                Alongside building in tech, I love to read, sing/songwrite,
+                paint, skate, and do most things that would make me work up a
+                sweat.
+                <br/><br/>Thanks for visiting my page, and talk soon!
+              </p>
+            </div>
           </div>
         </motion.div>
       </AnimatedSection>
@@ -199,7 +239,7 @@ const App: React.FC = () => {
       </AnimatedSection>
       <AnimatedSection
         id="projects"
-        className="pt-40 mt-32 mx-auto px-4 mb-20 "
+        className="pt-40 mt-32 mx-auto px-4 mb-20 max-w-[1600px]"
       >
         <div className="mb-8">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-center">
@@ -213,14 +253,17 @@ const App: React.FC = () => {
       <AnimatedSection id="connect" className="pt-40 mt-20 relative">
         <div className="relative overflow-hidden">
           {/* Light rounded background container - zoomed in circle */}
-          <div className="absolute inset-0 bg-gray-100 z-0" style={{ 
-            left: '50%', 
-            transform: 'translateX(-50%)', 
-            width: '300vw', 
-            height: '300vw', 
-            borderRadius: '50%',
-          }}></div>
-          
+          <div
+            className="absolute inset-0 bg-gray-100 z-0"
+            style={{
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "300vw",
+              height: "300vw",
+              borderRadius: "50%",
+            }}
+          ></div>
+
           {/* Content container */}
           <div className="max-w-[1400px] mx-auto relative z-10 mt-30 px-8 md:px-16 lg:px-24">
             {/* Section heading */}
@@ -278,7 +321,7 @@ const App: React.FC = () => {
                 </ul>
               </div>
             </motion.div>
-            
+
             {/* Footer content on light background */}
             <motion.div
               initial={{ y: 50, opacity: 0 }}
@@ -289,10 +332,10 @@ const App: React.FC = () => {
             >
               <img src={GoopyAngel} className="h-[300px]" alt="Goopy Angel" />
             </motion.div>
-            
+
             {/* Thin line divider */}
             <div className="w-full h-px bg-slate-300 mb-4"></div>
-            
+
             <motion.footer
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}

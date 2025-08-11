@@ -42,11 +42,11 @@ export default function AnimatedName() {
   const current = nameVariants[step];
 
   return (
-    <div className="flex items-center justify-center h-4/5 mb-[50px]">
+    <div className="flex items-center justify-center mb-4">
       <LayoutGroup>
         <motion.div
           layout
-          className="inline-flex text-[clamp(1.5rem,7vw,8rem)] font-bold lowercase"
+          className="inline-flex text-2xl md:text-3xl font-semibold lowercase"
         >
           {letters.map(({ char, id, isNew }) => {
             //overridden variants
