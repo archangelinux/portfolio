@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, LayoutGroup } from "framer-motion";
 import "keen-slider/keen-slider.min.css";
 import Navbar from "@/scenes/navbar";
 import Experience from "@/scenes/experience";
@@ -12,8 +12,10 @@ import {
   FaEnvelope,
   FaSquareXTwitter,
 } from "react-icons/fa6";
-import GoopyAngel from "@/assets/goopyangelcoder.png";
+
 import retroComputer from "@/assets/retro-computer.png";
+
+
 
 const AnimatedSection = ({
   id,
@@ -286,58 +288,62 @@ const App: React.FC = () => {
               transition={{ duration: 0.6 }}
               className="flex items-center justify-center mb-20 mt-20"
             >
-              <div className="border border-slate-300 rounded-lg p-8 text-center space-y-6 w-full max-w-md bg-white/50 backdrop-blur-sm">
-                <ul className="space-y-4 text-lg">
+              {/* Pill-shaped container */}
+              <div className="bg-white/90 border border-gray-200 rounded-full px-8 md:px-12 lg:px-16 py-6 md:py-8 shadow-lg">
+                {/* Icons row */}
+                <div className="flex items-center justify-center space-x-6 md:space-x-8 lg:space-x-10">
                   {[
                     {
-                      icon: <FaLinkedin className="text-[#E87A30] text-3xl" />,
+                      icon: <FaLinkedin className="text-[#E87A30] text-3xl md:text-4xl lg:text-5xl" />,
                       href: "https://www.linkedin.com/in/angelinabai/",
                       text: "/angelinabai",
                     },
                     {
-                      icon: <FaGithub className="text-[#E87A30] text-3xl" />,
+                      icon: <FaGithub className="text-[#E87A30] text-3xl md:text-4xl lg:text-5xl" />,
                       href: "https://github.com/archangelinux",
                       text: "/archangelinux",
                     },
                     {
-                      icon: (
-                        <FaSquareXTwitter className="text-[#E87A30] text-3xl" />
-                      ),
+                      icon: <FaSquareXTwitter className="text-[#E87A30] text-3xl md:text-4xl lg:text-5xl" />,
                       href: "https://x.com/angie_bw",
                       text: "/angie_bw",
                     },
                     {
-                      icon: <FaEnvelope className="text-[#E87A30] text-3xl" />,
+                      icon: <FaEnvelope className="text-[#E87A30] text-3xl md:text-4xl lg:text-5xl" />,
                       href: "mailto:a498wang@uwaterloo.ca",
                       text: "a498wang@uwaterloo.ca",
                     },
                   ].map((item, index) => (
-                    <AnimatedListItem key={index} index={index}>
-                      {item.icon}
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: false }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="relative group"
+                    >
                       <a
                         href={item.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#E87A30] underline italic"
+                        className="block p-3 md:p-4 rounded-full hover:bg-gray-100 hover:scale-110 transition-all duration-300"
                       >
-                        {item.text}
+                        {item.icon}
                       </a>
-                    </AnimatedListItem>
+                      
+                      {/* Theme-matched tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 px-4 py-2 bg-white border border-[#E87A30] text-[#E87A30] text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap z-10 shadow-md">
+                        {item.text}
+                        {/* Tooltip arrow */}
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#E87A30]"></div>
+                      </div>
+                    </motion.div>
                   ))}
-                </ul>
+                </div>
               </div>
             </motion.div>
 
-            {/* Footer content on light background */}
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: false, amount: 0.3 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex items-center justify-center"
-            >
-              <img src={GoopyAngel} className="h-[300px]" alt="Goopy Angel" />
-            </motion.div>
+
 
             {/* Thin line divider */}
             <div className="w-full h-px bg-slate-300 mb-4"></div>
