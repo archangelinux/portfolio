@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform, LayoutGroup } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import "keen-slider/keen-slider.min.css";
 import Navbar from "@/scenes/navbar";
 import Experience from "@/scenes/experience";
@@ -56,35 +56,7 @@ const AnimatedSection = ({
   );
 };
 
-// Create a reusable component for animating individual list items
-const AnimatedListItem = ({
-  index = 0,
-  children,
-}: {
-  index?: number;
-  children: React.ReactNode;
-}) => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-
-  const x = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [-20, 0, 0, -20]);
-
-  return (
-    <motion.li
-      ref={ref}
-      style={{ opacity, x }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
-      className="flex items-center justify-left space-x-4"
-    >
-      {children}
-    </motion.li>
-  );
-};
 
 const App: React.FC = () => {
   const [showNavbar, setShowNavbar] = useState<boolean>(true);
