@@ -13,7 +13,7 @@ import {
   FaSquareXTwitter,
 } from "react-icons/fa6";
 import GoopyAngel from "@/assets/goopyangelcoder.png";
-import headshot from "@/assets/headshot_db_nobg.png";
+import retroComputer from "@/assets/retro-computer.png";
 
 const AnimatedSection = ({
   id,
@@ -179,47 +179,52 @@ const App: React.FC = () => {
 
       <AnimatedSection
         id="home"
-        className="flex flex-col items-center justify-center min-h-[80vh] pt-32"
+        className="flex flex-col items-center justify-center min-h-[80vh] pt-16"
       >
-        {/* Main hero content - everything in one neomorphic container */}
+        {/* Main hero content */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="max-w-6xl mx-auto px-4 pr-0 md:pr-4"
+          className="max-w-6xl mx-auto px-4"
         >
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
-            {/* Portrait headshot - rotated and positioned, larger to get cut off */}
-            <div className="relative flex-shrink-0 w-fit max-w-sm pr-4 md:pr-0 mb-10">
-              {/* Neomorphic container wrapping just the image */}
-              <div className="bg-[#294240] rounded-3xl pt-5 pb-1 px-1 md:pt-0 md:pb-2 md:px-2 shadow-[inset_0_-2px_8px_rgba(255,255,255,0.15),inset_0_6px_12px_rgba(0,0,0,0.25)] overflow-hidden -mt-20 md:-mt-28 h-95 md:h-110">
-                <div className="transform rotate-12 translate-x-2 translate-y-8 -mt-8">
-                  <div className="relative">
-                                         <img
-                       src={headshot}
-                       alt="Angelina Wang"
-                       className="w-96 h-[28rem] md:w-[28rem] md:h-[32rem] object-cover object-top"
-                       style={{
-                         filter:
-                           "brightness(1.02) contrast(0.92) saturate(0.88) blur(0.8px) sepia(0.1)",
-                       }}
-                     />
-                                          {/* Gradient fade overlay for bottom and left edges */}
-                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-[#294240] opacity-90"></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#294240] via-transparent to-transparent opacity-30"></div>
-                  </div>
-                </div>
+          <div className="flex flex-col xl:flex-row items-center gap-2 xl:gap-16">
+            {/* Top row: Image and Name (mobile) / Full layout (desktop) */}
+            <div className="flex flex-row xl:flex-col items-center xl:items-start gap-6 xl:gap-16 w-full xl:w-auto">
+              {/* Retro Computer Image */}
+              <div className="flex-shrink-0">
+                {/* Bouncing image */}
+                <motion.img
+                  src={retroComputer}
+                  alt="Retro Computer"
+                  className="w-40 h-auto md:w-[28rem] xl:w-80 2xl:w-96 object-contain"
+                  animate={{
+                    y: [0, -8, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              </div>
+
+              {/* Name - only visible on mobile, hidden on desktop */}
+              <div className="xl:hidden text-left">
+                <h1 className="text-4xl md:text-6xl font-bold text-yellow-600 leading-none">
+                  Angelina<br />
+                  <span style={{ fontSize: 'clamp(56px, 8vw, 72px)' }}>Wang</span>
+                </h1>
               </div>
             </div>
 
-            {/* Name and description text - moved much more down */}
-                         <div className="text-white text-left lg:-ml-20 space-y-3 -mt-64 lg:-mt-60 relative z-20 w-full max-w-lg px-4 lg:px-0">
-              <div className="space-y-1">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mt-55 mb-10 ">
+            {/* Description text and desktop name */}
+            <div className="flex-1 text-left px-6 xl:px-0">
+                              {/* Desktop name - hidden on mobile */}
+                <h1 className="hidden xl:block text-4xl xl:text-5xl font-bold text-white mb-6">
                   Angelina Wang
                 </h1>
-              </div>
-              <p className="text-sm md:text-base text-white/90 leading-relaxed -mt-2">
+                             <p className="text-base md:text-lg text-gray-300 leading-relaxed max-w-xl xl:max-w-4xl">
                 Hi, I'm <b>Angelina (or Angie)</b>, a 2nd year{" "}
                 <b>Software Engineering</b> student at the University of
                 Waterloo.
