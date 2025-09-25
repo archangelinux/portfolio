@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Droplets,
   BoomBox,
-  Sprout,
   NotebookPen,
   Dumbbell,
   Film,
