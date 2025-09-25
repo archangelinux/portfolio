@@ -101,14 +101,14 @@ const Experience: React.FC = () => {
 
   return (
           <div className="relative w-full">
-      {/* Light rounded background container */}
-      <div className="absolute inset-0 mx-4 md:mx-8 lg:mx-12 bg-gray-100 rounded-t-[3rem] md:rounded-t-[4rem] lg:rounded-t-[5rem] rounded-b-[3rem] md:rounded-b-[4rem] lg:rounded-b-[5rem] -mt-20 md:-mt-24 lg:-mt-32 -mb-20 md:-mb-24 lg:-mb-32 z-0"></div>
-      
+      {/* Dark themed background container matching your brand */}
+      <div className="absolute inset-0 mx-4 md:mx-8 lg:mx-12 bg-[#3F534E] rounded-xl shadow-2xl border border-[#E87A30]/20 -mt-20 md:-mt-24 lg:-mt-32 -mb-20 md:-mb-24 lg:-mb-32 z-0"></div>
+
               {/* Content container */}
         <div ref={thisRef} className="relative z-10 mt-12 mx-8 md:mx-16 lg:mx-24 rounded-2xl">
         {/* Section heading */}
         <div className="mb-6 md:mb-8">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-semibold text-slate-800 text-center">
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-semibold text-[#FDECBF] text-center">
             &lt;Work/&gt;
           </h2>
         </div>
@@ -135,33 +135,33 @@ const Experience: React.FC = () => {
                 if (hovered) setSelected(hovered);
               }}
             >
-              <CartesianGrid stroke="#666" strokeDasharray="3 3" />
+              <CartesianGrid stroke="#E87A30" strokeDasharray="3 3" opacity={0.3} />
               <XAxis
                 dataKey="year"
                 type="number"
                 domain={[2021, 2027]}
                 tickFormatter={(y) => String(y)}
-                axisLine={{ stroke: "#294240" }}
-                tick={{ fill: "#294240", fontSize: 10 }}
+                axisLine={{ stroke: "#FDECBF" }}
+                tick={{ fill: "#FDECBF", fontSize: 10 }}
               />
               <YAxis
                 dataKey="growth"
                 type="number"
                 domain={[0, 100]}
-                axisLine={{ stroke: "#294240" }}
-                tick={{ fill: "#294240", fontSize: 10 }}
+                axisLine={{ stroke: "#FDECBF" }}
+                tick={{ fill: "#FDECBF", fontSize: 10 }}
                 label={{
                   value: "Growth-to-date (%)",
                   angle: -90,
                   position: "insideLeft",
-                  fill: "#294240",
+                  fill: "#FDECBF",
                   fontSize: 12,
                   offset: 10,
                 }}
               />
               <Tooltip
-                cursor={{ stroke: "#ff6600", strokeWidth: 1.5 }}
-                contentStyle={{ backgroundColor: "#f8fafc", borderColor: "#cbd5e1", color: "#1e293b" }}
+                cursor={{ stroke: "#E87A30", strokeWidth: 1.5 }}
+                contentStyle={{ backgroundColor: "#2A3D36", borderColor: "#E87A30", color: "#FDECBF" }}
               />
               <Line
                 type="linear"
@@ -169,7 +169,7 @@ const Experience: React.FC = () => {
                 isAnimationActive={isChartVisible}
                 animationBegin={0}
                 animationDuration={800}
-                stroke="#ff6600"
+                stroke="#E87A30"
                 strokeWidth={2}
                 dot={false}
               />
@@ -183,8 +183,8 @@ const Experience: React.FC = () => {
                       cx={cx}
                       cy={cy}
                       r={isActive ? 10 : 6}
-                      fill={isActive ? "#FDAA35" : "#ff6666"}
-                      stroke={isActive ? "#fff" : undefined}
+                      fill={isActive ? "#FFB347" : "#E87A30"}
+                      stroke={isActive ? "#FDECBF" : undefined}
                       strokeWidth={isActive ? 2 : 0}
                     />
                   );
@@ -207,7 +207,7 @@ const Experience: React.FC = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: false, margin: "-150px" }}
             transition={{ duration: 0.3 }}
-            className="flex-1 p-4 md:p-8 border-2 border-slate-300 rounded-lg bg-white/50 backdrop-blur-sm"
+            className="flex-1 p-4 md:p-8 border-2 border-[#E87A30]/30 rounded-lg bg-[#2A3D36]/80 backdrop-blur-sm"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -217,13 +217,13 @@ const Experience: React.FC = () => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
-                <h3 className="text-base md:text-lg min-[450px]:text-2xl text-slate-800 font-semibold underline mb-3 md:mb-4">
+                <h3 className="text-base md:text-lg min-[450px]:text-2xl text-[#FDECBF] font-semibold underline mb-3 md:mb-4">
                   {selected.title}
                 </h3>
-                <h3 className="text-sm md:text-md min-[450px]:text-xl text-slate-700 font-semibold mb-3 md:mb-4">
+                <h3 className="text-sm md:text-md min-[450px]:text-xl text-[#FFB347] font-semibold mb-3 md:mb-4">
                   {selected.company}
                 </h3>
-                <p className="hidden min-[450px]:block text-slate-600 text-sm md:text-base">{selected.story}</p>
+                <p className="hidden min-[450px]:block text-slate-200 text-sm md:text-base">{selected.story}</p>
               </motion.div>
             </AnimatePresence>
           </motion.div>

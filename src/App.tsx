@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, LayoutGroup } from "framer-motion";
 import "keen-slider/keen-slider.min.css";
 import Navbar from "@/scenes/navbar";
 import Experience from "@/scenes/experience";
-import AnimatedName from "@/scenes/animatedname";
 import Projects from "@/scenes/projects";
 import ToolsSection from "@/scenes/tools";
 import {
@@ -13,9 +12,80 @@ import {
   FaSquareXTwitter,
 } from "react-icons/fa6";
 
-import retroComputer from "@/assets/retro-computer.png";
+import headshot from "@/assets/headshot.jpeg";
 
+// Types and data for animated name
+interface Letter {
+  char: string;
+  id: number;
+  isNew: boolean;
+}
 
+const nameVariants: string[] = [
+  "angelina",
+  "angelinux",
+  "archangel",
+  "architect",
+  "architect of",
+  "architect of change",
+  "archangelinux",
+];
+
+function diffAssign(
+  prev: Letter[],
+  nextStr: string,
+  idCounter: React.RefObject<number>
+): Letter[] {
+  const m = prev.length;
+  const n = nextStr.length;
+
+  const dp: number[][] = Array(m + 1)
+    .fill(0)
+    .map(() => Array(n + 1).fill(0));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] =
+        prev[i - 1].char === nextStr[j - 1]
+          ? dp[i - 1][j - 1] + 1
+          : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+
+  const matches: { prevIndex: number; newIndex: number }[] = [];
+  let i = m;
+  let j = n;
+  while (i > 0 && j > 0) {
+    if (prev[i - 1].char === nextStr[j - 1]) {
+      matches.unshift({ prevIndex: i - 1, newIndex: j - 1 });
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  const matchMap = new Map<number, number>();
+  matches.forEach(({ prevIndex, newIndex }) =>
+    matchMap.set(newIndex, prevIndex)
+  );
+
+  const out: Letter[] = [];
+  for (let k = 0; k < n; k++) {
+    if (matchMap.has(k)) {
+      const prevIndex = matchMap.get(k)!;
+      out.push({ char: nextStr[k], id: prev[prevIndex].id, isNew: false });
+    } else {
+      out.push({ char: nextStr[k], id: idCounter.current++, isNew: true });
+    }
+  }
+
+  if (nextStr === "architect") {
+    return out.map((l) => (l.char === "e" ? { ...l, isNew: true } : l));
+  }
+  return out;
+}
 
 const AnimatedSection = ({
   id,
@@ -63,11 +133,31 @@ const App: React.FC = () => {
   const [lastScrollY, setLastScrollY] = useState<number>(0);
   const [isAtTop, setIsAtTop] = useState<boolean>(true);
 
+  // Animated name state
+  const [step, setStep] = useState(0);
+  const [letters, setLetters] = useState<Letter[]>(
+    nameVariants[0].split("").map((c, i) => ({ char: c, id: i, isNew: false }))
+  );
+  const idCounter = useRef(letters.length);
+
   useEffect(() => {
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 100);
   }, []);
+
+  // Animated name effects
+  useEffect(() => {
+    const iv = setInterval(
+      () => setStep((s) => (s + 1) % nameVariants.length),
+      1500
+    );
+    return () => clearInterval(iv);
+  }, []);
+
+  useEffect(() => {
+    setLetters((prev) => diffAssign(prev, nameVariants[step], idCounter));
+  }, [step]);
 
   //navbar scroll response
   useEffect(() => {
@@ -124,92 +214,221 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      {/* Dynamic rotating text placed above the navbar - only visible at top */}
-      <div
-        className={`relative z-40 mt-8 flex justify-center transition-all duration-500 ease-out overflow-hidden ${
-          isAtTop ? "opacity-100 max-h-20" : "opacity-0 max-h-0"
-        }`}
-      >
-        <div className="text-white/80 text-2xl md:text-3xl font-semibold">
-          <AnimatedName />
-        </div>
-      </div>
 
       <div
         className={`fixed left-0 w-full z-50 transition-all duration-500 ease-out ${
-          isAtTop ? "top-16" : "top-0"
+          isAtTop ? "top-0" : "top-0"
         } ${showNavbar ? "navbar-pop-in" : "navbar-pop-out"}`}
         style={{ perspective: "1000px" }}
       >
         <Navbar />
       </div>
 
-      {/* Spacer div that pushes content down when navbar is pushed down */}
-      <div
-        className={`transition-all duration-500 ease-out ${
-          isAtTop ? "h-16" : "h-0"
-        }`}
-      />
-
       <AnimatedSection
         id="home"
-        className="flex flex-col items-center justify-center min-h-[80vh] pt-16"
+        className="flex flex-col items-center justify-center min-h-[85vh] pt-32"
       >
-        {/* Main hero content */}
+        {/* Terminal Hero Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="max-w-6xl mx-auto px-4"
+          className="flex justify-center w-full px-4"
         >
-          <div className="flex flex-col xl:flex-row items-center gap-2 xl:gap-16">
-            {/* Top row: Image and Name (mobile) / Full layout (desktop) */}
-            <div className="flex flex-row xl:flex-col items-center xl:items-start gap-6 xl:gap-16 w-full xl:w-auto">
-              {/* Retro Computer Image */}
-              <div className="flex-shrink-0">
-                {/* Bouncing image */}
-                <motion.img
-                  src={retroComputer}
-                  alt="Retro Computer"
-                  className="w-40 h-auto md:w-[28rem] xl:w-80 2xl:w-96 object-contain"
-                  animate={{
-                    y: [0, -8, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              </div>
-
-              {/* Name - only visible on mobile, hidden on desktop */}
-              <div className="xl:hidden text-left">
-                <h1 className="text-4xl md:text-6xl font-bold text-yellow-600 leading-none">
-                  Angelina<br />
-                  <span style={{ fontSize: 'clamp(56px, 8vw, 72px)' }}>Wang</span>
-                </h1>
+          {/* Terminal Container - Centered */}
+          <div className="relative bg-[#3F534E] rounded-xl shadow-2xl overflow-visible border border-[#E87A30]/20 max-w-5xl">
+            {/* Terminal Header - Animated Name */}
+            <div className="bg-[#2A3D36] px-4 py-3 flex items-center justify-center border-b border-[#E87A30]/20">
+              <div className="text-sm font-mono flex items-center">
+                <LayoutGroup>
+                  <motion.div layout className="inline-flex lowercase">
+                    {letters.map(({ char, id, isNew }) => {
+                      const current = nameVariants[step];
+                      let color: string;
+                      if (current === "angelina") {
+                        color = "#FDECBF";
+                      } else if (current === "archangelinux" || isNew) {
+                        color = "#E87A30";
+                      } else {
+                        color = "#FFB347";
+                      }
+                      return (
+                        <motion.span key={id} layout style={{ color }}>
+                          {char}
+                        </motion.span>
+                      );
+                    })}
+                  </motion.div>
+                </LayoutGroup>
+                <motion.span
+                  className="text-slate-300"
+                  initial={false}
+                  animate={{ x: 0 }}
+                  transition={{ type: "tween", duration: 0 }}
+                >
+                  @portfolio:~
+                </motion.span>
               </div>
             </div>
 
-            {/* Description text and desktop name */}
-            <div className="flex-1 text-left px-6 xl:px-0">
-                              {/* Desktop name - hidden on mobile */}
-                <h1 className="hidden xl:block text-4xl xl:text-5xl font-bold text-white mb-6">
+            {/* Terminal Content */}
+            <div className="px-8 py-4 font-mono text-sm md:text-base">
+              {/* Terminal Commands */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+                className="mb-4"
+              >
+                <span className="text-[#E87A30]">angelina@portfolio</span>
+                <span className="text-slate-300">:</span>
+                <span className="text-[#FFB347]">~</span>
+                <span className="text-slate-300">$ whoami</span>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.3, duration: 0.5 }}
+                className="mb-6 text-slate-100"
+              >
+                <h1 className="text-2xl md:text-4xl font-bold mb-2 text-[#FDECBF]">
                   Angelina Wang
                 </h1>
-                             <p className="text-base md:text-lg text-gray-300 leading-relaxed max-w-xl xl:max-w-4xl">
-                Hi, I'm <b>Angelina (or Angie)</b>, a 2nd year{" "}
-                <b>Software Engineering</b> student at the University of
-                Waterloo.
-                <br /> I'm always looking for ideas that help me understand the world
-                better, and oftentimes they become my best creative inspirations.
-                Alongside building in tech, I love to read, sing/songwrite,
-                paint, skate, and do most things that would make me work up a
-                sweat.
-                <br/><br/>Thanks for visiting my page, and talk soon!
-              </p>
+                <p className="text-slate-300 mb-1">Software Engineering Student @ University of Waterloo</p>
+                <p className="text-slate-300">Prev at Honda Canada Inc.</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.8, duration: 0.5 }}
+                className="mb-4"
+              >
+                <span className="text-[#E87A30]">angelina@portfolio</span>
+                <span className="text-slate-300">:</span>
+                <span className="text-[#FFB347]">~</span>
+                <span className="text-slate-300">$ cat about.txt</span>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2.3, duration: 0.5 }}
+                className="mb-6 text-slate-200 leading-relaxed"
+              >
+                Hi, I'm <span className="text-[#FDECBF] font-semibold">Angelina (or Angie)</span>, a 2nd year{" "}
+                <span className="text-[#FFB347] font-semibold">Software Engineering</span> student.<br />
+                I'm always looking for ideas that help me understand the world better,<br />
+                and oftentimes they become my best creative inspirations.<br />
+                <br />
+                Alongside building in tech, I love to read, sing/songwrite, paint, skate,<br />
+                and do most things that would make me work up a sweat.<br />
+                <br />
+                Thanks for visiting my page, and talk soon!
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2.8, duration: 0.5 }}
+                className="mb-4"
+              >
+                <span className="text-[#E87A30]">angelina@portfolio</span>
+                <span className="text-slate-300">:</span>
+                <span className="text-[#FFB347]">~</span>
+                <span className="text-slate-300">$ ls -la interests/</span>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 3.3, duration: 0.5 }}
+                className="mb-6"
+              >
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-slate-300">
+                  <span className="text-[#FDECBF]">human-centered AI</span>
+                  <span className="text-[#FDECBF]">cloud engineering</span>
+                  <span className="text-[#FDECBF]">data analytics</span>
+                  <span className="text-[#FDECBF]">full-stack development</span>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 3.8, duration: 0.5 }}
+                className="flex items-center"
+              >
+                <span className="text-[#E87A30]">angelina@portfolio</span>
+                <span className="text-slate-300">:</span>
+                <span className="text-[#FFB347]">~</span>
+                <span className="text-slate-300">$</span>
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="ml-1 w-2 h-5 bg-[#FDECBF] inline-block"
+                />
+              </motion.div>
             </div>
+
+            {/* Floating Headshot Window - Larger and more prominent */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, x: 50 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 1.5 }}
+              className="absolute top-8 -right-20 md:top-12 md:-right-24 lg:top-16 lg:-right-28 z-20"
+            >
+            {/* Floating window container */}
+            <div className="relative">
+              {/* Window frame */}
+              <div className="bg-[#2A3D36] rounded-lg shadow-2xl border-2 border-[#E87A30]/40 overflow-hidden transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                {/* Window header */}
+                <div className="bg-[#1F2B26] px-4 py-3 flex items-center justify-between border-b border-[#E87A30]/20">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                  </div>
+                  <div className="text-[#FDECBF] text-sm font-mono opacity-80">
+                    angie.exe
+                  </div>
+                  <div className="w-12"></div>
+                </div>
+
+                {/* Image container with hover effects */}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="relative overflow-hidden"
+                >
+                  <img
+                    src={headshot}
+                    alt="Angelina Wang"
+                    className="w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 object-cover"
+                  />
+
+                  {/* Subtle overlay effect */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[#E87A30]/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                </motion.div>
+              </div>
+
+              {/* Floating animation effect */}
+              <motion.div
+                animate={{
+                  y: [0, -3, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute inset-0 pointer-events-none"
+              />
+
+              {/* Subtle glow effect */}
+              <div className="absolute inset-0 bg-[#E87A30]/10 rounded-lg blur-xl -z-10 scale-110"></div>
+            </div>
+            </motion.div>
           </div>
         </motion.div>
       </AnimatedSection>
@@ -232,9 +451,9 @@ const App: React.FC = () => {
 
       <AnimatedSection id="connect" className="pt-40 mt-20 relative">
         <div className="relative overflow-hidden">
-          {/* Light rounded background container - zoomed in circle */}
+          {/* Dark themed background container matching your brand */}
           <div
-            className="absolute inset-0 bg-gray-100 z-0"
+            className="absolute inset-0 bg-[#3F534E] z-0 border-t-2 border-[#E87A30]/20"
             style={{
               left: "50%",
               transform: "translateX(-50%)",
@@ -248,7 +467,7 @@ const App: React.FC = () => {
           <div className="max-w-[1400px] mx-auto relative z-10 mt-30 px-8 md:px-16 lg:px-24">
             {/* Section heading */}
             <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-800 text-center">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-[#FDECBF] text-center">
                 &lt;Connect/&gt;
               </h2>
             </div>
@@ -261,7 +480,7 @@ const App: React.FC = () => {
               className="flex items-center justify-center mb-20 mt-20"
             >
               {/* Pill-shaped container */}
-              <div className="bg-white/90 border border-gray-200 rounded-full px-8 md:px-12 lg:px-16 py-6 md:py-8 shadow-lg">
+              <div className="bg-[#2A3D36]/90 border-2 border-[#E87A30]/30 rounded-full px-8 md:px-12 lg:px-16 py-6 md:py-8 shadow-lg">
                 {/* Icons row */}
                 <div className="flex items-center justify-center space-x-6 md:space-x-8 lg:space-x-10">
                   {[
@@ -298,13 +517,13 @@ const App: React.FC = () => {
                         href={item.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-3 md:p-4 rounded-full hover:bg-gray-100 hover:scale-110 transition-all duration-300"
+                        className="block p-3 md:p-4 rounded-full hover:bg-[#3F534E] hover:scale-110 transition-all duration-300"
                       >
                         {item.icon}
                       </a>
                       
                       {/* Theme-matched tooltip */}
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 px-4 py-2 bg-white border border-[#E87A30] text-[#E87A30] text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap z-10 shadow-md">
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 px-4 py-2 bg-[#2A3D36] border border-[#E87A30] text-[#FDECBF] text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap z-10 shadow-md">
                         {item.text}
                         {/* Tooltip arrow */}
                         <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#E87A30]"></div>
@@ -318,14 +537,14 @@ const App: React.FC = () => {
 
 
             {/* Thin line divider */}
-            <div className="w-full h-px bg-slate-300 mb-4"></div>
+            <div className="w-full h-px bg-[#E87A30]/30 mb-4"></div>
 
             <motion.footer
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: false }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="py-5 text-center text-sm text-slate-700"
+              className="py-5 text-center text-sm text-slate-300"
             >
               &copy; 2025 Angelina Wang
             </motion.footer>

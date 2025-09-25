@@ -9,13 +9,14 @@ import {
   Film,
   Grid,
   List,
+  MapPin,
 } from "lucide-react";
 import LooTN from "@/assets/loolooloo-thumbnail.svg";
 import ThoughtMirrorTN from "@/assets/thoughtmirror-thumbnail.svg";
 import BeFitTN from "@/assets/befit-thumbnail-1.svg";
 import RadBotTN from "@/assets/radiobot-thumbnail.svg";
 import WamTN from "@/assets/sample-wam-thumbnail.svg";
-import GrdupTN from "@/assets/gdup-thumbnail.png";
+import RouviaTN from "@/assets/rouvia_thumbnail 1.svg";
 
 type ViewMode = "spotlight" | "grid";
 
@@ -60,6 +61,19 @@ const Projects: React.FC = () => {
     },
     {
       id: 2,
+      title: "Rouvia",
+      description:
+        "A voice-first navigation system that transforms natural language into intelligent route planning. Built to address safety concerns in traditional GPS by enabling hands-free control through OpenAI Whisper transcription and Google Gemini intent parsing. Features a multi-stage processing pipeline that handles unstructured voice input, implements trendiness scoring using Cohere's AI, and integrates MongoDB for personalized location memory. Includes Sidequest Mode for spontaneous route suggestions based on user preferences and energy levels.",
+      image: RouviaTN,
+      icon: <MapPin className="w-6 h-6" />,
+      button1: "Devpost",
+      button2: "Github",
+      b1src: "https://devpost.com/software/rouvia",
+      b2src: "https://github.com/archangelinux/rouvia",
+      tags: ["OpenAI Whisper", "Google Gemini", "Cohere", "MongoDB", "Python"],
+    },
+    {
+      id: 3,
       title: "www.LooLooLoo",
       description:
         "Hack The North 2024 - Sponsor Award Winner (Defang) | A full-stack web app that detects nearby water fountains and routes users to bathrooms using a ESP32-based Bluetooth beacon. Features a notification system (Twilio's API), dynamic routing (MappedIn's API), and a mobile UI for hydration tracking. Built for reliable scaling through deployment using Defang",
@@ -72,7 +86,7 @@ const Projects: React.FC = () => {
       tags: ["ESP32", "React", "Express.js", "TypeScript", "Docker"],
     },
     {
-      id: 3,
+      id: 4,
       title: "Befit",
       description:
         "Hack Western 2024 - Sponsor Award Winner (Tempolabs) | An AI-driven fitness trainer designed to enhance workouts through real-time form correction and scoring with OpenCV. Compares user performance against workout videos using Mediapipe, generates gamified workout plans, and integrates intuitive hand-gesture controls.",
@@ -85,7 +99,7 @@ const Projects: React.FC = () => {
       tags: ["Typescript", "Tailwind", "React", "JavaScript"],
     },
     {
-      id: 4,
+      id: 5,
       title: "Wat-A-Moment",
       description:
         "A digital photo booth platform that enables users to instantly upload and share photos with their social networks. Features automated metadata management, secure token-based authentication, and cloud storage - integrating the digital and physical photobooth experience.",
@@ -105,7 +119,7 @@ const Projects: React.FC = () => {
       ],
     },
     {
-      id: 5,
+      id: 6,
       title: "RadBot",
       description:
         "A portable FM radio system paired with a rotary encoder and TEA5767 module, enhanced with a car attachment that uses ultrasonic and infrared sensors to autonomously follow the user.",
@@ -116,19 +130,6 @@ const Projects: React.FC = () => {
       b1src: "",
       b2src: "https://github.com/archangelinux/fm-radio-bot",
       tags: ["Arduino", "C++"],
-    },
-    {
-      id: 6,
-      title: "Ground Up",
-      description:
-        "Designed & developed an educational tool that motivates diligent note-taking and promotes healthy study habits for all ages. Integrated nested React components to achieve functional minimalistic gamification for a rewarding and dynamic experience. Serves as a paperless visual aid, allowing users to track and address important questions to better prepare for assessments.",
-      image: GrdupTN,
-      icon: <Sprout className="w-6 h-6" />,
-      button1: "",
-      button2: "Github",
-      b1src: "",
-      b2src: "https://github.com/archangelinux/ground-up",
-      tags: ["JavaScript", "React", "HTML/CSS"],
     },
   ];
 
