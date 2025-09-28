@@ -295,7 +295,7 @@ const ProjectSpotlight: React.FC<SpotlightProps> = ({ project }) => {
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.2 }}
       layout
-      className="flex flex-wrap gap-4 md:gap-6 lg:gap-8 p-10 h-full max-w-full bg-[#3F534E] rounded-xl shadow-lg"
+      className="flex flex-wrap gap-4 md:gap-6 lg:gap-8 p-10 h-full max-w-full bg-[#3F534E] rounded-xl shadow-lg border border-[#E87A30]/20"
     >
       <div className="w-full flex-[1_1_400px] max-w-[800px]">
         <motion.div
@@ -412,7 +412,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         transition: { type: "spring", stiffness: 400, damping: 40 },
       }}
       onClick={onClick}
-      className="bg-[#3F534E] rounded-xl overflow-hidden shadow-lg flex flex-col w-full max-w-full self-stretch cursor-pointer"
+      className="bg-[#3F534E] rounded-xl overflow-hidden shadow-lg flex flex-col w-full max-w-full self-stretch cursor-pointer border border-[#E87A30]/20"
     >
       <div className="h-48 overflow-hidden">
         <img

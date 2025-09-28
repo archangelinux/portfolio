@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { motion, useScroll, useTransform, LayoutGroup } from "framer-motion";
 import "keen-slider/keen-slider.min.css";
 import Navbar from "@/scenes/navbar";
@@ -126,12 +126,120 @@ const AnimatedSection = ({
   );
 };
 
+const TerminalNavigation: React.FC = () => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(true);
+
+  const options = useMemo(() => [
+    { label: "View my work experience", action: () => document.getElementById("experience")?.scrollIntoView({ behavior: "smooth" }) },
+    { label: "Check out what I've built", action: () => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" }) },
+    { label: "Connect with me", action: () => document.getElementById("connect")?.scrollIntoView({ behavior: "smooth" }) },
+  ], []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isComplete) return;
+
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev - 1 + options.length) % options.length);
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSelectedIndex((prev) => (prev + 1) % options.length);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        setShowPrompt(false);
+        setIsComplete(true);
+        options[selectedIndex].action();
+      } else if (e.key >= "1" && e.key <= "3") {
+        e.preventDefault();
+        const index = parseInt(e.key) - 1;
+        setSelectedIndex(index);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedIndex, isComplete, options]);
+
+  if (isComplete) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className="flex items-center"
+      >
+        <span className="text-[#E87A30]">angelina@portfolio</span>
+        <span className="text-slate-300">:</span>
+        <span className="text-[#FFB347]">~</span>
+        <span className="text-slate-300">$</span>
+        <motion.span
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 1, repeat: Infinity }}
+          className="ml-1 w-2 h-5 bg-[#FDECBF] inline-block"
+        />
+      </motion.div>
+    );
+  }
+
+  return (
+    <div>
+      {showPrompt && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 3.3, duration: 0.5 }}
+          className="mb-6 text-slate-200"
+        >
+          Where would you like to go first?
+        </motion.div>
+      )}
+
+      {!isComplete && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 3.8, duration: 0.5 }}
+          className="mb-6"
+        >
+          {options.map((option, index) => (
+            <motion.div
+              key={index}
+              className="flex items-center mb-1 cursor-pointer pl-4"
+              onClick={() => {
+                setSelectedIndex(index);
+                setShowPrompt(false);
+                setIsComplete(true);
+                option.action();
+              }}
+            >
+              {selectedIndex === index ? (
+                <span className="mr-2 text-[#FFB347]">❯</span>
+              ) : (
+                <span className="mr-2 text-transparent">❯</span>
+              )}
+              <span className={`mr-3 text-[#FFB347]`}>
+                {index + 1}.
+              </span>
+              <span className={selectedIndex === index ? "text-[#FFB347]" : "text-slate-300"}>
+                {option.label}
+              </span>
+            </motion.div>
+          ))}
+          <div className="mt-3 text-xs text-slate-400 pl-4">
+            Use ↑↓ arrow keys or type 1-3 to navigate, Enter to select
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
 
 
 const App: React.FC = () => {
-  const [showNavbar, setShowNavbar] = useState<boolean>(true);
-  const [lastScrollY, setLastScrollY] = useState<number>(0);
-  const [isAtTop, setIsAtTop] = useState<boolean>(true);
 
   // Animated name state
   const [step, setStep] = useState(0);
@@ -159,29 +267,6 @@ const App: React.FC = () => {
     setLetters((prev) => diffAssign(prev, nameVariants[step], idCounter));
   }, [step]);
 
-  //navbar scroll response
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-
-      // Check if we're at the very top
-      if (scrollY === 0) {
-        setIsAtTop(true);
-        setShowNavbar(true);
-      } else {
-        setIsAtTop(false);
-        if (scrollY > lastScrollY) {
-          setShowNavbar(false);
-        } else if (scrollY + 30 < lastScrollY) {
-          setShowNavbar(true);
-        }
-      }
-      setLastScrollY(scrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   //navbar animation
   useEffect(() => {
@@ -215,31 +300,30 @@ const App: React.FC = () => {
   return (
     <div className="app">
 
-      <div
-        className={`fixed left-0 w-full z-50 transition-all duration-500 ease-out ${
-          isAtTop ? "top-0" : "top-0"
-        } ${showNavbar ? "navbar-pop-in" : "navbar-pop-out"}`}
-        style={{ perspective: "1000px" }}
-      >
-        <Navbar />
-      </div>
+      <Navbar />
 
       <AnimatedSection
         id="home"
-        className="flex flex-col items-center justify-center min-h-[85vh] pt-32"
+        className="flex flex-col items-center justify-center min-h-[85vh] pt-12 mx-8 md:mx-12 lg:mx-12"
       >
         {/* Terminal Hero Section */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="flex justify-center w-full px-4"
+          className="flex justify-center w-full"
         >
           {/* Terminal Container - Centered */}
-          <div className="relative bg-[#3F534E] rounded-xl shadow-2xl overflow-visible border border-[#E87A30]/20 max-w-5xl">
+          <div className="relative bg-[#3F534E] rounded-t-xl rounded-b-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-visible max-w-5xl border border-[#E87A30]/20">
             {/* Terminal Header - Animated Name */}
-            <div className="bg-[#2A3D36] px-4 py-3 flex items-center justify-center border-b border-[#E87A30]/20">
-              <div className="text-sm font-mono flex items-center">
+            <div className="bg-[#2A3D36] px-4 py-3 flex items-center justify-between border-b border-[#E87A30]/20 rounded-t-xl">
+              {/* Terminal dots */}
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 rounded-full bg-[#E87A30]/80 shadow-[0_0_8px_rgba(232,122,48,0.4)]"></div>
+                <div className="w-3 h-3 rounded-full bg-[#FFB347]/70 shadow-[0_0_8px_rgba(255,179,71,0.3)]"></div>
+                <div className="w-3 h-3 rounded-full bg-green-700/50 shadow-[0_0_8px_rgba(21,128,61,0.3)]"></div>
+              </div>
+              <div className="text-sm font-mono flex items-center justify-center">
                 <LayoutGroup>
                   <motion.div layout className="inline-flex lowercase">
                     {letters.map(({ char, id, isNew }) => {
@@ -260,19 +344,16 @@ const App: React.FC = () => {
                     })}
                   </motion.div>
                 </LayoutGroup>
-                <motion.span
-                  className="text-slate-300"
-                  initial={false}
-                  animate={{ x: 0 }}
-                  transition={{ type: "tween", duration: 0 }}
-                >
+                <span className="text-slate-300">
                   @portfolio:~
-                </motion.span>
+                </span>
               </div>
+              {/* Empty div for center alignment */}
+              <div className="w-12"></div>
             </div>
 
             {/* Terminal Content */}
-            <div className="px-8 py-4 font-mono text-sm md:text-base">
+            <div className="px-8 py-4 pr-8 md:pr-48 font-mono text-sm md:text-base">
               {/* Terminal Commands */}
               <motion.div
                 initial={{ opacity: 0 }}
@@ -286,23 +367,58 @@ const App: React.FC = () => {
                 <span className="text-slate-300">$ whoami</span>
               </motion.div>
 
+              {/* Mobile/tablet - inline image */}
+              <div className="block lg:hidden">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.3, duration: 0.5 }}
+                  className="mb-4 text-slate-100"
+                >
+                  <h1 className="text-2xl font-bold text-[#FDECBF]">
+                    Angelina Wang
+                  </h1>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.8, duration: 0.5 }}
+                  className="mb-2"
+                >
+                  <img
+                    src={headshot}
+                    alt="Angelina Wang"
+                    className="w-24 h-24 object-cover rounded-lg border-2 border-[#E87A30]/40"
+                  />
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 2.3, duration: 0.5 }}
+                  className="mb-6 text-slate-300"
+                >
+                  angie.jpg
+                </motion.div>
+              </div>
+
+              {/* Desktop - just name */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.3, duration: 0.5 }}
-                className="mb-6 text-slate-100"
+                className="mb-6 text-slate-100 hidden lg:block"
               >
                 <h1 className="text-2xl md:text-4xl font-bold mb-2 text-[#FDECBF]">
                   Angelina Wang
                 </h1>
-                <p className="text-slate-300 mb-1">Software Engineering Student @ University of Waterloo</p>
-                <p className="text-slate-300">Prev at Honda Canada Inc.</p>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1.8, duration: 0.5 }}
+                transition={{ delay: 2.3, duration: 0.5 }}
                 className="mb-4"
               >
                 <span className="text-[#E87A30]">angelina@portfolio</span>
@@ -314,7 +430,7 @@ const App: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 2.3, duration: 0.5 }}
+                transition={{ delay: 2.8, duration: 0.5 }}
                 className="mb-6 text-slate-200 leading-relaxed"
               >
                 Hi, I'm <span className="text-[#FDECBF] font-semibold">Angelina (or Angie)</span>, a 2nd year{" "}
@@ -325,70 +441,29 @@ const App: React.FC = () => {
                 Alongside building in tech, I love to read, sing/songwrite, paint, skate,<br />
                 and do most things that would make me work up a sweat.<br />
                 <br />
-                Thanks for visiting my page, and talk soon!
+                Thanks for visiting my page, and talk soon!<br/>-
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.8, duration: 0.5 }}
-                className="mb-4"
-              >
-                <span className="text-[#E87A30]">angelina@portfolio</span>
-                <span className="text-slate-300">:</span>
-                <span className="text-[#FFB347]">~</span>
-                <span className="text-slate-300">$ ls -la interests/</span>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 3.3, duration: 0.5 }}
-                className="mb-6"
-              >
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-slate-300">
-                  <span className="text-[#FDECBF]">human-centered AI</span>
-                  <span className="text-[#FDECBF]">cloud engineering</span>
-                  <span className="text-[#FDECBF]">data analytics</span>
-                  <span className="text-[#FDECBF]">full-stack development</span>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 3.8, duration: 0.5 }}
-                className="flex items-center"
-              >
-                <span className="text-[#E87A30]">angelina@portfolio</span>
-                <span className="text-slate-300">:</span>
-                <span className="text-[#FFB347]">~</span>
-                <span className="text-slate-300">$</span>
-                <motion.span
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="ml-1 w-2 h-5 bg-[#FDECBF] inline-block"
-                />
-              </motion.div>
+              <TerminalNavigation />
             </div>
 
-            {/* Floating Headshot Window - Larger and more prominent */}
+            {/* Floating Headshot Window - Medium/Large screens only */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8, x: 50 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 1.5 }}
-              className="absolute top-8 -right-20 md:top-12 md:-right-24 lg:top-16 lg:-right-28 z-20"
+              className="absolute top-8 -right-20 md:top-12 md:-right-24 lg:top-16 lg:-right-28 xl:-right-32 z-20 hidden lg:block"
             >
             {/* Floating window container */}
             <div className="relative">
               {/* Window frame */}
-              <div className="bg-[#2A3D36] rounded-lg shadow-2xl border-2 border-[#E87A30]/40 overflow-hidden transform rotate-2 hover:rotate-0 transition-transform duration-300">
+              <div className="bg-[#2A3D36] rounded-lg shadow-2xl overflow-hidden transform rotate-2 hover:rotate-0 transition-transform duration-300">
                 {/* Window header */}
                 <div className="bg-[#1F2B26] px-4 py-3 flex items-center justify-between border-b border-[#E87A30]/20">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#E87A30]/40 shadow-[0_0_6px_rgba(232,122,48,0.2)]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#FFB347]/40 shadow-[0_0_6px_rgba(255,179,71,0.2)]"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-700/25 shadow-[0_0_6px_rgba(21,128,61,0.2)]"></div>
                   </div>
                   <div className="text-[#FDECBF] text-sm font-mono opacity-80">
                     angie.exe
@@ -429,6 +504,7 @@ const App: React.FC = () => {
               <div className="absolute inset-0 bg-[#E87A30]/10 rounded-lg blur-xl -z-10 scale-110"></div>
             </div>
             </motion.div>
+
           </div>
         </motion.div>
       </AnimatedSection>
