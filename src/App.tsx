@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa6";
 
 import headshot from "@/assets/headshot.jpeg";
+import logoW from "@/assets/logo_w.svg";
 
 // Types and data for animated name
 interface Letter {
@@ -613,16 +614,29 @@ const App: React.FC = () => {
 
 
             {/* Thin line divider */}
-            <div className="w-full h-px bg-[#E87A30]/30 mb-4"></div>
+            <div className="w-full h-px bg-[#E87A30]/30 "></div>
 
             <motion.footer
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: false }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="py-5 text-center text-sm text-slate-300"
+              className="py-5 text-center text-sm text-slate-300 flex items-center justify-center"
             >
-              &copy; 2025 Angelina Wang
+              <span>&copy; 2025 Angelina Wang </span>
+              <a
+                href="https://se-webring.xyz/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center ml-2 hover:text-[#E87A30] transition-colors duration-300 group"
+              >
+                <img
+                  src={logoW}
+                  alt="SE Webring"
+                  className="w-4 h-auto mr-1 ml-4 flex-shrink-0 transition-all duration-300 group-hover:[filter:brightness(0)_saturate(100%)_invert(53%)_sepia(96%)_saturate(1582%)_hue-rotate(4deg)_brightness(101%)_contrast(91%)]"
+                />
+                SE Webring
+              </a>
             </motion.footer>
           </div>
         </div>
