@@ -12,8 +12,8 @@ import {
   FaSquareXTwitter,
 } from "react-icons/fa6";
 
-import headshot from "@/assets/headshot.jpeg";
 import logoW from "@/assets/logo_w.svg";
+import headshot from "@/assets/headshot-db.jpg";
 
 // Types and data for animated name
 interface Letter {
@@ -105,14 +105,14 @@ const AnimatedSection = ({
 
   const opacity = useTransform(
     scrollYProgress,
-    [0, 0.2, 0.8, 1], //input range (entering to leaving viewport)
-    [0, 1, 1, 0] //output range (fade on enter/leave)
+    [0, 0.2, 0.8, 1],
+    [0, 1, 1, 0]
   );
 
   const y = useTransform(
     scrollYProgress,
     [0, 0.2, 0.8, 1],
-    [50, 0, 0, -50] //move up/down
+    [50, 0, 0, -50]
   );
 
   return (
@@ -172,14 +172,14 @@ const TerminalNavigation: React.FC = () => {
         transition={{ delay: 0.5, duration: 0.5 }}
         className="flex items-center"
       >
-        <span className="text-[#E87A30]">angelina@portfolio</span>
-        <span className="text-slate-300">:</span>
-        <span className="text-[#FFB347]">~</span>
-        <span className="text-slate-300">$</span>
+        <span className="text-gold">angelina</span>
+        <span className="text-space-gray">:</span>
+        <span className="text-gold-light">~</span>
+        <span className="text-space-gray">$</span>
         <motion.span
           animate={{ opacity: [0, 1, 0] }}
           transition={{ duration: 1, repeat: Infinity }}
-          className="ml-1 w-2 h-5 bg-[#FDECBF] inline-block"
+          className="ml-1 w-2 h-5 bg-gold inline-block"
         />
       </motion.div>
     );
@@ -191,8 +191,8 @@ const TerminalNavigation: React.FC = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 3.3, duration: 0.5 }}
-          className="mb-6 text-slate-200"
+          transition={{ delay: 2.8, duration: 0.5 }}
+          className="mb-6 text-base-content hidden sm:block"
         >
           Where would you like to go first?
         </motion.div>
@@ -202,8 +202,8 @@ const TerminalNavigation: React.FC = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 3.8, duration: 0.5 }}
-          className="mb-6"
+          transition={{ delay: 3.3, duration: 0.5 }}
+          className="mb-6 hidden sm:block"
         >
           {options.map((option, index) => (
             <motion.div
@@ -217,20 +217,20 @@ const TerminalNavigation: React.FC = () => {
               }}
             >
               {selectedIndex === index ? (
-                <span className="mr-2 text-[#FFB347]">❯</span>
+                <span className="mr-2 text-gold">&#10095;</span>
               ) : (
-                <span className="mr-2 text-transparent">❯</span>
+                <span className="mr-2 text-transparent">&#10095;</span>
               )}
-              <span className={`mr-3 text-[#FFB347]`}>
+              <span className="mr-3 text-gold-light">
                 {index + 1}.
               </span>
-              <span className={selectedIndex === index ? "text-[#FFB347]" : "text-slate-300"}>
+              <span className={selectedIndex === index ? "text-gold" : "text-space-gray"}>
                 {option.label}
               </span>
             </motion.div>
           ))}
-          <div className="mt-3 text-xs text-slate-400 pl-4">
-            Use ↑↓ arrow keys or type 1-3 to navigate, Enter to select
+          <div className="mt-3 text-xs text-space-gray pl-4">
+            Use &#8593;&#8595; arrow keys or type 1-3 to navigate, Enter to select
           </div>
         </motion.div>
       )}
@@ -239,6 +239,12 @@ const TerminalNavigation: React.FC = () => {
 };
 
 
+const socialLinks = [
+  { icon: <FaLinkedin />, href: "https://www.linkedin.com/in/angelinabai/", label: "/in/angelinabai" },
+  { icon: <FaGithub />, href: "https://github.com/archangelinux", label: "archangelinux" },
+  { icon: <FaSquareXTwitter />, href: "https://x.com/angie_bw", label: "@angie_bw" },
+  { icon: <FaEnvelope />, href: "mailto:a498wang@uwaterloo.ca", label: "a498wang@uwaterloo.ca" },
+];
 
 const App: React.FC = () => {
 
@@ -255,7 +261,6 @@ const App: React.FC = () => {
     }, 100);
   }, []);
 
-  // Animated name effects
   useEffect(() => {
     const iv = setInterval(
       () => setStep((s) => (s + 1) % nameVariants.length),
@@ -268,8 +273,6 @@ const App: React.FC = () => {
     setLetters((prev) => diffAssign(prev, nameVariants[step], idCounter));
   }, [step]);
 
-
-  //navbar animation
   useEffect(() => {
     const styleElement = document.createElement("style");
     styleElement.textContent = `
@@ -294,353 +297,327 @@ const App: React.FC = () => {
     `;
     document.head.appendChild(styleElement);
     return () => {
-      document.head.removeChild(styleElement); //on unmount
+      document.head.removeChild(styleElement);
     };
   }, []);
 
   return (
-    <div className="app">
+    <div className="app bg-circuit">
 
       <Navbar />
 
       <AnimatedSection
         id="home"
-        className="flex flex-col items-center justify-center min-h-[85vh] pt-12 mx-8 md:mx-12 lg:mx-12"
+        className="flex flex-col items-center justify-center min-h-[85vh] pt-12 px-4 max-w-6xl mx-auto"
       >
-        {/* Terminal Hero Section */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
           className="flex justify-center w-full"
         >
-          {/* Terminal Container - Centered */}
-          <div className="relative bg-[#3F534E] rounded-t-xl rounded-b-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-visible max-w-5xl border border-[#E87A30]/20">
-            {/* Terminal Header - Animated Name */}
-            <div className="bg-[#2A3D36] px-4 py-3 flex items-center justify-between border-b border-[#E87A30]/20 rounded-t-xl">
-              {/* Terminal dots */}
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-[#E87A30]/80 shadow-[0_0_8px_rgba(232,122,48,0.4)]"></div>
-                <div className="w-3 h-3 rounded-full bg-[#FFB347]/70 shadow-[0_0_8px_rgba(255,179,71,0.3)]"></div>
-                <div className="w-3 h-3 rounded-full bg-green-700/50 shadow-[0_0_8px_rgba(21,128,61,0.3)]"></div>
+          <div className="flex flex-col md:flex-row max-w-6xl w-full gap-0">
+            {/* Terminal */}
+            <div className="relative bg-base-100 rounded-sm md:rounded-r-none overflow-visible flex-1 border border-gold-light/30 md:border-r-0 flex flex-col">
+              {/* Terminal Header */}
+              <div className="bg-base-200 px-4 py-3 flex items-center justify-between border-b border-gold-light/30 rounded-t-sm relative">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-copper shadow-[0_0_6px_rgba(198,125,75,0.6)]" />
+                  <div className="w-2 h-2 rounded-full bg-teal shadow-[0_0_6px_rgba(78,138,138,0.6)]" />
+                  <div className="w-2 h-2 rounded-full bg-rose shadow-[0_0_6px_rgba(201,58,42,0.6)]" />
+                </div>
+                <div className="absolute left-1/2 -translate-x-1/2 text-sm font-mono flex items-center justify-center">
+                  <LayoutGroup>
+                    <motion.div layout className="inline-flex lowercase">
+                      {letters.map(({ char, id, isNew }) => {
+                        const current = nameVariants[step];
+                        let color: string;
+                        if (current === "angelina") {
+                          color = "#1D1D1F";
+                        } else if (current === "archangelinux") {
+                          color = isNew ? "#C67D4B" : "#4E8A8A";
+                        } else if (isNew) {
+                          color = "#C93A2A";
+                        } else {
+                          color = "#86868B";
+                        }
+                        return (
+                          <motion.span key={id} layout style={{ color }}>
+                            {char === " " ? "\u00A0" : char}
+                          </motion.span>
+                        );
+                      })}
+                    </motion.div>
+                  </LayoutGroup>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-neutral/40 tracking-wider">v1.0</span>
+                </div>
               </div>
-              <div className="text-sm font-mono flex items-center justify-center">
-                <LayoutGroup>
-                  <motion.div layout className="inline-flex lowercase">
-                    {letters.map(({ char, id, isNew }) => {
-                      const current = nameVariants[step];
-                      let color: string;
-                      if (current === "angelina") {
-                        color = "#FDECBF";
-                      } else if (current === "archangelinux" || isNew) {
-                        color = "#E87A30";
-                      } else {
-                        color = "#FFB347";
-                      }
-                      return (
-                        <motion.span key={id} layout style={{ color }}>
-                          {char}
-                        </motion.span>
-                      );
-                    })}
-                  </motion.div>
-                </LayoutGroup>
-                <span className="text-slate-300">
-                  @portfolio:~
-                </span>
-              </div>
-              {/* Empty div for center alignment */}
-              <div className="w-12"></div>
-            </div>
 
-            {/* Terminal Content */}
-            <div className="px-8 py-4 pr-8 md:pr-48 font-mono text-sm md:text-base">
-              {/* Terminal Commands */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-                className="mb-4"
-              >
-                <span className="text-[#E87A30]">angelina@portfolio</span>
-                <span className="text-slate-300">:</span>
-                <span className="text-[#FFB347]">~</span>
-                <span className="text-slate-300">$ whoami</span>
-              </motion.div>
-
-              {/* Mobile/tablet - inline image */}
-              <div className="block lg:hidden">
+              {/* Terminal Content */}
+              <div className="px-8 py-4 font-mono text-sm md:text-base flex-1">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 1.3, duration: 0.5 }}
-                  className="mb-4 text-slate-100"
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                  className="mb-4"
                 >
-                  <h1 className="text-2xl font-bold text-[#FDECBF]">
-                    Angelina Wang
-                  </h1>
+                  <span className="text-gold">angelina</span>
+                  <span className="text-space-gray">:</span>
+                  <span className="text-gold-light">~</span>
+                  <span className="text-space-gray">$ whoami</span>
                 </motion.div>
 
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.8, duration: 0.5 }}
-                  className="mb-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.3, duration: 0.6 }}
+                  className="mb-6"
                 >
-                  <img
-                    src={headshot}
-                    alt="Angelina Wang"
-                    className="w-24 h-24 object-cover rounded-lg border-2 border-[#E87A30]/40"
-                  />
+                  <h1 className="text-2xl md:text-3xl font-semibold mb-3 text-space-dark">
+                    Angelina Wang
+                  </h1>
+                  <div className="text-base-content/80 leading-relaxed text-sm">
+                    Hi, I'm <span className="text-copper font-medium">Angelina (or Angie)</span>, a 2nd year{" "}
+                    <span className="text-teal font-medium">Software Engineering</span> student.<br />
+                    I'm always looking for ideas that help me understand the world better,<br />
+                    and oftentimes they become my best creative inspirations.<br />
+                    <br />
+                    Alongside building in tech, I love to read, sing/songwrite, paint, skate,<br />
+                    and do most things that would make me work up a sweat.<br />
+                    <br />
+                    Thanks for visiting my page, and talk soon!<br/>-
+                  </div>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2.3, duration: 0.5 }}
-                  className="mb-6 text-slate-300"
+                  className="mb-4"
                 >
-                  angie.jpg
+                  <span className="text-gold">angelina</span>
+                  <span className="text-space-gray">:</span>
+                  <span className="text-gold-light">~</span>
+                  <span className="text-space-gray">$ _</span>
                 </motion.div>
+
+                <TerminalNavigation />
               </div>
 
-              {/* Desktop - just name */}
+              {/* Mobile: horizontal dossier card below terminal */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.3, duration: 0.5 }}
-                className="mb-6 text-slate-100 hidden lg:block"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.3, duration: 0.6 }}
+                className="md:hidden border-t border-rose/30"
               >
-                <h1 className="text-2xl md:text-4xl font-bold mb-2 text-[#FDECBF]">
-                  Angelina Wang
-                </h1>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.3, duration: 0.5 }}
-                className="mb-4"
-              >
-                <span className="text-[#E87A30]">angelina@portfolio</span>
-                <span className="text-slate-300">:</span>
-                <span className="text-[#FFB347]">~</span>
-                <span className="text-slate-300">$ cat about.txt</span>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.8, duration: 0.5 }}
-                className="mb-6 text-slate-200 leading-relaxed"
-              >
-                Hi, I'm <span className="text-[#FDECBF] font-semibold">Angelina (or Angie)</span>, a 2nd year{" "}
-                <span className="text-[#FFB347] font-semibold">Software Engineering</span> student.<br />
-                I'm always looking for ideas that help me understand the world better,<br />
-                and oftentimes they become my best creative inspirations.<br />
-                <br />
-                Alongside building in tech, I love to read, sing/songwrite, paint, skate,<br />
-                and do most things that would make me work up a sweat.<br />
-                <br />
-                Thanks for visiting my page, and talk soon!<br/>-
-              </motion.div>
-
-              <TerminalNavigation />
-            </div>
-
-            {/* Floating Headshot Window - Medium/Large screens only */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, x: 50 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 1.5 }}
-              className="absolute top-8 -right-20 md:top-12 md:-right-24 lg:top-16 lg:-right-28 xl:-right-32 z-20 hidden lg:block"
-            >
-            {/* Floating window container */}
-            <div className="relative">
-              {/* Window frame */}
-              <div className="bg-[#2A3D36] rounded-lg shadow-2xl overflow-hidden transform rotate-2 hover:rotate-0 transition-transform duration-300">
-                {/* Window header */}
-                <div className="bg-[#1F2B26] px-4 py-3 flex items-center justify-between border-b border-[#E87A30]/20">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-[#E87A30]/40 shadow-[0_0_6px_rgba(232,122,48,0.2)]"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#FFB347]/40 shadow-[0_0_6px_rgba(255,179,71,0.2)]"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-700/25 shadow-[0_0_6px_rgba(21,128,61,0.2)]"></div>
-                  </div>
-                  <div className="text-[#FDECBF] text-sm font-mono opacity-80">
-                    angie.exe
-                  </div>
-                  <div className="w-12"></div>
-                </div>
-
-                {/* Image container with hover effects */}
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="relative overflow-hidden"
-                >
-                  <img
-                    src={headshot}
-                    alt="Angelina Wang"
-                    className="w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 object-cover"
+                <div className="bg-base-200 relative">
+                  <div
+                    className="absolute inset-0 z-10 pointer-events-none opacity-[0.03]"
+                    style={{
+                      backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 3px)",
+                    }}
                   />
-
-                  {/* Subtle overlay effect */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#E87A30]/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                </motion.div>
-              </div>
-
-              {/* Floating animation effect */}
-              <motion.div
-                animate={{
-                  y: [0, -3, 0],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute inset-0 pointer-events-none"
-              />
-
-              {/* Subtle glow effect */}
-              <div className="absolute inset-0 bg-[#E87A30]/10 rounded-lg blur-xl -z-10 scale-110"></div>
+                  <div className="px-3 py-1.5 bg-rose/10 border-b border-rose/30 flex items-center justify-between">
+                    <span className="text-[9px] font-mono text-rose uppercase tracking-widest">classified</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose shadow-[0_0_4px_rgba(201,58,42,0.6)]" />
+                  </div>
+                  <div className="flex">
+                    <div className="p-2.5 flex-shrink-0">
+                      <img
+                        src={headshot}
+                        alt="Angelina Wang"
+                        className="w-24 h-full object-cover rounded-sm grayscale-[20%] contrast-[1.05]"
+                      />
+                    </div>
+                    <div className="flex-1 py-3 pr-3 flex flex-col justify-between">
+                      <div className="space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-[9px] font-mono text-space-gray/70 uppercase tracking-wider">id</span>
+                          <span className="text-[11px] font-mono text-copper">angie</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[9px] font-mono text-space-gray/70 uppercase tracking-wider">status</span>
+                          <span className="text-[11px] font-mono text-emerald">active</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[9px] font-mono text-space-gray/70 uppercase tracking-wider">clearance</span>
+                          <span className="text-[11px] font-mono text-teal">too high</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-[9px] font-mono text-space-gray/70 uppercase tracking-wider">clones</span>
+                          <span className="text-[11px] font-mono text-rose">0</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 pt-2 border-t border-rose/20">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-1.5 h-1.5 rounded-full bg-emerald shadow-[0_0_3px_rgba(77,139,110,0.5)]" />
+                          <span className="text-[8px] font-mono text-space-gray/50 uppercase tracking-widest">verified</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-            </motion.div>
 
+            {/* Desktop: vertical dossier card on the right */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.3, duration: 0.6 }}
+              className="hidden md:flex w-64 lg:w-72 flex-shrink-0 border border-rose/40 border-l-rose/30 rounded-r-sm overflow-hidden bg-base-200 relative flex-col"
+            >
+              <div
+                className="absolute inset-0 z-10 pointer-events-none opacity-[0.03]"
+                style={{
+                  backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 3px)",
+                }}
+              />
+              {/* Header bar — same height as terminal header */}
+              <div className="px-4 py-3 bg-rose/10 border-b border-rose/30 flex items-center justify-between">
+                <span className="text-[9px] font-mono text-rose uppercase tracking-widest">classified</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-rose shadow-[0_0_4px_rgba(201,58,42,0.6)]" />
+              </div>
+              {/* Photo */}
+              <div className="px-5 pt-4 pb-2 flex-shrink-0">
+                <img
+                  src={headshot}
+                  alt="Angelina Wang"
+                  className="w-full aspect-[3/4] object-cover rounded-sm grayscale-[20%] contrast-[1.05]"
+                />
+              </div>
+              {/* Circuit / chip decoration */}
+              <div className="mx-5 mb-2 flex-1 min-h-[40px] relative">
+                <svg viewBox="0 0 200 60" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                  {/* Central chip */}
+                  <rect x="70" y="10" width="60" height="40" rx="3" fill="none" stroke="currentColor" className="text-rose/20" strokeWidth="1.5" />
+                  <rect x="82" y="22" width="36" height="16" rx="2" fill="none" stroke="currentColor" className="text-rose/30" strokeWidth="1" />
+                  {/* Chip pins - top */}
+                  <line x1="85" y1="10" x2="85" y2="3" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="95" y1="10" x2="95" y2="3" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="105" y1="10" x2="105" y2="3" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="115" y1="10" x2="115" y2="3" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  {/* Chip pins - bottom */}
+                  <line x1="85" y1="50" x2="85" y2="57" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="95" y1="50" x2="95" y2="57" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="105" y1="50" x2="105" y2="57" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="115" y1="50" x2="115" y2="57" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  {/* Chip pins - left */}
+                  <line x1="70" y1="22" x2="63" y2="22" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="70" y1="30" x2="63" y2="30" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="70" y1="38" x2="63" y2="38" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  {/* Chip pins - right */}
+                  <line x1="130" y1="22" x2="137" y2="22" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="130" y1="30" x2="137" y2="30" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  <line x1="130" y1="38" x2="137" y2="38" stroke="currentColor" className="text-space-gray/25" strokeWidth="1" />
+                  {/* Traces - left side */}
+                  <path d="M63 22 L40 22 L25 12 L8 12" fill="none" stroke="currentColor" className="text-copper/20" strokeWidth="0.8" />
+                  <path d="M63 30 L40 30 L20 30 L8 30" fill="none" stroke="currentColor" className="text-teal/20" strokeWidth="0.8" />
+                  <path d="M63 38 L40 38 L25 48 L8 48" fill="none" stroke="currentColor" className="text-copper/20" strokeWidth="0.8" />
+                  {/* Traces - right side */}
+                  <path d="M137 22 L160 22 L175 12 L192 12" fill="none" stroke="currentColor" className="text-copper/20" strokeWidth="0.8" />
+                  <path d="M137 30 L160 30 L180 30 L192 30" fill="none" stroke="currentColor" className="text-teal/20" strokeWidth="0.8" />
+                  <path d="M137 38 L160 38 L175 48 L192 48" fill="none" stroke="currentColor" className="text-copper/20" strokeWidth="0.8" />
+                  {/* Trace endpoints - small circles */}
+                  <circle cx="8" cy="12" r="1.5" fill="currentColor" className="text-copper/25" />
+                  <circle cx="8" cy="30" r="1.5" fill="currentColor" className="text-teal/25" />
+                  <circle cx="8" cy="48" r="1.5" fill="currentColor" className="text-copper/25" />
+                  <circle cx="192" cy="12" r="1.5" fill="currentColor" className="text-copper/25" />
+                  <circle cx="192" cy="30" r="1.5" fill="currentColor" className="text-teal/25" />
+                  <circle cx="192" cy="48" r="1.5" fill="currentColor" className="text-copper/25" />
+                </svg>
+              </div>
+              {/* Data strip */}
+              <div className="px-4 pb-3 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-[9px] font-mono text-space-gray/70 uppercase tracking-wider">id</span>
+                  <span className="text-[11px] font-mono text-copper">angie</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[9px] font-mono text-space-gray/70 uppercase tracking-wider">status</span>
+                  <span className="text-[11px] font-mono text-emerald">active</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[9px] font-mono text-space-gray/70 uppercase tracking-wider">clearance</span>
+                  <span className="text-[11px] font-mono text-teal">too high</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[9px] font-mono text-space-gray/70 uppercase tracking-wider">clones</span>
+                  <span className="text-[11px] font-mono text-rose">0</span>
+                </div>
+                <div className="pt-1.5 mt-1 border-t border-rose/20">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald shadow-[0_0_3px_rgba(77,139,110,0.5)]" />
+                    <span className="text-[8px] font-mono text-space-gray/50 uppercase tracking-widest">verified</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
       </AnimatedSection>
 
-      <AnimatedSection id="experience" className="pt-40 px-4">
+      <AnimatedSection id="experience" className="pt-16 px-4 max-w-6xl mx-auto">
         <Experience />
       </AnimatedSection>
-      <AnimatedSection
-        id="projects"
-        className="pt-40 mt-32 mx-auto px-4 mb-20 max-w-[1600px]"
-      >
-        <div className="mb-8">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-center">
-            &lt;Build/&gt;
-          </h2>
-        </div>
+
+      <AnimatedSection id="projects" className="pt-16 px-4 max-w-6xl mx-auto">
         <Projects />
       </AnimatedSection>
-      <ToolsSection />
 
-      <AnimatedSection id="connect" className="pt-40 mt-20 relative">
-        <div className="relative overflow-hidden">
-          {/* Dark themed background container matching your brand */}
-          <div
-            className="absolute inset-0 bg-[#3F534E] z-0 border-t-2 border-[#E87A30]/20"
-            style={{
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "300vw",
-              height: "300vw",
-              borderRadius: "50%",
-            }}
-          ></div>
+      <AnimatedSection id="tools" className="pt-16 px-4 max-w-6xl mx-auto">
+        <ToolsSection />
+      </AnimatedSection>
 
-          {/* Content container */}
-          <div className="max-w-[1400px] mx-auto relative z-10 mt-30 px-8 md:px-16 lg:px-24">
-            {/* Section heading */}
-            <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-[#FDECBF] text-center">
-                &lt;Connect/&gt;
-              </h2>
+      <AnimatedSection id="connect" className="pt-16 pb-8 px-4 max-w-6xl mx-auto">
+        <div className="bg-base-100 rounded-sm overflow-hidden border border-copper/25">
+          {/* Panel header */}
+          <div className="px-6 py-3 border-b border-copper/25 flex items-center">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-copper" />
+              <span className="text-[10px] font-mono text-copper uppercase tracking-widest">signal</span>
+              <span className="text-[10px] font-mono text-copper/40 uppercase tracking-widest">| connect</span>
             </div>
+          </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, margin: "-100px" }}
-              transition={{ duration: 0.6 }}
-              className="flex items-center justify-center mb-20 mt-20"
-            >
-              {/* Pill-shaped container */}
-              <div className="bg-[#2A3D36]/90 border-2 border-[#E87A30]/30 rounded-full px-8 md:px-12 lg:px-16 py-6 md:py-8 shadow-lg">
-                {/* Icons row */}
-                <div className="flex items-center justify-center space-x-6 md:space-x-8 lg:space-x-10">
-                  {[
-                    {
-                      icon: <FaLinkedin className="text-[#E87A30] text-3xl md:text-4xl lg:text-5xl" />,
-                      href: "https://www.linkedin.com/in/angelinabai/",
-                      text: "/angelinabai",
-                    },
-                    {
-                      icon: <FaGithub className="text-[#E87A30] text-3xl md:text-4xl lg:text-5xl" />,
-                      href: "https://github.com/archangelinux",
-                      text: "/archangelinux",
-                    },
-                    {
-                      icon: <FaSquareXTwitter className="text-[#E87A30] text-3xl md:text-4xl lg:text-5xl" />,
-                      href: "https://x.com/angie_bw",
-                      text: "/angie_bw",
-                    },
-                    {
-                      icon: <FaEnvelope className="text-[#E87A30] text-3xl md:text-4xl lg:text-5xl" />,
-                      href: "mailto:a498wang@uwaterloo.ca",
-                      text: "a498wang@uwaterloo.ca",
-                    },
-                  ].map((item, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: false }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="relative group"
-                    >
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block p-3 md:p-4 rounded-full hover:bg-[#3F534E] hover:scale-110 transition-all duration-300"
-                      >
-                        {item.icon}
-                      </a>
-                      
-                      {/* Theme-matched tooltip */}
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 px-4 py-2 bg-[#2A3D36] border border-[#E87A30] text-[#FDECBF] text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap z-10 shadow-md">
-                        {item.text}
-                        {/* Tooltip arrow */}
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#E87A30]"></div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-
-
-            {/* Thin line divider */}
-            <div className="w-full h-px bg-[#E87A30]/30 "></div>
-
-            <motion.footer
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: false }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="py-5 text-center text-sm text-slate-300 flex items-center justify-center"
-            >
-              <span>&copy; 2025 Angelina Wang </span>
-              <a
-                href="https://se-webring.xyz/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center ml-2 hover:text-[#E87A30] transition-colors duration-300 group"
-              >
-                <img
-                  src={logoW}
-                  alt="SE Webring"
-                  className="w-4 h-auto mr-1 ml-4 flex-shrink-0 transition-all duration-300 group-hover:[filter:brightness(0)_saturate(100%)_invert(53%)_sepia(96%)_saturate(1582%)_hue-rotate(4deg)_brightness(101%)_contrast(91%)]"
-                />
-                SE Webring
-              </a>
-            </motion.footer>
+          {/* Links list */}
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {socialLinks.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-4 py-3 rounded-sm border border-copper/15 hover:border-copper/30 hover:bg-copper/5 transition-colors group"
+                >
+                  <span className="text-lg text-copper">{item.icon}</span>
+                  <span className="text-sm font-mono text-base-content/60 group-hover:text-copper transition-colors">{item.label}</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </AnimatedSection>
+
+      {/* Footer */}
+      <footer className="border-t border-gold-light/10 py-4 px-8">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <span className="text-xs text-space-gray/60">&copy; 2025 Angelina Wang</span>
+          <a
+            href="https://se-webring.xyz/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-space-gray/60 hover:text-gold transition-colors"
+          >
+            <img src={logoW} alt="SE Webring" className="w-3.5 h-3.5 opacity-50" />
+            SE Webring
+          </a>
+        </div>
+      </footer>
     </div>
   );
 };

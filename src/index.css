@@ -1,5 +1,18 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Shippori+Antique+B1&display=swap");
+@plugin "daisyui" {
+  themes: nord --default;
+}
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Shippori+Antique+B1&family=JetBrains+Mono:wght@300;400;500;600&display=swap");
+
+[data-theme="nord"] {
+  --color-primary: #8B6F3A;
+  --color-primary-content: #FFFFFF;
+  --color-secondary: #86868B;
+  --color-secondary-content: #FFFFFF;
+  --color-accent: #C93A2A;
+  --color-accent-content: #FFFFFF;
+  --color-neutral: #1D1D1F;
+}
 
 html,
 body,
@@ -7,9 +20,9 @@ body,
 .app {
   height: 100%;
   width: 100%;
-  font-family: "DM Sans", sans-serif;
-  @apply bg-[#294240];
-  @apply text-slate-200;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-weight: 300;
+  @apply bg-base-100 text-base-content;
   scroll-behavior: smooth;
 }
 
@@ -23,6 +36,24 @@ body {
   --breakpoint-sm: 700px;
   --breakpoint-md: 850px;
   --breakpoint-lg: 1280px;
+
+  --color-space-gray: #86868B;
+  --color-space-dark: #1D1D1F;
+  --color-gold: #8B6F3A;
+  --color-gold-light: #B4956A;
+  --color-gold-dim: #6B5630;
+  --color-copper: #C67D4B;
+  --color-rose: #C93A2A;
+  --color-teal: #4E8A8A;
+  --color-emerald: #4D8B6E;
+  --color-blue: #3B82C4;
+  --color-purple: #7C5CBF;
+  --color-yellow: #B89B30;
+  --color-silver: #D2D2D7;
+  --color-silver-bright: #E8E8ED;
+
+  --font-sans: "DM Sans", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
 button:hover {
@@ -36,4 +67,12 @@ button:hover {
   to {
     opacity: 1;
   }
+}
+
+/* Circuit-board decorative background pattern */
+.bg-circuit {
+  background-image:
+    linear-gradient(rgba(180,149,106,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180,149,106,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
 }

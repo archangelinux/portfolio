@@ -2,8 +2,6 @@ import {
   AnimatePresence,
   motion,
   useInView,
-  useScroll,
-  useTransform,
 } from "framer-motion";
 import React, { useState, useRef } from "react";
 import SSPrev from "@/assets/ss-prev.svg";
@@ -21,6 +19,8 @@ import {
   Line,
   Scatter,
   Dot,
+  Area,
+  ReferenceLine,
 } from "recharts";
 
 const experienceData = [
@@ -76,92 +76,94 @@ const experienceData = [
 ];
 
 const Experience: React.FC = () => {
-  const [selected, setSelected] = useState(experienceData[3]); //default to Honda
-  const [hovered, setHovered] = useState<(typeof experienceData)[0] | null>(
-    null
-  );
+  const [selected, setSelected] = useState(experienceData[3]);
+  const [hovered, setHovered] = useState<(typeof experienceData)[0] | null>(null);
   const thisRef = useRef<HTMLDivElement>(null);
-
-  //scroll animations
-  const { scrollYProgress } = useScroll({
-    target: thisRef,
-    offset: ["start end", "end start"],
-  });
-  const chartOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    [0, 1, 1, 0]
-  );
-  const chartY = useTransform(
-    scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    [50, 0, 0, -50]
-  );
   const isChartVisible = useInView(thisRef, { once: false, margin: "-50px" });
 
   return (
-          <div className="relative w-full">
-      {/* Dark themed background container matching your brand */}
-      <div className="absolute inset-0 mx-4 md:mx-8 lg:mx-12 bg-[#3F534E] rounded-xl shadow-2xl border border-[#E87A30]/20 -mt-20 md:-mt-24 lg:-mt-32 -mb-20 md:-mb-24 lg:-mb-32 z-0"></div>
-
-              {/* Content container */}
-        <div ref={thisRef} className="relative z-10 mt-12 mx-8 md:mx-16 lg:mx-24 rounded-2xl">
-        {/* Section heading */}
-        <div className="mb-6 md:mb-8">
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-semibold text-[#FDECBF] text-center">
-            &lt;Work/&gt;
-          </h2>
+    <div ref={thisRef} className="relative w-full">
+      <div className="bg-base-100 rounded-sm overflow-hidden border border-teal/25">
+        {/* Panel header */}
+        <div className="px-6 py-3 border-b border-teal/25 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-teal" />
+            <span className="text-[10px] font-mono text-teal uppercase tracking-widest">trajectory</span>
+            <span className="text-[10px] font-mono text-teal/40 uppercase tracking-widest">| experience</span>
+          </div>
+          <span className="text-[10px] font-mono text-space-gray/50">2021 — present</span>
         </div>
-        
-        <motion.div
-          style={{ opacity: chartOpacity, y: chartY }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <ResponsiveContainer width="100%" height={250}>
+
+        {/* Chart area */}
+        <div className="px-2 pt-4">
+          <ResponsiveContainer width="100%" height={280}>
             <ComposedChart
               data={experienceData}
-              margin={{ top: 25, right: 20, bottom: 10, left: 10 }}
-              onMouseMove={(state: { isTooltipActive?: boolean; activePayload?: Array<{ payload: { year: number; growth: number; title: string; company: string; story: string; image: string; link: string } }> }) => {
+              margin={{ top: 20, right: 20, bottom: 10, left: 10 }}
+              onMouseMove={(state: { isTooltipActive?: boolean; activePayload?: Array<{ payload: typeof experienceData[0] }> }) => {
                 if (state.isTooltipActive && state.activePayload?.length) {
                   setHovered(state.activePayload[0].payload);
                 } else {
                   setHovered(null);
                 }
               }}
-              // clear when you mouse out
               onMouseLeave={() => setHovered(null)}
-              // click anywhere in the chart => swap in the hovered point
               onClick={() => {
                 if (hovered) setSelected(hovered);
               }}
             >
-              <CartesianGrid stroke="#E87A30" strokeDasharray="3 3" opacity={0.3} />
+              <defs>
+                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#4E8A8A" stopOpacity={0.25} />
+                  <stop offset="100%" stopColor="#4E8A8A" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="rgba(78,138,138,0.1)" strokeDasharray="3 3" />
               <XAxis
                 dataKey="year"
                 type="number"
                 domain={[2021, 2027]}
                 tickFormatter={(y) => String(y)}
-                axisLine={{ stroke: "#FDECBF" }}
-                tick={{ fill: "#FDECBF", fontSize: 10 }}
+                axisLine={{ stroke: "#86868B" }}
+                tick={{ fill: "#86868B", fontSize: 10 }}
               />
               <YAxis
                 dataKey="growth"
                 type="number"
                 domain={[0, 100]}
-                axisLine={{ stroke: "#FDECBF" }}
-                tick={{ fill: "#FDECBF", fontSize: 10 }}
+                axisLine={{ stroke: "#86868B" }}
+                tick={{ fill: "#86868B", fontSize: 10 }}
                 label={{
-                  value: "Growth-to-date (%)",
+                  value: "Growth (%)",
                   angle: -90,
                   position: "insideLeft",
-                  fill: "#FDECBF",
-                  fontSize: 12,
+                  fill: "#86868B",
+                  fontSize: 11,
                   offset: 10,
                 }}
               />
+              <ReferenceLine y={50} stroke="#86868B" strokeDasharray="6 4" strokeOpacity={0.3} />
               <Tooltip
-                cursor={{ stroke: "#E87A30", strokeWidth: 1.5 }}
-                contentStyle={{ backgroundColor: "#2A3D36", borderColor: "#E87A30", color: "#FDECBF" }}
+                cursor={{ stroke: "#4E8A8A", strokeWidth: 1 }}
+                content={({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const data = payload[0].payload as typeof experienceData[0];
+                  return (
+                    <div className="bg-space-dark border border-teal/30 rounded-sm px-3 py-2 text-xs">
+                      <p className="text-teal font-semibold">{data.title}</p>
+                      <p className="text-silver/70">{data.company}</p>
+                      <p className="text-copper mt-1">Growth: {data.growth}%</p>
+                    </div>
+                  );
+                }}
+              />
+              <Area
+                type="linear"
+                dataKey="growth"
+                fill="url(#areaGradient)"
+                stroke="none"
+                isAnimationActive={isChartVisible}
+                animationDuration={800}
               />
               <Line
                 type="linear"
@@ -169,106 +171,87 @@ const Experience: React.FC = () => {
                 isAnimationActive={isChartVisible}
                 animationBegin={0}
                 animationDuration={800}
-                stroke="#E87A30"
+                stroke="#4E8A8A"
                 strokeWidth={2}
                 dot={false}
               />
               <Scatter
                 data={experienceData}
                 shape={(props: unknown) => {
-                  const { cx, cy, payload } = props as { cx: number; cy: number; payload: { year: number; growth: number; title: string; company: string; story: string; image: string; link: string } };
+                  const { cx, cy, payload } = props as { cx: number; cy: number; payload: typeof experienceData[0] };
                   const isActive = payload.year === selected.year;
                   return (
                     <Dot
                       cx={cx}
                       cy={cy}
-                      r={isActive ? 10 : 6}
-                      fill={isActive ? "#FFB347" : "#E87A30"}
-                      stroke={isActive ? "#FDECBF" : undefined}
-                      strokeWidth={isActive ? 2 : 0}
+                      r={isActive ? 8 : 5}
+                      fill={isActive ? "#C93A2A" : "#C67D4B"}
+                      stroke={isActive ? "#ECEFF4" : "#ECEFF4"}
+                      strokeWidth={isActive ? 2 : 1}
                     />
                   );
                 }}
                 isAnimationActive={isChartVisible}
                 animationBegin={0}
                 animationDuration={600}
-                onClick={(e: { payload: { year: number; growth: number; title: string; company: string; story: string; image: string; link: string } }) => setSelected(e.payload)}
+                onClick={(e: { payload: typeof experienceData[0] }) => setSelected(e.payload)}
               />
             </ComposedChart>
           </ResponsiveContainer>
-        </motion.div>
+        </div>
 
+        {/* Detail panel */}
+        <div className="px-6 py-5 border-t border-teal/25">
+          <div className="flex flex-col md:flex-row gap-5">
+            <motion.div
+              layout
+              className="flex-1"
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selected.title}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <h3 className="text-lg md:text-xl text-teal font-semibold mb-1">
+                    {selected.title}
+                  </h3>
+                  <h4 className="text-sm text-copper mb-3">
+                    {selected.company}
+                  </h4>
+                  <p className="hidden min-[450px]:block text-base-content/70 text-sm leading-relaxed">{selected.story}</p>
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
 
-
-        <div className="mt-6 md:mt-8 flex flex-col md:flex-row gap-6 md:gap-10 p-3 md:p-5">
-          <motion.div
-            layout
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false, margin: "-150px" }}
-            transition={{ duration: 0.3 }}
-            className="flex-1 p-4 md:p-8 border-2 border-[#E87A30]/30 rounded-lg bg-[#2A3D36]/80 backdrop-blur-sm"
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selected.title}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h3 className="text-base md:text-lg min-[450px]:text-2xl text-[#FDECBF] font-semibold underline mb-3 md:mb-4">
-                  {selected.title}
-                </h3>
-                <h3 className="text-sm md:text-md min-[450px]:text-xl text-[#FFB347] font-semibold mb-3 md:mb-4">
-                  {selected.company}
-                </h3>
-                <p className="hidden min-[450px]:block text-slate-200 text-sm md:text-base">{selected.story}</p>
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
-
-          <motion.div
-            layout
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: false, margin: "-150px" }}
-            transition={{ duration: 0.3 }}
-            className="w-full md:w-1/3 flex"
-          >
             <AnimatePresence mode="wait">
               {selected.image && (
-                                 <motion.div
-                   key={`image-${selected.title}`}
-                   initial={{ opacity: 0, scale: 0.7 }}
-                   animate={{ opacity: 1, scale: 1 }}
-                   exit={{ opacity: 0, scale: 0.7 }}
-                   whileHover={{ scale: 1.03 }}
-                   transition={{ duration: 0.3 }}
-                   className="rounded-lg overflow-hidden shadow-xl flex-1 flex self-stretch"
-                   style={{
-                     perspective: 900,
-                     transformStyle: "preserve-3d",
-                     minHeight: "30vh",
-                     alignSelf: "stretch",
-                   }}
-                 >
+                <motion.div
+                  key={`image-${selected.title}`}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.25 }}
+                  className="w-full md:w-48 lg:w-56 flex-shrink-0"
+                >
                   <a
                     href={selected.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block w-full h-full"
+                    className="block"
                   >
                     <img
                       src={selected.image}
                       alt={selected.company}
-                      className="w-full h-full object-cover rounded-lg"
+                      className="w-full h-32 md:h-full object-cover rounded-sm border border-teal/20"
                     />
                   </a>
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>
