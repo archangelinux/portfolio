@@ -114,7 +114,7 @@ const categories: Category[] = [
   },
   {
     id: "tools",
-    label: "Tools",
+    label: "Tools/Concepts",
     drawerIcon: <Wrench className="w-4 h-4" />,
     tools: [
       { icon: <FaGitAlt />, label: "Git", color: "rose" },
@@ -156,7 +156,7 @@ const ToolsSection: React.FC = () => {
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-teal" />
             <span className="text-[10px] font-mono text-teal uppercase tracking-widest">inventory</span>
-            <span className="text-[10px] font-mono text-teal/40 uppercase tracking-widest">| tools / concepts</span>
+            <span className="text-[10px] font-mono text-teal/40 uppercase tracking-widest">| tools</span>
           </div>
           <span className="text-[10px] font-mono text-space-gray/50">{active.tools.length} items</span>
         </div>
