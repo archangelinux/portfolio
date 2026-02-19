@@ -305,16 +305,17 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch("https://api.countapi.xyz/hit/archangelinux-portfolio/visits", {
+    fetch("https://api.counterapi.dev/v1/archangelinux-portfolio/visits/up", {
       signal: controller.signal,
     })
       .then((res) => res.json())
-      .then((data: { value?: number }) => {
-        if (typeof data.value === "number") {
-          setVisitorCount(data.value);
+      .then((data: { count?: number }) => {
+        if (typeof data.count === "number") {
+          setVisitorCount(data.count);
         }
       })
       .catch(() => {
+        // Fallback: just show a dash if the API fails
         setVisitorCount(null);
       });
 
