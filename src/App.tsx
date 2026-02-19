@@ -248,6 +248,8 @@ const socialLinks = [
 
 const App: React.FC = () => {
 
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
+
   // Animated name state
   const [step, setStep] = useState(0);
   const [letters, setLetters] = useState<Letter[]>(
@@ -299,6 +301,24 @@ const App: React.FC = () => {
     return () => {
       document.head.removeChild(styleElement);
     };
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("https://api.countapi.xyz/hit/archangelinux-portfolio/visits", {
+      signal: controller.signal,
+    })
+      .then((res) => res.json())
+      .then((data: { value?: number }) => {
+        if (typeof data.value === "number") {
+          setVisitorCount(data.value);
+        }
+      })
+      .catch(() => {
+        setVisitorCount(null);
+      });
+
+    return () => controller.abort();
   }, []);
 
   return (
@@ -605,8 +625,11 @@ const App: React.FC = () => {
 
       {/* Footer */}
       <footer className="border-t border-gold-light/10 py-4 px-8">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="max-w-6xl mx-auto relative flex items-center justify-between">
           <span className="text-xs text-space-gray/60">&copy; 2025 Angelina Wang</span>
+          <span className="text-xs text-space-gray/50 absolute left-1/2 -translate-x-1/2">
+            Visitors: {visitorCount !== null ? visitorCount.toLocaleString() : "—"}
+          </span>
           <a
             href="https://se-webring.xyz/"
             target="_blank"
