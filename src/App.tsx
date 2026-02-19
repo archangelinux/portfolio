@@ -629,7 +629,7 @@ const App: React.FC = () => {
         <div className="max-w-6xl mx-auto relative flex items-center justify-between">
           <span className="text-xs text-space-gray/60">&copy; 2025 Angelina Wang</span>
           <span className="text-xs text-space-gray/50 absolute left-1/2 -translate-x-1/2">
-            Visitors: {visitorCount !== null ? visitorCount.toLocaleString() : "—"}
+            Page Views: {visitorCount !== null ? visitorCount.toLocaleString() : "—"}
           </span>
           <a
             href="https://se-webring.xyz/"
