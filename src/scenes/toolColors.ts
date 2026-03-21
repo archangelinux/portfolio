@@ -43,6 +43,13 @@ const toolColorLookup: Record<string, string> = {
   "SDLC/Agile": "teal",
   "CI/CD": "emerald",
   Figma: "purple",
+  Gemini: "blue",
+  "Vertex AI": "blue",
+  Mapbox: "teal",
+  Railtracks: "emerald",
+  // Roles
+  "Full-Stack Dev": "teal",
+  "Product Design": "purple",
 };
 
 export { toolColorLookup };

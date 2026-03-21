@@ -10,6 +10,8 @@ import {
   ArrowLeft,
   ExternalLink,
   Globe,
+  Shell,
+  HeartPulse,
 } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import LooTN from "@/assets/loolooloo-thumbnail.svg";
@@ -19,6 +21,8 @@ import RadBotTN from "@/assets/radiobot-thumbnail.svg";
 import WamTN from "@/assets/sample-wam-thumbnail.svg";
 import RouviaTN from "@/assets/rouvia_thumbnail 1.svg";
 import EcoscoreTN from "@/assets/ecoscore-thumbnail.png";
+import CorallTN from "@/assets/corall-thumbnail.png";
+import MedUnityTN from "@/assets/medunity-thumbnail.png";
 import { toolColorLookup } from "@/scenes/toolColors";
 
 const tagColorMap: Record<string, { text: string; border: string }> = {
@@ -65,6 +69,19 @@ interface Project {
 
 const projects: Project[] = [
   {
+    id: 8,
+    title: "Corall",
+    description:
+      "Co-Founder & CTO of Corall — the intelligence layer for your network. An AI-powered platform that turns real-world interactions into lasting, searchable connections with smart LinkedIn syncing, second-degree discovery, contextual AI search, and automated follow-ups.",
+    image: CorallTN,
+    icon: <Shell className="w-5 h-5" />,
+    button1: "Site",
+    button2: "Chrome Extension",
+    b1src: "https://corall.co",
+    b2src: "https://chromewebstore.google.com/detail/corall-linkedin-sync/iddhdggpdifeiiejfnemhmhddhdadbgg",
+    tags: ["Full-Stack Dev", "Product Design"],
+  },
+  {
     id: 7,
     title: "Ecoscore",
     description:
@@ -102,6 +119,19 @@ const projects: Project[] = [
     b1src: "https://devpost.com/software/rouvia",
     b2src: "https://github.com/archangelinux/rouvia",
     tags: ["OpenAI Whisper", "Google Gemini", "Cohere", "MongoDB", "Python"],
+  },
+  {
+    id: 9,
+    title: "MedUnity",
+    description:
+      "A longitudinal health platform that creates a shared layer of medical intelligence. Features an AI-powered triage system fine-tuned on CTAS 2025 (the Canadian Triage and Acuity Scale), real-time ER demand projections for healthcare providers with cluster detection and diversion recommendations, and community health resource dashboards. Fine-tuned Gemini 2.5 Flash on Vertex AI achieving 77% validation accuracy on 5-class CTAS classification, with an agentic Railtracks framework powering deterministic ER analytics.",
+    image: MedUnityTN,
+    icon: <HeartPulse className="w-5 h-5" />,
+    button1: "Devpost",
+    button2: "Github",
+    b1src: "https://devpost.com/software/medunity",
+    b2src: "https://github.com/archangelinux/medunity",
+    tags: ["Next.js", "FastAPI", "Gemini", "Vertex AI", "Supabase", "TypeScript", "Python"],
   },
   {
     id: 3,
@@ -159,7 +189,7 @@ const projects: Project[] = [
 
 const Projects: React.FC = () => {
   const [activeProject, setActiveProject] = useState<number>(0);
-  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [viewMode, setViewMode] = useState<ViewMode>("spotlight");
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const handleProjectClick = (index: number) => {
@@ -242,7 +272,7 @@ const Projects: React.FC = () => {
                       <img
                         src={project.image}
                         alt={project.title}
-                        className="w-20 h-14 object-cover rounded-sm border border-rose/25 flex-shrink-0"
+                        className="w-28 h-20 object-cover rounded-sm border border-rose/25 flex-shrink-0"
                       />
                       <div className="flex-1 flex flex-col justify-between min-w-0">
                         <div className="flex flex-wrap gap-1">
@@ -273,7 +303,7 @@ const Projects: React.FC = () => {
                               onClick={(e) => e.stopPropagation()}
                               className="inline-flex items-center gap-1 text-[10px] font-mono text-space-gray hover:text-copper transition-colors"
                             >
-                              <FaGithub className="w-3 h-3" />
+                              {project.button2 === "Github" ? <FaGithub className="w-3 h-3" /> : <ExternalLink className="w-3 h-3" />}
                               {project.button2}
                             </a>
                           )}
@@ -377,7 +407,7 @@ const Projects: React.FC = () => {
                           {projects[activeProject].b2src && (
                             <a href={projects[activeProject].b2src} target="_blank" rel="noopener noreferrer">
                               <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
-                                <FaGithub className="w-3.5 h-3.5" />
+                                {projects[activeProject].button2 === "Github" ? <FaGithub className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
                                 {projects[activeProject].button2}
                               </button>
                             </a>
