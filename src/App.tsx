@@ -305,7 +305,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch("https://api.counterapi.dev/v1/archangelinux-portfolio/visits/up", {
+    fetch("/api/visits", {
       signal: controller.signal,
     })
       .then((res) => res.json())
