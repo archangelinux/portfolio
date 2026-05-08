@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   Droplets,
   BoomBox,
@@ -187,19 +187,75 @@ const projects: Project[] = [
   },
 ];
 
+const renderProjectDetail = (project: Project) => (
+  <div className="flex flex-col lg:flex-row gap-6">
+    {/* Image */}
+    <div className="lg:w-[55%] flex-shrink-0">
+      <img
+        className="w-full h-auto object-cover rounded-sm border border-rose/25"
+        src={project.image}
+        alt={project.title}
+      />
+    </div>
+
+    {/* Info */}
+    <div className="flex-1">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-rose">{project.icon}</span>
+        <h3 className="text-xl font-bold text-rose">{project.title}</h3>
+      </div>
+
+      <p className="text-base-content/80 text-sm leading-relaxed mb-4">
+        {project.description}
+      </p>
+
+      <div className="flex flex-wrap gap-1.5 mb-4">
+        {project.tags.map((tag, i) => (
+          <span
+            key={i}
+            className={`text-[11px] px-2 py-0.5 border rounded-sm ${getTagClasses(tag)}`}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        {project.b1src && (
+          <a href={project.b1src} target="_blank" rel="noopener noreferrer">
+            <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
+              <ExternalLink className="w-3.5 h-3.5" />
+              {project.button1}
+            </button>
+          </a>
+        )}
+        {project.b2src && (
+          <a href={project.b2src} target="_blank" rel="noopener noreferrer">
+            <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
+              {project.button2 === "Github" ? <FaGithub className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
+              {project.button2}
+            </button>
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
 const Projects: React.FC = () => {
   const [activeProject, setActiveProject] = useState<number>(0);
   const [viewMode, setViewMode] = useState<ViewMode>("spotlight");
   const [isAutoplay, setIsAutoplay] = useState<boolean>(true);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { margin: "-20% 0px -20% 0px" });
 
   useEffect(() => {
-    if (!isAutoplay || viewMode !== "spotlight") return;
+    if (!isAutoplay || viewMode !== "spotlight" || !isInView) return;
     const interval = setInterval(() => {
       setActiveProject((prev) => (prev + 1) % projects.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, [isAutoplay, viewMode]);
+  }, [isAutoplay, viewMode, isInView]);
 
   const stopAutoplay = () => setIsAutoplay(false);
 
@@ -383,75 +439,30 @@ const Projects: React.FC = () => {
                 </button>
 
                 <div className="grid">
-                  {projects.map((project, index) => {
-                    const isActive = activeProject === index;
-                    return (
-                      <motion.div
-                        key={project.id}
-                        className="row-start-1 col-start-1"
-                        initial={false}
-                        animate={{ opacity: isActive ? 1 : 0 }}
-                        transition={{ duration: 0.25 }}
-                        style={{ pointerEvents: isActive ? "auto" : "none" }}
-                        aria-hidden={!isActive}
-                      >
-                        <div className="flex flex-col lg:flex-row gap-6">
-                          {/* Image */}
-                          <div className="lg:w-[55%] flex-shrink-0">
-                            <img
-                              className="w-full h-auto object-cover rounded-sm border border-rose/25"
-                              src={project.image}
-                              alt={project.title}
-                            />
-                          </div>
+                  {/* Hidden measurement layer — sizes the grid cell to the tallest project */}
+                  {projects.map((project) => (
+                    <div
+                      key={`measure-${project.id}`}
+                      className="row-start-1 col-start-1 invisible"
+                      aria-hidden="true"
+                    >
+                      {renderProjectDetail(project)}
+                    </div>
+                  ))}
 
-                          {/* Info */}
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-rose">{project.icon}</span>
-                              <h3 className="text-xl font-bold text-rose">
-                                {project.title}
-                              </h3>
-                            </div>
-
-                            <p className="text-base-content/80 text-sm leading-relaxed mb-4">
-                              {project.description}
-                            </p>
-
-                            <div className="flex flex-wrap gap-1.5 mb-4">
-                              {project.tags.map((tag, i) => (
-                                <span
-                                  key={i}
-                                  className={`text-[11px] px-2 py-0.5 border rounded-sm ${getTagClasses(tag)}`}
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-
-                            <div className="flex gap-2">
-                              {project.b1src && (
-                                <a href={project.b1src} target="_blank" rel="noopener noreferrer" tabIndex={isActive ? 0 : -1}>
-                                  <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                    {project.button1}
-                                  </button>
-                                </a>
-                              )}
-                              {project.b2src && (
-                                <a href={project.b2src} target="_blank" rel="noopener noreferrer" tabIndex={isActive ? 0 : -1}>
-                                  <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
-                                    {project.button2 === "Github" ? <FaGithub className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
-                                    {project.button2}
-                                  </button>
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
+                  {/* Visible cycling layer — only the active project is mounted */}
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={projects[activeProject].id}
+                      className="row-start-1 col-start-1"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {renderProjectDetail(projects[activeProject])}
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               </div>
             </motion.div>
