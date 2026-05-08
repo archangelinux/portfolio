@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa6";
 
 import logoW from "@/assets/logo_w.svg";
-import headshot from "@/assets/headshot-db.jpg";
+import headshot from "@/assets/ChatGPT Image May 8, 2026, 11_51_41 AM.png";
 
 // Types and data for animated name
 interface Letter {
@@ -400,8 +400,9 @@ const App: React.FC = () => {
                     Angelina Wang
                   </h1>
                   <div className="text-base-content/80 leading-relaxed text-sm">
-                    Hi, I'm <span className="text-copper font-medium">Angelina (or Angie)</span>, a 2nd year{" "}
-                    <span className="text-teal font-medium">Software Engineering</span> student.<br />
+                    Hi, I'm <span className="text-rose font-medium">Angelina (or Angie)</span>, a 2nd year{" "}
+                    <span className="text-teal font-medium">Software Engineering</span> student<br />
+                    at the <span className="text-gold-light font-medium">University of Waterloo</span>.<br />
                     I'm always looking for ideas that help me understand the world better,<br />
                     and oftentimes they become my best creative inspirations.<br />
                     <br />
@@ -434,7 +435,7 @@ const App: React.FC = () => {
                 transition={{ delay: 1.3, duration: 0.6 }}
                 className="md:hidden border-t border-rose/30"
               >
-                <div className="bg-base-200 relative">
+                <div className="bg-base-100 relative">
                   <div
                     className="absolute inset-0 z-10 pointer-events-none opacity-[0.03]"
                     style={{
@@ -446,11 +447,11 @@ const App: React.FC = () => {
                     <div className="w-1.5 h-1.5 rounded-full bg-rose shadow-[0_0_4px_rgba(201,58,42,0.6)]" />
                   </div>
                   <div className="flex">
-                    <div className="p-2.5 flex-shrink-0">
+                    <div className="pb-2.5 flex-shrink-0">
                       <img
                         src={headshot}
                         alt="Angelina Wang"
-                        className="w-24 h-full object-cover rounded-sm grayscale-[20%] contrast-[1.05]"
+                        className="w-24 h-full object-contain rounded-sm grayscale-[20%] contrast-[1.05]"
                       />
                     </div>
                     <div className="flex-1 py-3 pr-3 flex flex-col justify-between">
@@ -489,7 +490,7 @@ const App: React.FC = () => {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.3, duration: 0.6 }}
-              className="hidden md:flex w-64 lg:w-72 flex-shrink-0 border border-rose/40 border-l-rose/30 rounded-r-sm overflow-hidden bg-base-200 relative flex-col"
+              className="hidden md:flex w-64 lg:w-72 flex-shrink-0 border border-rose/40 border-l-rose/30 rounded-r-sm overflow-hidden bg-base-100 relative flex-col"
             >
               <div
                 className="absolute inset-0 z-10 pointer-events-none opacity-[0.03]"
@@ -503,11 +504,11 @@ const App: React.FC = () => {
                 <div className="w-1.5 h-1.5 rounded-full bg-rose shadow-[0_0_4px_rgba(201,58,42,0.6)]" />
               </div>
               {/* Photo */}
-              <div className="px-5 pt-4 pb-2 flex-shrink-0">
+              <div className="pb-2 flex-shrink-0">
                 <img
                   src={headshot}
                   alt="Angelina Wang"
-                  className="w-full aspect-[3/4] object-cover rounded-sm grayscale-[20%] contrast-[1.05]"
+                  className="w-full rounded-sm grayscale-[20%] contrast-[1.05]"
                 />
               </div>
               {/* Circuit / chip decoration */}
@@ -593,7 +594,7 @@ const App: React.FC = () => {
         <ToolsSection />
       </AnimatedSection>
 
-      <AnimatedSection id="connect" className="pt-16 pb-8 px-4 max-w-6xl mx-auto">
+      <AnimatedSection id="connect" className="pt-16 pb-32 px-4 max-w-6xl mx-auto">
         <div className="bg-base-100 rounded-sm overflow-hidden border border-copper/25">
           {/* Panel header */}
           <div className="px-6 py-3 border-b border-copper/25 flex items-center">

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Droplets,
@@ -190,15 +190,37 @@ const projects: Project[] = [
 const Projects: React.FC = () => {
   const [activeProject, setActiveProject] = useState<number>(0);
   const [viewMode, setViewMode] = useState<ViewMode>("spotlight");
+  const [isAutoplay, setIsAutoplay] = useState<boolean>(true);
   const sectionRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!isAutoplay || viewMode !== "spotlight") return;
+    const interval = setInterval(() => {
+      setActiveProject((prev) => (prev + 1) % projects.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isAutoplay, viewMode]);
+
+  const stopAutoplay = () => setIsAutoplay(false);
+
   const handleProjectClick = (index: number) => {
+    stopAutoplay();
     setActiveProject(index);
     setViewMode("spotlight");
     const element = document.querySelector("#projects");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+  };
+
+  const handleViewModeChange = (mode: ViewMode) => {
+    stopAutoplay();
+    setViewMode(mode);
+  };
+
+  const handleSidebarClick = (index: number) => {
+    stopAutoplay();
+    setActiveProject(index);
   };
 
   return (
@@ -213,7 +235,7 @@ const Projects: React.FC = () => {
           </div>
           <div className="flex items-center gap-1 bg-base-200 border border-rose/20 rounded-sm">
             <button
-              onClick={() => setViewMode("list")}
+              onClick={() => handleViewModeChange("list")}
               className={`px-3 py-1 text-[10px] font-mono uppercase tracking-wider transition-colors rounded-sm ${
                 viewMode === "list" ? "bg-rose/10 text-rose" : "text-space-gray hover:text-rose"
               }`}
@@ -221,7 +243,7 @@ const Projects: React.FC = () => {
               List
             </button>
             <button
-              onClick={() => setViewMode("spotlight")}
+              onClick={() => handleViewModeChange("spotlight")}
               className={`px-3 py-1 text-[10px] font-mono uppercase tracking-wider transition-colors rounded-sm ${
                 viewMode === "spotlight" ? "bg-rose/10 text-rose" : "text-space-gray hover:text-rose"
               }`}
@@ -329,15 +351,22 @@ const Projects: React.FC = () => {
                   {projects.map((project, index) => (
                     <motion.button
                       key={project.id}
-                      onClick={() => setActiveProject(index)}
-                      className={`w-9 h-9 flex items-center justify-center rounded-sm transition-all ${
+                      onClick={() => handleSidebarClick(index)}
+                      className={`relative w-9 h-9 flex items-center justify-center rounded-sm transition-colors ${
                         activeProject === index
-                          ? "bg-rose/15 text-rose"
+                          ? "text-rose"
                           : "text-space-gray hover:text-rose"
                       }`}
                       whileTap={{ scale: 0.9 }}
                     >
-                      {project.icon}
+                      {activeProject === index && (
+                        <motion.div
+                          layoutId="activeProjectHighlight"
+                          className="absolute inset-0 bg-rose/15 rounded-sm"
+                          transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                        />
+                      )}
+                      <span className="relative z-10">{project.icon}</span>
                     </motion.button>
                   ))}
                 </div>
@@ -346,77 +375,84 @@ const Projects: React.FC = () => {
               {/* Detail content */}
               <div className="flex-1 p-6">
                 <button
-                  onClick={() => setViewMode("list")}
+                  onClick={() => handleViewModeChange("list")}
                   className="flex items-center gap-1 text-space-gray hover:text-rose text-xs mb-4 transition-colors"
                 >
                   <ArrowLeft className="w-3 h-3" />
                   <span>Back to list</span>
                 </button>
 
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={projects[activeProject].id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="flex flex-col lg:flex-row gap-6">
-                      {/* Image */}
-                      <div className="lg:w-[55%] flex-shrink-0">
-                        <img
-                          className="w-full h-auto object-cover rounded-sm border border-rose/25"
-                          src={projects[activeProject].image}
-                          alt={projects[activeProject].title}
-                        />
-                      </div>
+                <div className="grid">
+                  {projects.map((project, index) => {
+                    const isActive = activeProject === index;
+                    return (
+                      <motion.div
+                        key={project.id}
+                        className="row-start-1 col-start-1"
+                        initial={false}
+                        animate={{ opacity: isActive ? 1 : 0 }}
+                        transition={{ duration: 0.25 }}
+                        style={{ pointerEvents: isActive ? "auto" : "none" }}
+                        aria-hidden={!isActive}
+                      >
+                        <div className="flex flex-col lg:flex-row gap-6">
+                          {/* Image */}
+                          <div className="lg:w-[55%] flex-shrink-0">
+                            <img
+                              className="w-full h-auto object-cover rounded-sm border border-rose/25"
+                              src={project.image}
+                              alt={project.title}
+                            />
+                          </div>
 
-                      {/* Info */}
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-rose">{projects[activeProject].icon}</span>
-                          <h3 className="text-xl font-bold text-rose">
-                            {projects[activeProject].title}
-                          </h3>
+                          {/* Info */}
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-rose">{project.icon}</span>
+                              <h3 className="text-xl font-bold text-rose">
+                                {project.title}
+                              </h3>
+                            </div>
+
+                            <p className="text-base-content/80 text-sm leading-relaxed mb-4">
+                              {project.description}
+                            </p>
+
+                            <div className="flex flex-wrap gap-1.5 mb-4">
+                              {project.tags.map((tag, i) => (
+                                <span
+                                  key={i}
+                                  className={`text-[11px] px-2 py-0.5 border rounded-sm ${getTagClasses(tag)}`}
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+
+                            <div className="flex gap-2">
+                              {project.b1src && (
+                                <a href={project.b1src} target="_blank" rel="noopener noreferrer" tabIndex={isActive ? 0 : -1}>
+                                  <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                    {project.button1}
+                                  </button>
+                                </a>
+                              )}
+                              {project.b2src && (
+                                <a href={project.b2src} target="_blank" rel="noopener noreferrer" tabIndex={isActive ? 0 : -1}>
+                                  <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
+                                    {project.button2 === "Github" ? <FaGithub className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
+                                    {project.button2}
+                                  </button>
+                                </a>
+                              )}
+                            </div>
+                          </div>
                         </div>
-
-                        <p className="text-base-content/80 text-sm leading-relaxed mb-4">
-                          {projects[activeProject].description}
-                        </p>
-
-                        <div className="flex flex-wrap gap-1.5 mb-4">
-                          {projects[activeProject].tags.map((tag, i) => (
-                            <span
-                              key={i}
-                              className={`text-[11px] px-2 py-0.5 border rounded-sm ${getTagClasses(tag)}`}
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-
-                        <div className="flex gap-2">
-                          {projects[activeProject].b1src && (
-                            <a href={projects[activeProject].b1src} target="_blank" rel="noopener noreferrer">
-                              <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
-                                <ExternalLink className="w-3.5 h-3.5" />
-                                {projects[activeProject].button1}
-                              </button>
-                            </a>
-                          )}
-                          {projects[activeProject].b2src && (
-                            <a href={projects[activeProject].b2src} target="_blank" rel="noopener noreferrer">
-                              <button className="inline-flex items-center gap-1.5 px-4 py-1.5 border border-copper/40 text-copper text-sm font-medium rounded-sm hover:bg-copper/10 hover:border-copper transition-colors">
-                                {projects[activeProject].button2 === "Github" ? <FaGithub className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
-                                {projects[activeProject].button2}
-                              </button>
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </div>
             </motion.div>
           )}
