@@ -244,7 +244,7 @@ const renderProjectDetail = (project: Project) => (
 
 const Projects: React.FC = () => {
   const [activeProject, setActiveProject] = useState<number>(0);
-  const [viewMode, setViewMode] = useState<ViewMode>("spotlight");
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [isAutoplay, setIsAutoplay] = useState<boolean>(true);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { margin: "-20% 0px -20% 0px" });

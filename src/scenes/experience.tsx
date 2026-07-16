@@ -8,6 +8,10 @@ import SpringboardLogo from "@/assets/springboard_logo.png";
 import DBFBLogo from "@/assets/dbfb_logo.png";
 import HondaLogo from "@/assets/honda_logo.png";
 import InvisionLogo from "@/assets/invision_logo.png";
+import WatoPrev from "@/assets/wato_banner.png";
+import WatoLogo from "@/assets/wato_logo.jpeg";
+import WealthsimplePrev from "@/assets/wealthsimple_banner.jpg";
+import WealthsimpleLogo from "@/assets/wealthsimple_logo.jpeg";
 
 import {
   ResponsiveContainer,
@@ -23,10 +27,14 @@ import {
   ReferenceLine,
 } from "recharts";
 
+// "year" is a layout-only position along the x-axis (not a literal calendar
+// year) so that the three 2026 experiences can be spread apart instead of
+// stacking on top of each other; "yearLabel" is what actually gets displayed.
 const experienceData = [
   {
-    year: 2021,
-    growth: 10,
+    year: 2020.35,
+    yearLabel: "2021",
+    growth: 8,
     title: "Project Development Intern",
     company: "Springboard Services",
     story:
@@ -36,31 +44,35 @@ const experienceData = [
     link: "https://www.communitylearninghub.ca/",
   },
   {
-    year: 2023,
-    growth: 20,
+    year: 2021.6,
+    yearLabel: "2023",
+    growth: 14,
     title: "Data / Development Intern",
     company: "Daily Bread Food Bank",
     story:
       "Summer of 2023 and 2024\ndonor statistics, corporate partnerships and data automation",
     image: DBFBPrev,
     logo: DBFBLogo,
-    extraDrop: 60,
+    extraDrop: -45,
     link: "https://www.dailybread.ca/",
   },
   {
-    year: 2025,
-    growth: 50,
+    year: 2022.9,
+    yearLabel: "2025",
+    growth: 24,
     title: "Cloud Engineering Student",
     company: "Honda Canada Inc.",
-    story: "DevOps, FinOps, and saving $1.5 M",
+    story: "DevOps, FinOps, and connectivity",
     image: HondaPrev,
     logo: HondaLogo,
     boxedLogo: true,
+    extraDrop: -70,
     link: "https://www.hondacanada.ca/home",
   },
   {
-    year: 2026,
-    growth: 85,
+    year: 2024.1,
+    yearLabel: "2026",
+    growth: 39,
     title: "Software Engineer Intern",
     company: "Invision AI",
     story:
@@ -69,19 +81,43 @@ const experienceData = [
     logo: InvisionLogo,
     link: "https://invision.ai/",
   },
+  {
+    year: 2025.4,
+    yearLabel: "2026",
+    growth: 62,
+    title: "Autonomous Vehicle Developer",
+    company: "WATonomous",
+    story: "Perception software\nSensor fusion",
+    image: WatoPrev,
+    logo: WatoLogo,
+    extraDrop: -35,
+    link: "https://www.watonomous.ca/",
+  },
+  {
+    year: 2026.65,
+    yearLabel: "2026",
+    growth: 90,
+    title: "Software Engineering Intern",
+    company: "Wealthsimple",
+    story: "Incoming Fall 2026",
+    image: WealthsimplePrev,
+    logo: WealthsimpleLogo,
+    extraDrop: -60,
+    link: "https://www.wealthsimple.com/",
+  },
 ];
 
 type ExperienceItem = (typeof experienceData)[0];
 
 // Chart geometry — chart fills its container; cards live outside the box
-const DESKTOP_CHART_HEIGHT = 360;
-const DESKTOP_TOP_MARGIN = 30;
-const DESKTOP_BOTTOM_MARGIN = 35;
+const DESKTOP_CHART_HEIGHT = 240;
+const DESKTOP_TOP_MARGIN = 24;
+const DESKTOP_BOTTOM_MARGIN = 30;
 const DESKTOP_RIGHT_MARGIN = 30;
 const Y_AXIS_WIDTH = 70;
 const WRAPPER_PT = 16; // pt-4 around chart
 const WRAPPER_PX = 8; // px-2 around chart
-const CARD_WIDTH = 340;
+const CARD_WIDTH = 330;
 const CARD_AREA_HEIGHT = 270; // padding above/below box for cards
 const CARD_OVERLAP = 12; // how far cards extend into the box border for the layered effect
 
@@ -89,7 +125,23 @@ const X_DOMAIN_MIN = 2020;
 const X_DOMAIN_MAX = 2027;
 const X_DOMAIN_RANGE = X_DOMAIN_MAX - X_DOMAIN_MIN;
 
-const X_TICKS = [2021, 2023, 2025, 2026];
+// Group items that share a yearLabel (the three 2026 roles) into a single
+// axis tick, positioned at their average x, so the axis reads one label
+// per year instead of repeating "2026" three times.
+const tickGroups = new Map<string, number[]>();
+experienceData.forEach((d) => {
+  const years = tickGroups.get(d.yearLabel) ?? [];
+  years.push(d.year);
+  tickGroups.set(d.yearLabel, years);
+});
+const X_TICKS: number[] = [];
+const X_TICK_LABELS: Record<number, string> = {};
+tickGroups.forEach((years, label) => {
+  const avg = years.reduce((sum, y) => sum + y, 0) / years.length;
+  X_TICKS.push(avg);
+  X_TICK_LABELS[avg] = label;
+});
+X_TICKS.sort((a, b) => a - b);
 
 const tooltipContent = ({
   active,
@@ -147,7 +199,7 @@ const ExperienceCard: React.FC<{ d: ExperienceItem }> = ({ d }) => {
             />
           )}
           <div className="flex-1 min-w-0">
-            <h5 className="text-base font-semibold text-teal leading-tight">
+            <h5 className="text-[15px] font-semibold text-teal leading-tight whitespace-nowrap">
               {d.title}
             </h5>
             <p className="text-[13px] text-copper/90 mt-0.5">{d.company}</p>
@@ -278,7 +330,7 @@ const Experience: React.FC = () => {
                   type="number"
                   domain={[X_DOMAIN_MIN, X_DOMAIN_MAX]}
                   ticks={X_TICKS}
-                  tickFormatter={(y) => String(y)}
+                  tickFormatter={(y) => X_TICK_LABELS[y] ?? ""}
                   axisLine={{ stroke: "#86868B" }}
                   tick={{ fill: "#86868B", fontSize: 10 }}
                 />
@@ -341,7 +393,7 @@ const Experience: React.FC = () => {
           {/* Mobile view: compact chart + stacked card list */}
           <div className="md:hidden">
             <div className="px-2 pt-4">
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={160}>
                 <ComposedChart
                   data={experienceData}
                   margin={{ top: 20, right: 20, bottom: 10, left: 10 }}
@@ -361,7 +413,7 @@ const Experience: React.FC = () => {
                     type="number"
                     domain={[X_DOMAIN_MIN, X_DOMAIN_MAX]}
                     ticks={X_TICKS}
-                    tickFormatter={(y) => String(y)}
+                    tickFormatter={(y) => X_TICK_LABELS[y] ?? ""}
                     axisLine={{ stroke: "#86868B" }}
                     tick={{ fill: "#86868B", fontSize: 10 }}
                   />
@@ -439,7 +491,7 @@ const Experience: React.FC = () => {
                   )}
                   <div className="relative flex-1 min-w-0">
                     <span className="text-[9px] font-mono text-gold-light tracking-widest">
-                      {d.year}
+                      {d.yearLabel}
                     </span>
                     <h5 className="text-xs font-semibold text-teal leading-tight">
                       {d.title}
