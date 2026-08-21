@@ -184,7 +184,7 @@ const ExperienceCard: React.FC<{ d: ExperienceItem }> = ({ d }) => {
       <div className="px-3.5 py-3">
         <div className="flex items-center gap-3">
           {d.boxedLogo ? (
-            <div className="w-10 h-10 flex-shrink-0 rounded-sm border border-teal/20 bg-base-100 flex items-center justify-center p-1 overflow-hidden">
+            <div className="w-10 h-10 flex-shrink-0 rounded-sm bg-base-100 flex items-center justify-center p-1 overflow-hidden shadow-[0_2px_6px_-1px_rgba(0,0,0,0.15),0_1px_2px_rgba(0,0,0,0.06)]">
               <img
                 src={d.logo}
                 alt={d.company}
@@ -475,7 +475,7 @@ const Experience: React.FC = () => {
                     }}
                   />
                   {d.boxedLogo ? (
-                    <div className="relative w-16 h-16 flex-shrink-0 rounded-sm border border-teal/20 bg-base-100 flex items-center justify-center p-2">
+                    <div className="relative w-16 h-16 flex-shrink-0 rounded-sm bg-base-100 flex items-center justify-center p-2 shadow-[0_2px_6px_-1px_rgba(0,0,0,0.15),0_1px_2px_rgba(0,0,0,0.06)]">
                       <img
                         src={d.logo}
                         alt={d.company}

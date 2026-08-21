@@ -248,7 +248,6 @@ const socialLinks = [
 
 const App: React.FC = () => {
 
-  const [visitorCount, setVisitorCount] = useState<number | null>(null);
 
   // Animated name state
   const [step, setStep] = useState(0);
@@ -301,25 +300,6 @@ const App: React.FC = () => {
     return () => {
       document.head.removeChild(styleElement);
     };
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch("/api/visits", {
-      signal: controller.signal,
-    })
-      .then((res) => res.json())
-      .then((data: { count?: number }) => {
-        if (typeof data.count === "number") {
-          setVisitorCount(data.count);
-        }
-      })
-      .catch(() => {
-        // Fallback: just show a dash if the API fails
-        setVisitorCount(null);
-      });
-
-    return () => controller.abort();
   }, []);
 
   return (
@@ -476,7 +456,7 @@ const App: React.FC = () => {
                       <div className="mt-2 pt-2 border-t border-rose/20">
                         <div className="flex items-center gap-1.5">
                           <div className="w-1.5 h-1.5 rounded-full bg-emerald shadow-[0_0_3px_rgba(77,139,110,0.5)]" />
-                          <span className="text-[9px] font-mono text-teal uppercase tracking-widest leading-none">Page Views: {visitorCount !== null ? visitorCount.toLocaleString() : "—"}</span>
+                          <span className="text-[9px] font-mono text-teal uppercase tracking-widest leading-none">Last Updated: 08/2026</span>
                         </div>
                       </div>
                     </div>
@@ -573,7 +553,7 @@ const App: React.FC = () => {
                 <div className="pt-1.5 mt-1 border-t border-rose/20">
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald shadow-[0_0_3px_rgba(77,139,110,0.5)]" />
-                    <span className="text-[9px] font-mono text-teal uppercase tracking-widest leading-none">Page Views: {visitorCount !== null ? visitorCount.toLocaleString() : "—"}</span>
+                    <span className="text-[9px] font-mono text-teal uppercase tracking-widest leading-none">Last Updated: 08/2026</span>
                   </div>
                 </div>
               </div>
@@ -628,7 +608,7 @@ const App: React.FC = () => {
       {/* Footer */}
       <footer className="border-t border-gold-light/10 py-4 px-8">
         <div className="max-w-6xl mx-auto relative flex items-center justify-between">
-          <span className="text-xs text-space-gray/60">&copy; 2025 Angelina Wang</span>
+          <span className="text-xs text-space-gray/60">&copy; 2026 Angelina Wang</span>
           <a
             href="https://se-webring.xyz/"
             target="_blank"

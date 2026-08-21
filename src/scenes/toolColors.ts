@@ -44,6 +44,8 @@ const toolColorLookup: Record<string, string> = {
   "CI/CD": "emerald",
   Figma: "purple",
   Gemini: "blue",
+  Gemma: "blue",
+  "Three.js": "space-gray",
   "Vertex AI": "blue",
   Mapbox: "teal",
   Railtracks: "emerald",

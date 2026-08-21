@@ -12,6 +12,7 @@ import {
   Globe,
   Shell,
   HeartPulse,
+  Satellite,
 } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import LooTN from "@/assets/loolooloo-thumbnail.svg";
@@ -23,6 +24,7 @@ import RouviaTN from "@/assets/rouvia_thumbnail 1.svg";
 import EcoscoreTN from "@/assets/ecoscore-thumbnail.png";
 import CorallTN from "@/assets/corall-thumbnail.png";
 import MedUnityTN from "@/assets/medunity-thumbnail.png";
+import HaloTN from "@/assets/halo.png";
 import { toolColorLookup } from "@/scenes/toolColors";
 
 const tagColorMap: Record<string, { text: string; border: string }> = {
@@ -72,7 +74,7 @@ const projects: Project[] = [
     id: 8,
     title: "Corall",
     description:
-      "Co-Founder & CTO of Corall — the intelligence layer for your network. An AI-powered platform that turns real-world interactions into lasting, searchable connections with smart LinkedIn syncing, second-degree discovery, contextual AI search, and automated follow-ups.",
+      "The intelligence layer for your network. An AI-powered platform that turns real-world interactions into lasting, searchable connections with smart LinkedIn syncing, second-degree discovery, contextual AI search, and automated follow-ups.",
     image: CorallTN,
     icon: <Shell className="w-5 h-5" />,
     button1: "Site",
@@ -80,6 +82,19 @@ const projects: Project[] = [
     b1src: "https://corall.co",
     b2src: "https://chromewebstore.google.com/detail/corall-linkedin-sync/iddhdggpdifeiiejfnemhmhddhdadbgg",
     tags: ["Full-Stack Dev", "Product Design"],
+  },
+  {
+    id: 10,
+    title: "HALO",
+    description:
+      "Google DeepMind Build With Gemma Kaggle Competition | Hypothesis Arbitration for Link Outages — lets satellites diagnose why a comms link failed and respond on their own, onboard, in real-time. Gemma 4 E4B reads each node's observations and returns a cause, a confidence, and a rationale a flight controller can actually read, with evidence gossiped between passing satellites in 24-byte packets. Simulates real Iridium-NEXT orbits, proves when two failure causes are physically indistinguishable, and replays it all in a React + Three.js UI.",
+    image: HaloTN,
+    icon: <Satellite className="w-5 h-5" />,
+    button1: "Kaggle",
+    button2: "Github",
+    b1src: "https://www.kaggle.com/competitions/build-with-gemma-triage-in-light-speed/writeups/new-writeup-1785614353507",
+    b2src: "https://github.com/archangelinux/halo",
+    tags: ["Gemma", "Python", "React", "TypeScript", "Three.js"],
   },
   {
     id: 7,
@@ -192,7 +207,7 @@ const renderProjectDetail = (project: Project) => (
     {/* Image */}
     <div className="lg:w-[55%] flex-shrink-0">
       <img
-        className="w-full h-auto object-cover rounded-sm border border-rose/25"
+        className="w-full h-auto object-cover rounded-sm shadow-[0_4px_12px_-2px_rgba(0,0,0,0.18),0_1px_3px_rgba(0,0,0,0.08)]"
         src={project.image}
         alt={project.title}
       />
@@ -350,7 +365,7 @@ const Projects: React.FC = () => {
                       <img
                         src={project.image}
                         alt={project.title}
-                        className="w-28 h-20 object-cover rounded-sm border border-rose/25 flex-shrink-0"
+                        className="w-28 h-20 object-cover rounded-sm flex-shrink-0 shadow-[0_3px_8px_-2px_rgba(0,0,0,0.18),0_1px_2px_rgba(0,0,0,0.08)]"
                       />
                       <div className="flex-1 flex flex-col justify-between min-w-0">
                         <div className="flex flex-wrap gap-1">
