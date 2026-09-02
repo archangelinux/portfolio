@@ -384,7 +384,7 @@ const App: React.FC = () => {
                     <span className="text-teal font-medium">Software Engineering</span> student<br />
                     at the <span className="text-gold-light font-medium">University of Waterloo</span>.<br />
                     I'm always looking for ideas that help me understand the world better,<br />
-                    as I explore the breadth of physical intelligence and sociotechnical systems<br/>
+                    as I bet on and build for the future of physical intelligence and sociotechnical systems<br/>
                     across mobility, connectivity and community.<br />
                     <br />
                     Alongside building in tech, I love to read, sing/songwrite, paint, skate,<br />
