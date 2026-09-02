@@ -380,11 +380,12 @@ const App: React.FC = () => {
                     Angelina Wang
                   </h1>
                   <div className="text-base-content/80 leading-relaxed text-sm">
-                    Hi, I'm <span className="text-rose font-medium">Angelina (or Angie)</span>, a 2nd year{" "}
+                    Hi, I'm <span className="text-rose font-medium">Angelina (or Angie)</span>, a 3rd year{" "}
                     <span className="text-teal font-medium">Software Engineering</span> student<br />
                     at the <span className="text-gold-light font-medium">University of Waterloo</span>.<br />
                     I'm always looking for ideas that help me understand the world better,<br />
-                    and oftentimes they become my best creative inspirations.<br />
+                    as I explore the breadth of physical intelligence and sociotechnical systems<br/>
+                    across mobility, connectivity and community.<br />
                     <br />
                     Alongside building in tech, I love to read, sing/songwrite, paint, skate,<br />
                     and do most things that would make me work up a sweat.<br />
