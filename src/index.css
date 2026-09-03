@@ -1,28 +1,43 @@
 @import "tailwindcss";
-@plugin "daisyui" {
-  themes: nord --default;
-}
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Shippori+Antique+B1&family=JetBrains+Mono:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Noto+Sans+Mono:wght@100..900&display=swap");
 
-[data-theme="nord"] {
-  --color-primary: #8B6F3A;
-  --color-primary-content: #FFFFFF;
-  --color-secondary: #86868B;
-  --color-secondary-content: #FFFFFF;
-  --color-accent: #C93A2A;
-  --color-accent-content: #FFFFFF;
-  --color-neutral: #1D1D1F;
+@theme {
+  --breakpoint-sm: 700px;
+  --breakpoint-md: 850px;
+  --breakpoint-lg: 1280px;
+
+  /* editorial mono palette */
+  --color-ink: #161616;
+  --color-mute: #858985;
+  --color-faint: #b4b8b4;
+  --color-pill: #c3c9c3;
+  --color-pill-faint: #e0e5e0;
+  --color-card: #f6f7f5;
+  --color-chip: #ffffff;
+
+  /* keyword accents — slightly muted / mossy to match the photo grade */
+  --color-acc-gold: #b69440;
+  --color-acc-orange: #c78d4b;
+  --color-acc-cyan: #5e9daa;
+  --color-acc-blue: #5c86a3;
+  --color-acc-red: #c2604a;
+  --color-acc-crimson: #ad4a3d;
+  --color-acc-purple: #85719f;
+
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  --font-noto: "Noto Sans Mono", ui-monospace, monospace;
 }
 
 html,
 body,
 #root,
 .app {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
-  font-family: "JetBrains Mono", "Fira Code", monospace;
-  font-weight: 300;
-  @apply bg-base-100 text-base-content;
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  font-weight: 400;
   scroll-behavior: smooth;
 }
 
@@ -32,31 +47,14 @@ body {
   animation-delay: 100ms;
 }
 
-@theme {
-  --breakpoint-sm: 700px;
-  --breakpoint-md: 850px;
-  --breakpoint-lg: 1280px;
-
-  --color-space-gray: #86868B;
-  --color-space-dark: #1D1D1F;
-  --color-gold: #8B6F3A;
-  --color-gold-light: #B4956A;
-  --color-gold-dim: #6B5630;
-  --color-copper: #C67D4B;
-  --color-rose: #C93A2A;
-  --color-teal: #4E8A8A;
-  --color-emerald: #4D8B6E;
-  --color-blue: #3B82C4;
-  --color-purple: #7C5CBF;
-  --color-yellow: #B89B30;
-  --color-silver: #D2D2D7;
-  --color-silver-bright: #E8E8ED;
-
-  --font-sans: "DM Sans", "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+::selection {
+  background: var(--color-pill);
+  color: var(--color-ink);
 }
 
-button:hover {
+a,
+button,
+[role="button"] {
   cursor: pointer;
 }
 
@@ -67,12 +65,4 @@ button:hover {
   to {
     opacity: 1;
   }
-}
-
-/* Circuit-board decorative background pattern */
-.bg-circuit {
-  background-image:
-    linear-gradient(rgba(180,149,106,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(180,149,106,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
 }
