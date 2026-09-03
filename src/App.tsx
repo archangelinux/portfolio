@@ -62,9 +62,15 @@ const Intro: React.FC = () => (
 );
 
 const heroImgMotion = (delay: number) => ({
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const },
+  initial: { opacity: 0, y: 44, scale: 1.03, filter: "blur(10px)" },
+  animate: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" },
+  transition: { duration: 1.3, delay, ease: [0.16, 1, 0.3, 1] as const },
+});
+
+const heroTextMotion = (delay: number) => ({
+  initial: { opacity: 0, y: 22, filter: "blur(6px)" },
+  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+  transition: { duration: 1.1, delay, ease: [0.16, 1, 0.3, 1] as const },
 });
 
 const Divider: React.FC = () => (
@@ -74,13 +80,17 @@ const Divider: React.FC = () => (
 const App: React.FC = () => {
   const active = useActiveSection();
 
-  // subtle parallax for the mobile collage's tall image
+  // mobile collage "expedited scroll": the collage's layout slot shrinks from
+  // the bottom 1px per 1px scrolled, so the work section approaches at twice
+  // the scroll speed. The photo canvas is top-anchored at a fixed size, so the
+  // shrink crops the photos from the bottom without any zooming.
   const collageRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: collageRef,
-    offset: ["start end", "end start"],
-  });
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [24, -24]);
+  const { scrollY } = useScroll();
+  const slotH = useTransform(
+    scrollY,
+    (s) => `max(10svh, calc(74svh - ${Math.max(0, s - 20)}px))`
+  );
+  const collageFade = useTransform(scrollY, [180, 460], [1, 0]);
 
   return (
     <div className="app">
@@ -89,33 +99,30 @@ const App: React.FC = () => {
 
       <div className="max-w-[1080px] mx-auto px-6">
         <MobileHeader active={active} />
+      </div>
 
-        {/* ——— me ——— */}
-        <section id="me" className="pt-4 pb-16 md:pb-6 scroll-mt-12">
+      {/* ——— me ——— hero scales with viewport height so large screens keep
+          the laptop proportions; the rest of the page stays a 1080px column */}
+      <div className="mx-auto px-6 max-w-[1080px] md:max-w-[max(1010px,calc(110svh+40px))]">
+        <section id="me" className="pt-4 pb-4 md:pb-6 scroll-mt-12">
           {/* Desktop hero — fills the first viewport, images base-aligned to the fold */}
           <div className="hidden md:flex flex-col h-svh justify-end">
             <div className="grid grid-cols-[auto_1fr] gap-10 items-end">
               <motion.h1
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                {...heroTextMotion(0.1)}
                 className="font-noto text-[44px] font-extrabold tracking-[0.03em] leading-none whitespace-nowrap -mb-1"
               >
                 Angelina Wang
               </motion.h1>
-              <motion.div
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              >
+              <motion.div {...heroTextMotion(0.25)}>
                 <Intro />
               </motion.div>
             </div>
-            <div className="grid grid-cols-3 gap-5 mt-12 mb-8 h-[min(500px,62svh)]">
+            <div className="grid grid-cols-3 gap-5 mt-12 mb-14 h-[55svh]">
               {[heroCampus, heroPalms, heroCity].map((src, i) => (
                 <motion.img
                   key={i}
-                  {...heroImgMotion(0.18 + i * 0.1)}
+                  {...heroImgMotion(0.35 + i * 0.14)}
                   src={src}
                   alt=""
                   className="w-full h-full object-cover rounded-md"
@@ -124,54 +131,65 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile hero — intro + staggered collage */}
-          <div className="md:hidden pt-10">
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            >
+          {/* Mobile hero — the collage occupies a short layout slot but draws
+              tall; on scroll the photos ride up over the intro text while
+              shrinking and fading, so the scroll past them stays short */}
+          <div className="md:hidden pt-32">
+            <motion.div {...heroTextMotion(0.1)}>
               <Intro />
             </motion.div>
-            <div ref={collageRef} className="flex gap-4 mt-10">
-              <div className="w-[42%] flex flex-col justify-between gap-4">
-                <motion.img
-                  {...heroImgMotion(0.15)}
-                  src={heroCity}
-                  alt=""
-                  className="w-full aspect-[3/4] object-cover rounded-md"
-                />
-                <motion.img
-                  {...heroImgMotion(0.35)}
-                  src={heroCampus}
-                  alt=""
-                  className="w-full aspect-[3/4] object-cover rounded-md mt-14"
-                />
-              </div>
-              <div className="w-[58%] pt-24">
-                <motion.img
-                  {...heroImgMotion(0.25)}
-                  src={heroPalms}
-                  alt=""
-                  style={{ y: parallaxY }}
-                  className="w-full aspect-[10/16] object-cover rounded-md"
-                />
-              </div>
-            </div>
+            <motion.div
+              ref={collageRef}
+              style={{ height: slotH }}
+              className="relative z-20 mt-6 overflow-hidden pointer-events-none"
+            >
+              <motion.div
+                style={{ opacity: collageFade }}
+                className="absolute top-0 left-0 right-0 h-[74svh] flex gap-4"
+              >
+                  <div className="w-[42%] flex flex-col gap-4 min-h-0">
+                    <motion.img
+                      {...heroImgMotion(0.15)}
+                      src={heroCity}
+                      alt=""
+                      className="w-full grow-[3] basis-0 min-h-0 object-cover rounded-md"
+                    />
+                    <motion.img
+                      {...heroImgMotion(0.35)}
+                      src={heroCampus}
+                      alt=""
+                      className="w-full grow-[2] basis-0 min-h-0 object-cover rounded-md"
+                    />
+                  </div>
+                  <div className="w-[58%] min-h-0">
+                    <motion.img
+                      {...heroImgMotion(0.25)}
+                      src={heroPalms}
+                      alt=""
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                  </div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+      </div>
+
+      <div className="max-w-[1080px] mx-auto px-6">
+        <Divider />
+
+        {/* ——— work ——— */}
+        <section id="work" className="pt-10 md:pt-28 pb-20 md:pb-28 scroll-mt-28 md:scroll-mt-10">
+          {/* match the hero images' width (hero container minus its padding) */}
+          <div className="mx-auto w-full md:max-w-[calc(max(1010px,110svh_+_40px)_-_48px)]">
+            <Experience />
           </div>
         </section>
 
         <Divider />
 
-        {/* ——— work ——— */}
-        <section id="work" className="pt-20 md:pt-28 pb-20 md:pb-28 scroll-mt-10">
-          <Experience />
-        </section>
-
-        <Divider />
-
         {/* ——— projects ——— */}
-        <section id="projects" className="pt-20 md:pt-28 pb-20 md:pb-28 scroll-mt-10">
+        <section id="projects" className="pt-20 md:pt-28 pb-20 md:pb-28 scroll-mt-28 md:scroll-mt-10">
           <Projects />
         </section>
 

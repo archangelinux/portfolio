@@ -30,6 +30,8 @@ import RadBotTN from "@/assets/radiobot-thumbnail.svg";
 
 interface Project {
   title: string;
+  blurb: string;
+  rowTags: string[];
   description: string;
   image: string;
   icon: React.ReactNode;
@@ -43,6 +45,8 @@ interface Project {
 const projects: Project[] = [
   {
     title: "Corall",
+    blurb: "the intelligence layer for your network",
+    rowTags: ["product", "social"],
     description:
       "The intelligence layer for your network. An AI-powered platform that turns real-world interactions into lasting, searchable connections with smart LinkedIn syncing, second-degree discovery, contextual AI search, and automated follow-ups.",
     image: CorallTN,
@@ -55,6 +59,8 @@ const projects: Project[] = [
   },
   {
     title: "HALO",
+    blurb: "Hypothesis Arbitration for Link Outages",
+    rowTags: ["Google DeepMind Build With Gemma", "connectivity"],
     description:
       "Google DeepMind Build With Gemma Kaggle Competition | Hypothesis Arbitration for Link Outages — lets satellites diagnose why a comms link failed and respond on their own, onboard, in real-time. Gemma 4 E4B reads each node's observations and returns a cause, a confidence, and a rationale a flight controller can actually read, with evidence gossiped between passing satellites in 24-byte packets. Simulates real Iridium-NEXT orbits, proves when two failure causes are physically indistinguishable, and replays it all in a React + Three.js UI.",
     image: HaloTN,
@@ -67,6 +73,8 @@ const projects: Project[] = [
   },
   {
     title: "Ecoscore",
+    blurb: "environmental impact made visible at checkout",
+    rowTags: ["ElleHacks 2026 winner", "web3/solana"],
     description:
       "ElleHacks 2026 | Winner of Best Use of Solana | Makes hidden environmental impact visible during purchase, with product scoring and on-chain corporate donations to NGOs.",
     image: EcoscoreTN,
@@ -79,6 +87,8 @@ const projects: Project[] = [
   },
   {
     title: "ThoughtMirror",
+    blurb: "journalling that detects cognitive distortions",
+    rowTags: ["GenAI Genesis 2024 1st place", "mental health"],
     description:
       "An AI-powered journaling assistant that identifies cognitive distortions in real-time, offering therapist-inspired guidance, and visually tracking thought patterns over time. Built by fine-tuning Gemini-2.0 on clinician-annotated data and integrating a RAG pipeline using LangChain and real therapist responses to deliver personalized, judgment-free feedback. Winner of Best Generative AI Technology Hack (1st place out of 160+ projects and 600+ participants).",
     image: ThoughtMirrorTN,
@@ -91,6 +101,8 @@ const projects: Project[] = [
   },
   {
     title: "Rouvia",
+    blurb: "voice-first, natural-language navigation",
+    rowTags: ["Hack the North 2025", "mobility", "navigation"],
     description:
       "A voice-first navigation system that transforms natural language into intelligent route planning. Built to address safety concerns in traditional GPS by enabling hands-free control through OpenAI Whisper transcription and Google Gemini intent parsing. Features a multi-stage processing pipeline that handles unstructured voice input, implements trendiness scoring using Cohere's AI, and integrates MongoDB for personalized location memory.",
     image: RouviaTN,
@@ -103,6 +115,8 @@ const projects: Project[] = [
   },
   {
     title: "MedUnity",
+    blurb: "a shared layer of medical intelligence",
+    rowTags: ["GenAI Genesis 2026 winner", "solo hack", "healthcare"],
     description:
       "A longitudinal health platform that creates a shared layer of medical intelligence. Features an AI-powered triage system fine-tuned on CTAS 2025 (the Canadian Triage and Acuity Scale), real-time ER demand projections for healthcare providers with cluster detection and diversion recommendations, and community health resource dashboards. Fine-tuned Gemini 2.5 Flash on Vertex AI achieving 77% validation accuracy on 5-class CTAS classification, with an agentic Railtracks framework powering deterministic ER analytics.",
     image: MedUnityTN,
@@ -115,6 +129,8 @@ const projects: Project[] = [
   },
   {
     title: "www.LooLooLoo",
+    blurb: "routes you to nearby fountains and bathrooms",
+    rowTags: ["Hack The North 2024", "ESP32"],
     description:
       "Hack The North 2024 - Sponsor Award Winner (Defang) | A full-stack web app that detects nearby water fountains and routes users to bathrooms using a ESP32-based Bluetooth beacon. Features a notification system (Twilio's API), dynamic routing (MappedIn's API), and a mobile UI for hydration tracking.",
     image: LooTN,
@@ -127,6 +143,8 @@ const projects: Project[] = [
   },
   {
     title: "Befit",
+    blurb: "real-time workout form correction and scoring",
+    rowTags: ["Hack Western 2025 winner", "Computer Vision"],
     description:
       "Hack Western 2024 - Sponsor Award Winner (Tempolabs) | An AI-driven fitness trainer designed to enhance workouts through real-time form correction and scoring with OpenCV. Compares user performance against workout videos using Mediapipe, generates gamified workout plans, and integrates intuitive hand-gesture controls.",
     image: BeFitTN,
@@ -139,6 +157,8 @@ const projects: Project[] = [
   },
   {
     title: "Wat-A-Moment",
+    blurb: "a photo booth that shares straight to your socials",
+    rowTags: ["Raspberry Pi"],
     description:
       "A digital photo booth platform that enables users to instantly upload and share photos with their social networks. Features automated metadata management, secure token-based authentication, and cloud storage.",
     image: WamTN,
@@ -151,6 +171,8 @@ const projects: Project[] = [
   },
   {
     title: "RadBot",
+    blurb: "a portable FM radio that follows you around",
+    rowTags: ["Arduino"],
     description:
       "A portable FM radio system paired with a rotary encoder and TEA5767 module, enhanced with a car attachment that uses ultrasonic and infrared sensors to autonomously follow the user.",
     image: RadBotTN,
@@ -163,18 +185,33 @@ const projects: Project[] = [
   },
 ];
 
-/* Deterministic accent per tag so the same tech reads the same color everywhere */
-const TAG_COLORS = [
-  "text-acc-gold",
-  "text-acc-orange",
-  "text-acc-cyan",
-  "text-acc-blue",
-  "text-acc-red",
-];
+/* Semantic tag colors: gold = hackathons & awards, orange = hardware,
+   cyan = everything else (domains & tech) */
+const EVENT_TAGS = new Set(
+  [
+    "GenAI Genesis 2024 1st place",
+    "GenAI Genesis 2026 winner",
+    "Google DeepMind Build With Gemma",
+    "Hack the North 2025",
+    "Hack The North 2024",
+    "Hack Western 2025 winner",
+    "ElleHacks 2026 winner",
+    "solo hack",
+  ].map((t) => t.toLowerCase())
+);
+const RED_TAGS = new Set(
+  ["mobility", "Computer Vision", "connectivity"].map((t) => t.toLowerCase())
+);
+const ORANGE_TAGS = new Set(
+  ["ESP32", "Raspberry Pi", "Arduino", "web3/solana"].map((t) => t.toLowerCase())
+);
 const tagColor = (tag: string) => {
-  let h = 0;
-  for (let i = 0; i < tag.length; i++) h = (h * 31 + tag.charCodeAt(i)) % 997;
-  return TAG_COLORS[h % TAG_COLORS.length];
+  const t = tag.toLowerCase();
+  if (EVENT_TAGS.has(t)) return "text-acc-gold";
+  if (RED_TAGS.has(t)) return "text-acc-red";
+  if (ORANGE_TAGS.has(t)) return "text-acc-orange";
+  if (t === "product") return "text-acc-purple";
+  return "text-acc-cyan";
 };
 
 const Tags: React.FC<{ tags: string[]; className?: string }> = ({ tags, className = "" }) => (
@@ -221,31 +258,36 @@ const Links: React.FC<{ p: Project }> = ({ p }) => (
   </>
 );
 
-const ProjectCard: React.FC<{ p: Project; index: number; onOpen: (i: number) => void }> = ({
+const ProjectRow: React.FC<{ p: Project; index: number; onOpen: (i: number) => void }> = ({
   p,
   index,
   onOpen,
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 10 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-40px" }}
-    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    transition={{ duration: 0.4, delay: index * 0.02, ease: [0.22, 1, 0.36, 1] }}
     onClick={() => onOpen(index)}
-    className="group break-inside-avoid mb-5 rounded-lg bg-card cursor-pointer hover:-translate-y-1 hover:shadow-[0_14px_30px_-16px_rgba(0,0,0,0.2)] transition-[transform,box-shadow] duration-300"
+    className="group cursor-pointer rounded-full bg-card/45 hover:bg-pill-faint/60 transition-colors max-md:rounded-2xl"
   >
-    <div className="overflow-hidden rounded-t-lg">
-      <img
-        src={p.image}
-        alt={p.title}
-        className="w-full h-[110px] object-cover group-hover:scale-[1.04] transition-transform duration-500 ease-out"
-      />
+    {/* Desktop row: icon+name | descriptor | tags | links */}
+    <div className="hidden md:flex items-center gap-4 py-3 px-5">
+      <span className="text-ink/60 shrink-0">{p.icon}</span>
+      <h3 className="text-[13px] font-bold shrink-0 -ml-1.5">{p.title}</h3>
+      <p className="text-[12px] text-mute truncate flex-1 min-w-0">{p.blurb}</p>
+      <Tags tags={p.rowTags} className="whitespace-nowrap shrink-0" />
+      <div className="flex gap-4 justify-end w-[190px] shrink-0 whitespace-nowrap">{<Links p={p} />}</div>
     </div>
-    <div className="px-4 pt-3.5 pb-4">
-      <h3 className="text-[13px] font-bold leading-tight">{p.title}</h3>
-      <p className="text-[11px] text-ink/70 mt-2 leading-relaxed line-clamp-3">{p.description}</p>
-      <Tags tags={p.tags} className="mt-3" />
-      {(p.b1src || p.b2src) && <div className="flex gap-4 mt-3">{<Links p={p} />}</div>}
+    {/* Mobile row: stacked */}
+    <div className="md:hidden py-3 px-4">
+      <div className="flex items-center gap-2.5">
+        <span className="text-ink/60 shrink-0">{p.icon}</span>
+        <h3 className="text-[13px] font-bold flex-1 min-w-0 truncate">{p.title}</h3>
+        <div className="flex gap-3">{<Links p={p} />}</div>
+      </div>
+      <p className="text-[11px] text-mute mt-1 ml-[26px]">{p.blurb}</p>
+      <Tags tags={p.rowTags} className="mt-1 ml-[26px]" />
     </div>
   </motion.div>
 );
@@ -276,8 +318,8 @@ const Spotlight: React.FC<{
           back to all projects
         </button>
         <div className="flex items-center gap-4">
-          {/* horizontal icon rail — one per project */}
-          <div className="flex items-center gap-1">
+          {/* horizontal icon rail — one per project (desktop only) */}
+          <div className="hidden md:flex items-center gap-1">
             {projects.map((proj, i) => (
               <button
                 key={proj.title}
@@ -359,15 +401,15 @@ const Projects: React.FC = () => {
       <AnimatePresence mode="wait">
         {spotlight === null ? (
           <motion.div
-            key="grid"
+            key="list"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="sm:columns-2 md:columns-3 gap-5"
+            className="flex flex-col gap-2.5"
           >
             {projects.map((p, i) => (
-              <ProjectCard key={p.title} p={p} index={i} onOpen={open} />
+              <ProjectRow key={p.title} p={p} index={i} onOpen={open} />
             ))}
           </motion.div>
         ) : (

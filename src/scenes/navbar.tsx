@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import {
   FaGithub,
   FaLinkedinIn,
@@ -49,9 +50,16 @@ const scrollTo = (id: SectionId) => {
    so the right edge is jagged; current = darker, hover = fainter */
 export const SideNav: React.FC<{ active: SectionId }> = ({ active }) => (
   <nav className="hidden md:flex fixed top-9 left-0 z-50 flex-col items-start gap-[6px]">
-    {NAV_ITEMS.map((item) => (
-      <button
+    {NAV_ITEMS.map((item, i) => (
+      <motion.button
         key={item.id}
+        initial={{ x: -110, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{
+          delay: 0.2 + i * 0.14,
+          duration: 0.9,
+          ease: [0.16, 1, 0.3, 1],
+        }}
         onClick={() => scrollTo(item.id)}
         className={`text-[12px] leading-none tracking-tight h-[18px] pl-11 pr-2.5 rounded-r-full transition-colors duration-300 ${
           active === item.id
@@ -60,7 +68,7 @@ export const SideNav: React.FC<{ active: SectionId }> = ({ active }) => (
         }`}
       >
         {item.label}
-      </button>
+      </motion.button>
     ))}
   </nav>
 );
@@ -68,9 +76,16 @@ export const SideNav: React.FC<{ active: SectionId }> = ({ active }) => (
 /* Right contact rail — labels pull out smoothly from behind the icons on hover */
 export const ContactRail: React.FC = () => (
   <div className="hidden md:flex fixed top-[34px] right-12 z-50 flex-col items-end gap-[5px]">
-    {CONTACT_ITEMS.map((item) => (
-      <a
+    {CONTACT_ITEMS.map((item, i) => (
+      <motion.a
         key={item.aria}
+        initial={{ x: 90, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{
+          delay: 0.3 + i * 0.12,
+          duration: 0.9,
+          ease: [0.16, 1, 0.3, 1],
+        }}
         href={item.href}
         target={item.href.startsWith("mailto") ? undefined : "_blank"}
         rel="noopener noreferrer"
@@ -85,21 +100,21 @@ export const ContactRail: React.FC = () => (
             {item.label}
           </span>
         </span>
-      </a>
+      </motion.a>
     ))}
   </div>
 );
 
 /* Mobile header — stacked pills top-left, icons + name top-right */
 export const MobileHeader: React.FC<{ active: SectionId }> = ({ active }) => (
-  <header className="md:hidden flex items-start justify-between pt-7 pb-2">
+  <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-ink/[0.06] flex items-start justify-between pt-7 pb-5">
     <nav className="flex flex-col items-start gap-[7px]">
       {NAV_ITEMS.map((item) => (
         <button
           key={item.id}
           onClick={() => scrollTo(item.id)}
           className={`text-[12px] leading-none h-[18px] pl-6 pr-2.5 rounded-r-full transition-colors duration-300 ${
-            active === item.id ? "bg-pill text-ink" : "bg-pill-faint/80 text-ink"
+            active === item.id ? "bg-pill text-ink" : "bg-transparent text-ink"
           }`}
         >
           {item.label}

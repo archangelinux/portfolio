@@ -10,9 +10,9 @@
   --color-ink: #161616;
   --color-mute: #858985;
   --color-faint: #b4b8b4;
-  --color-pill: #c3c9c3;
-  --color-pill-faint: #e0e5e0;
-  --color-card: #f6f7f5;
+  --color-pill: #bfc8c5;
+  --color-pill-faint: #e0e6e3;
+  --color-card: #f2f4f3;
   --color-chip: #ffffff;
 
   /* keyword accents — slightly muted / mossy to match the photo grade */
@@ -28,6 +28,11 @@
   --font-noto: "Noto Sans Mono", ui-monospace, monospace;
 }
 
+html,
+body {
+  overflow-x: clip;
+  overflow-anchor: none;
+}
 html,
 body,
 #root,
