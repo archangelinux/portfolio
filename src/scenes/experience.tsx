@@ -50,7 +50,7 @@ const roles: Record<string, Role> = {
     key: "invision",
     title: "Software Engineer Intern",
     company: "Invision AI",
-    term: "Summer 2026",
+    term: "Winter 2026",
     blurb: "edge computing + 3D perception for transit systems",
     image: InvisionPrev,
     logo: InvisionLogo,
