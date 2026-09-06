@@ -7,9 +7,9 @@
    background on the perspective element would occlude faces behind z = 0. */
 .library-row {
   perspective: 1100px;
-  /* eye level just above the shelf line: bases stay flat on the rule while the
-     page tops are still glimpsed; horizontally the page column's centre */
-  perspective-origin: 50% 92%;
+  /* seen from above and from the page column's centre: page tops and cover
+     edges show, and the row parked at the left is viewed from the right */
+  perspective-origin: 50% -10%;
 }
 .books {
   display: flex;
@@ -51,16 +51,20 @@
   inset: 0;
   transform-style: preserve-3d;
 }
-/* contact shadow on the rule */
+/* ground shadow: lies flat on the shelf plane and runs back under the book,
+   so the wedge beneath a receding cover edge reads as surface, not air */
 .book-body::before {
   content: "";
   position: absolute;
-  left: -4px;
-  right: -4px;
-  bottom: -3px;
-  height: 7px;
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0) 70%);
-  transform: translateZ(-2px);
+  left: -3px;
+  right: -30px; /* spills onto the surface beside the book, toward the viewer */
+  bottom: 0;
+  height: var(--w);
+  transform-origin: bottom center;
+  transform: rotateX(90deg);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 3px, rgba(0, 0, 0, 0.22) 3px, rgba(0, 0, 0, 0.22) calc(100% - 30px), rgba(0, 0, 0, 0) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.12));
   pointer-events: none;
 }
 .face {
