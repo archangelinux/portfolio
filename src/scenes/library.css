@@ -1,0 +1,221 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&display=swap");
+
+/* ——— shelf row ———
+   The books stand directly on the footer's top rule. The vanishing point is
+   the page column's centre, so a row parked at the left is seen from the
+   right and shows its covers' edges. No background on either element: a
+   background on the perspective element would occlude faces behind z = 0. */
+.library-row {
+  perspective: 1100px;
+  /* eye level just above the shelf line: bases stay flat on the rule while the
+     page tops are still glimpsed; horizontally the page column's centre */
+  perspective-origin: 50% 92%;
+}
+.books {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 24px 0 0 4px;
+  margin-bottom: -2px; /* overlap the footer rule so the books rest on it */
+  max-width: 100%;
+  transform-style: preserve-3d;
+}
+
+/* ——— book ——— */
+.book {
+  position: relative;
+  flex: none;
+  width: var(--d);
+  height: var(--h);
+  padding: 0;
+  border: 0;
+  background: none;
+  outline: none;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+.book:hover,
+.book:focus-visible {
+  transform: translateY(-8px) translateZ(10px);
+}
+.book:focus-visible .face.spine {
+  box-shadow: inset 0 0 0 1px rgba(255, 235, 200, 0.6);
+}
+.book.open {
+  z-index: 5;
+  transform: translate3d(calc(var(--w) / -2 + var(--d) / 2), -14px, 70px) rotateY(-90deg);
+}
+.book-body {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+/* contact shadow on the rule */
+.book-body::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: -3px;
+  height: 7px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0) 70%);
+  transform: translateZ(-2px);
+  pointer-events: none;
+}
+.face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: var(--h);
+  backface-visibility: visible;
+}
+
+/* spine — faces the viewer at rest */
+.face.spine {
+  width: var(--d);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  writing-mode: vertical-rl;
+  padding: 16px 0 14px;
+  color: var(--spine-ink);
+  background-color: var(--spine);
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.32) 0%, rgba(255, 255, 255, 0.1) 18%, rgba(255, 255, 255, 0.04) 55%, rgba(0, 0, 0, 0.28) 100%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px);
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.25);
+  transform: translateZ(0.5px);
+}
+/* gilt bands */
+.face.spine::before,
+.face.spine::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  height: 1px;
+  background: rgba(222, 190, 120, 0.55);
+  box-shadow: 0 2px 0 rgba(222, 190, 120, 0.25);
+}
+.face.spine::before { top: 7px; }
+.face.spine::after { bottom: 7px; box-shadow: 0 -2px 0 rgba(222, 190, 120, 0.25); }
+
+.spine-title,
+.spine-author {
+  display: block;
+  min-height: 0;
+  max-height: 100%;
+  overflow: visible;
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+.spine-title {
+  font-size: var(--fs);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.spine-author {
+  font-size: calc(var(--fs) * 0.82);
+  font-weight: 400;
+  opacity: 0.8;
+  margin-top: 8px;
+}
+
+/* front cover — hinged on the spine's right edge, extends back into the shelf */
+.face.cover {
+  width: var(--w);
+  left: var(--d);
+  transform-origin: left center;
+  transform: rotateY(90deg);
+  overflow: hidden;
+  background: var(--spine);
+}
+.face.cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.face.cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.12) 6%, transparent 14%),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.12) 0%, transparent 40%);
+  pointer-events: none;
+}
+.cover-blank {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 12px;
+  color: var(--spine-ink);
+  text-align: center;
+  border: 1px solid rgba(222, 190, 120, 0.45);
+  margin: 8px;
+}
+.cover-blank b {
+  font-size: 10px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.cover-blank i {
+  font-size: 9px;
+  font-style: normal;
+  opacity: 0.8;
+}
+
+/* back cover — hinged on the spine's left edge */
+.face.back {
+  width: var(--w);
+  left: 0;
+  transform-origin: right center;
+  transform: translateX(-100%) rotateY(-90deg);
+  background: var(--spine);
+  filter: brightness(0.8);
+}
+
+/* page block on top — visible from the slightly-elevated viewpoint */
+.face.top {
+  width: var(--d);
+  height: var(--w);
+  transform-origin: top center;
+  transform: rotateX(-90deg);
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 2px),
+    linear-gradient(180deg, #e9dfc6, #d9cdb0);
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.2);
+}
+
+/* the "fav" bookmark ribbon poking out of the pages */
+.ribbon {
+  position: absolute;
+  top: -20px;
+  left: calc(var(--d) * 0.45 - 8px);
+  width: 16px;
+  height: 36px;
+  padding-top: 7px;
+  /* slotted between the pages near the spine: parallel to the covers, so it
+     reads edge-on from the front and faces the viewer once the book opens */
+  transform: translateZ(calc(var(--w) * -0.16)) rotateY(90deg);
+  background: linear-gradient(90deg, #7d2a26 0%, #a83b35 45%, #7d2a26 100%);
+  color: #fbeed0;
+  font-family: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.01em;
+  text-align: center;
+  line-height: 1;
+  clip-path: polygon(0 0, 50% 22%, 100% 0, 100% 100%, 0 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}

@@ -1,0 +1,197 @@
+{
+  "_readme": {
+    "isbn": "13-digit preferred, no dashes. This is the only required field; the build script uses it to fetch the cover and page count from Open Library.",
+    "title": "Optional. Overrides whatever Open Library returns. Also used as the text on generated spines.",
+    "author": "Optional. Same as title.",
+    "shelf": "Which shelf it sits on, e.g. 'favourites', 'reading', 'want-to-read', 'technical'. Free-form string.",
+    "rating": "Optional, 1-5.",
+    "note": "Optional. A sentence or two shown when the book is clicked.",
+    "spine": {
+      "color": "Optional hex. Overrides the color sampled from the cover.",
+      "textColor": "Optional hex.",
+      "image": "Optional path under src/assets/library/ for a photographed spine. Skips procedural generation."
+    },
+    "cover": "Optional path under src/assets/library/ for a hand-supplied cover. Skips the Open Library fetch.",
+    "pages": "Optional. Overrides the fetched page count, which sets the book's thickness."
+  },
+  "books": [
+    {
+      "isbn": "9780140186000",
+      "title": "The Summing Up",
+      "author": "Maugham",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 208
+    },
+    {
+      "isbn": "9780374278014",
+      "title": "Uncanny Valley",
+      "author": "Anna Wiener",
+      "shelf": "favourites",
+      "rating": null,
+      "note": "",
+      "pages": 279
+    },
+    {
+      "isbn": "9780393356977",
+      "title": "Tyrant",
+      "author": "Greenblatt",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 224
+    },
+    {
+      "isbn": "9781250310460",
+      "title": "Ridgeline",
+      "author": "Michael Punke",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 384
+    },
+    {
+      "isbn": "9780316486637",
+      "title": "Catch and Kill",
+      "author": "Ronan Farrow",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 448
+    },
+    {
+      "isbn": "9780593237113",
+      "title": "The Cult of We",
+      "author": "Brown & Farrell",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 464
+    },
+    {
+      "isbn": "9780525555216",
+      "title": "The Anthropocene Reviewed",
+      "author": "John Green",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 320
+    },
+    {
+      "isbn": "9780141439570",
+      "title": "The Picture of Dorian Gray",
+      "author": "Oscar Wilde",
+      "shelf": "favourites",
+      "rating": null,
+      "note": "",
+      "pages": 252
+    },
+    {
+      "isbn": "9780525522126",
+      "title": "My Year of Rest and Relaxation",
+      "author": "Moshfegh",
+      "shelf": "favourites",
+      "rating": null,
+      "note": "",
+      "pages": 289
+    },
+    {
+      "isbn": "9781400064168",
+      "title": "Unbroken",
+      "author": "Hillenbrand",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 473
+    },
+    {
+      "isbn": "9780316055437",
+      "title": "The Goldfinch",
+      "author": "Donna Tartt",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 771
+    },
+    {
+      "isbn": "9780571270910",
+      "title": "Looking for Trouble",
+      "author": "Cowles",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 478,
+      "spine": {
+        "color": "#3a5fae",
+        "textColor": "#f1e3b9"
+      }
+    },
+    {
+      "isbn": "9781982181284",
+      "title": "Elon Musk",
+      "author": "Isaacson",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 688
+    },
+    {
+      "isbn": "9780345810366",
+      "title": "This I Know",
+      "author": "Terry O'Reilly",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 320
+    },
+    {
+      "isbn": "9780061767647",
+      "title": "Brave New World",
+      "author": "Aldous Huxley",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 288
+    },
+    {
+      "isbn": "9780374606718",
+      "title": "Liberalism and Its Discontents",
+      "author": "Fukuyama",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 192,
+      "spine": {
+        "color": "#ece6d8",
+        "textColor": "#1c1a17"
+      }
+    },
+    {
+      "isbn": "9781250897930",
+      "title": "The Worlds I See",
+      "author": "Fei-Fei Li",
+      "shelf": "favourites",
+      "rating": null,
+      "note": "",
+      "pages": 336
+    },
+    {
+      "isbn": "9781476778945",
+      "title": "Valley of the Gods",
+      "author": "Wolfe",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 261
+    },
+    {
+      "isbn": "",
+      "title": "",
+      "author": "",
+      "shelf": "",
+      "rating": null,
+      "note": ""
+    }
+  ]
+}

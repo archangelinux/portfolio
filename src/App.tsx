@@ -4,6 +4,7 @@ import { SideNav, ContactRail, MobileHeader, SectionId } from "@/scenes/navbar";
 import Experience from "@/scenes/experience";
 import Projects from "@/scenes/projects";
 import ToolsSection from "@/scenes/tools";
+import Library from "@/scenes/library";
 
 import heroCampus from "@/assets/hero1.png";
 import heroCity from "@/assets/hero2.png";
@@ -196,12 +197,17 @@ const App: React.FC = () => {
         <Divider />
 
         {/* ——— tools ——— */}
-        <section id="tools" className="pt-20 md:pt-28 pb-24 md:pb-32">
+        <section id="tools" className="pt-20 md:pt-28 pb-20 md:pb-28">
           <ToolsSection />
         </section>
 
+        {/* ——— library ——— */}
+        <section id="library" className="pt-16 md:pt-20 pb-0 border-b border-ink/[0.08]">
+          <Library />
+        </section>
+
         {/* Footer */}
-        <footer className="border-t border-ink/[0.08] py-5 flex items-center justify-between">
+        <footer className="py-5 flex items-center justify-between">
           <span className="text-[11px] text-mute">© 2026 Angelina Wang</span>
           <a
             href="https://se-webring.xyz/"
