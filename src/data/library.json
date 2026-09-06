@@ -70,15 +70,6 @@
       "pages": 464
     },
     {
-      "isbn": "9780525555216",
-      "title": "The Anthropocene Reviewed",
-      "author": "John Green",
-      "shelf": "read",
-      "rating": null,
-      "note": "",
-      "pages": 320
-    },
-    {
       "isbn": "9780141439570",
       "title": "The Picture of Dorian Gray",
       "author": "Oscar Wilde",
@@ -184,6 +175,69 @@
       "rating": null,
       "note": "",
       "pages": 261
+    },
+    {
+      "isbn": "9780399590511",
+      "title": "Educated",
+      "author": "Tara Westover",
+      "shelf": "favourites",
+      "rating": null,
+      "note": "",
+      "pages": 334
+    },
+    {
+      "isbn": "9781982190606",
+      "title": "Glossy",
+      "author": "Marisa Meltzer",
+      "shelf": "favourites",
+      "rating": null,
+      "note": "",
+      "pages": 320
+    },
+    {
+      "isbn": "9780141441146",
+      "title": "Jane Eyre",
+      "author": "Charlotte Bront\u00eb",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 578
+    },
+    {
+      "isbn": "9798893310108",
+      "title": "Superagency",
+      "author": "Reid Hoffman & Greg Beato",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 288
+    },
+    {
+      "isbn": "9780385349949",
+      "title": "Lean In",
+      "author": "Sheryl Sandberg",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 228
+    },
+    {
+      "isbn": "9780593798690",
+      "title": "The Technological Republic",
+      "author": "Alexander C. Karp",
+      "shelf": "read",
+      "rating": null,
+      "note": "",
+      "pages": 320
+    },
+    {
+      "isbn": "9781524731656",
+      "title": "Bad Blood",
+      "author": "John Carreyrou",
+      "shelf": "favourites",
+      "rating": null,
+      "note": "",
+      "pages": 339
     },
     {
       "isbn": "",

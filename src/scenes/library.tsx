@@ -74,7 +74,8 @@ const dominantColor = (img: HTMLImageElement): string => {
   for (const e of buckets.values()) if (!best || e.score > best.score) best = e;
   if (!best) return CLOTH[0];
   const n = best.n;
-  const tone = (v: number) => Math.round(Math.min(255, (v / n) * 0.86)); // slightly dimmed, like worn cloth
+  // pull toward the site's muted grade: 18% toward mid-grey, slightly dimmed
+  const tone = (v: number) => Math.round(Math.min(255, ((v / n) * 0.74 + 150 * 0.26) * 0.97));
   return `#${[tone(best.r), tone(best.g), tone(best.b)].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
 };
 
@@ -120,7 +121,8 @@ const BookSpine: React.FC<BookProps> = ({ book, scale, rowBase, open, onToggle }
   const ink = book.spine?.textColor ?? inkFor(spine);
   const fav = book.shelf === "favourites";
 
-  const D = Math.round(Math.min(46, Math.max(17, (book.pages ?? 300) / 13)) * scale);
+  // thickness is linear in page count (roughly 1px per 12 pages at full size)
+  const D = Math.round(Math.max(15, (book.pages ?? 300) / 12) * scale);
   // shared row height (sized so the longest spine fits at MIN_FS) plus a few
   // px of per-book variation; the type then shrinks only as far as needed
   const H = Math.round(rowBase + (h % 30) * scale);
@@ -185,7 +187,7 @@ const Library: React.FC = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [openIsbn]);
 
-  const scale = isMobile ? 0.44 : 0.52;
+  const scale = isMobile ? 0.42 : 0.52;
   const rowBase = Math.max(
     280 * scale,
     ...books.map((b) => textUnits(b) * MIN_FS + SPINE_PAD + (b.author ? 8 : 0))
