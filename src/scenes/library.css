@@ -44,12 +44,36 @@
 }
 .book.open {
   z-index: 5;
-  transform: translate3d(calc(var(--w) / -2 + var(--d) / 2), -14px, 70px) rotateY(-90deg);
+  transform: none;
 }
+
+/* ——— opening: two chained moves ———
+   The cover is hinged at the spine and extends `--w` back into the shelf, so
+   turning it in place would sweep it straight through the neighbours. First
+   the body slides the whole book forward far enough that the rotation clears
+   the shelf face; only then does the block turn it to show the cover. Closing
+   runs the same two moves in reverse order. */
 .book-body {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
+  /* closed: slide back in after the block has turned home */
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.32s;
+}
+.book.open .book-body {
+  transform: translate3d(0, -14px, calc(var(--w) + 24px));
+  transition: transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.book-block {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  /* closed: turn home straight away */
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.book.open .book-block {
+  transform: translateX(calc(var(--w) / -2 + var(--d) / 2)) rotateY(-90deg);
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.34s;
 }
 .face {
   position: absolute;

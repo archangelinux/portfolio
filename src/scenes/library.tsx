@@ -1,5 +1,5 @@
-import React, { CSSProperties, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import libraryData from "@/data/library.json";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import "./library.css";
@@ -80,21 +80,45 @@ const dominantColor = (img: HTMLImageElement): string => {
 };
 
 const colorCache = new Map<string, string>();
+const colorLoads = new Map<string, Promise<string | undefined>>();
+/** Load a cover once and sample its spine colour; shared by every caller. */
+const loadSpineColor = (src: string) => {
+  let p = colorLoads.get(src);
+  if (!p) {
+    p = new Promise<string | undefined>((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const c = dominantColor(img);
+          colorCache.set(src, c);
+          resolve(c);
+        } catch {
+          resolve(undefined);
+        }
+      };
+      img.onerror = () => resolve(undefined);
+      img.src = src;
+    });
+    colorLoads.set(src, p);
+  }
+  return p;
+};
+/** Resolves once every spine colour is known, so the shelf can appear in one go. */
+const loadAllSpineColors = () =>
+  Promise.all(
+    books.flatMap((b) => {
+      const src = coverSrc(b);
+      return src && !b.spine?.color ? [loadSpineColor(src)] : [];
+    })
+  );
+
 const useSpineColor = (src: string | undefined, fallback: string, override?: string) => {
   const [color, setColor] = useState(override ?? (src && colorCache.get(src)) ?? fallback);
   useEffect(() => {
     if (override || !src) return;
-    const cached = colorCache.get(src);
-    if (cached) { setColor(cached); return; }
-    const img = new Image();
-    img.src = src;
-    img.onload = () => {
-      try {
-        const c = dominantColor(img);
-        colorCache.set(src, c);
-        setColor(c);
-      } catch { /* keep fallback */ }
-    };
+    let live = true;
+    loadSpineColor(src).then((c) => { if (live && c) setColor(c); });
+    return () => { live = false; };
   }, [src, override]);
   return color;
 };
@@ -153,24 +177,27 @@ const BookSpine: React.FC<BookProps> = ({ book, scale, rowBase, open, onToggle }
       aria-pressed={open}
       aria-label={`${book.title ?? book.isbn}${book.author ? ` by ${book.author}` : ""}`}
     >
+      {/* body slides the book off the shelf; block then turns it to face the viewer */}
       <div className="book-body">
-        <div className="face spine">
-          <span className="spine-title">{book.title}</span>
-          <span className="spine-author">{book.author}</span>
+        <div className="book-block">
+          <div className="face spine">
+            <span className="spine-title">{book.title}</span>
+            <span className="spine-author">{book.author}</span>
+          </div>
+          <div className="face cover">
+            {src ? (
+              <img src={src} alt="" loading="lazy" draggable={false} />
+            ) : (
+              <div className="cover-blank">
+                <b>{book.title}</b>
+                <i>{book.author}</i>
+              </div>
+            )}
+          </div>
+          <div className="face back" />
+          <div className="face top" />
+          {fav && <div className="ribbon">fav</div>}
         </div>
-        <div className="face cover">
-          {src ? (
-            <img src={src} alt="" loading="lazy" draggable={false} />
-          ) : (
-            <div className="cover-blank">
-              <b>{book.title}</b>
-              <i>{book.author}</i>
-            </div>
-          )}
-        </div>
-        <div className="face back" />
-        <div className="face top" />
-        {fav && <div className="ribbon">fav</div>}
       </div>
     </div>
   );
@@ -179,6 +206,20 @@ const BookSpine: React.FC<BookProps> = ({ book, scale, rowBase, open, onToggle }
 const Library: React.FC = () => {
   const isMobile = !useMediaQuery("(min-width: 850px)");
   const [openIsbn, setOpenIsbn] = useState<string | null>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(rowRef, { once: true, margin: "-40px" });
+  // hold the shelf back until every spine has its colour, so the books don't
+  // recolour one by one as their covers arrive (capped so a slow image can't
+  // hide the shelf for long)
+  const [colorsReady, setColorsReady] = useState(false);
+  useEffect(() => {
+    let live = true;
+    const done = () => live && setColorsReady(true);
+    const t = setTimeout(done, 2500);
+    loadAllSpineColors().then(done);
+    return () => { live = false; clearTimeout(t); };
+  }, []);
+  const show = inView && colorsReady;
 
   useEffect(() => {
     if (!openIsbn) return;
@@ -194,11 +235,18 @@ const Library: React.FC = () => {
   );
 
   return (
-    <div className="library-row flex flex-col-reverse md:flex-row md:items-end gap-6 md:gap-5">
+    // the fade lives on the row, outside the preserve-3d `.books` context: any
+    // opacity below 1 on that element flattens the books to 2D while it runs
+    <motion.div
+      ref={rowRef}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: show ? 1 : 0 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      className="library-row flex flex-col-reverse md:flex-row md:items-end gap-6 md:gap-5"
+    >
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
+        initial={{ y: 16 }}
+        animate={{ y: show ? 0 : 16 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         className="books"
       >
@@ -216,8 +264,7 @@ const Library: React.FC = () => {
 
       <motion.div
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-40px" }}
+        animate={{ opacity: show ? 1 : 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
         className="shrink-0 flex flex-col self-start md:mt-5 pl-2 md:pl-0 md:ml-9"
       >
@@ -241,7 +288,7 @@ const Library: React.FC = () => {
           <path d="M11 13l-4 5 6 3" />
         </svg>
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   FaGithub,
   FaLinkedinIn,
@@ -7,13 +8,18 @@ import {
   FaRegEnvelope,
 } from "react-icons/fa6";
 
-export type SectionId = "me" | "work" | "projects";
+/* "me" / "work" / "projects" are sections of the home page; "writing" is its
+   own route (/writing) and is highlighted whenever we're on it */
+export type SectionId = "me" | "work" | "projects" | "writing";
 
 const NAV_ITEMS: { id: SectionId; label: string }[] = [
   { id: "me", label: "me" },
   { id: "work", label: "work" },
   { id: "projects", label: "projects" },
+  { id: "writing", label: "writing" },
 ];
+
+const PAGE_ROUTES: Partial<Record<SectionId, string>> = { writing: "/writing" };
 
 const CONTACT_ITEMS = [
   {
@@ -42,14 +48,33 @@ const CONTACT_ITEMS = [
   },
 ];
 
-const scrollTo = (id: SectionId) => {
+export const scrollToSection = (id: SectionId) => {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
+/** Section pills scroll when already on the home page; from another route
+ *  they navigate home and let App scroll once it mounts. Page pills route. */
+const useNavTo = () => {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  return (id: SectionId) => {
+    const route = PAGE_ROUTES[id];
+    if (route) {
+      if (pathname !== route) navigate(route);
+      else window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (pathname === "/") scrollToSection(id);
+    else navigate("/", { state: { scrollTo: id } });
+  };
 };
 
 /* Left menu — each pill grows from the screen edge and hugs its own label,
    so the right edge is jagged; current = darker, hover = fainter */
-export const SideNav: React.FC<{ active: SectionId }> = ({ active }) => (
-  <nav className="hidden md:flex fixed top-9 left-0 z-50 flex-col items-start gap-[6px]">
+export const SideNav: React.FC<{ active: SectionId }> = ({ active }) => {
+  const scrollTo = useNavTo();
+  return (
+  <nav className="hidden md:flex fixed top-[34px] left-0 z-50 flex-col items-start gap-[5px]">
     {NAV_ITEMS.map((item, i) => (
       <motion.button
         key={item.id}
@@ -61,7 +86,7 @@ export const SideNav: React.FC<{ active: SectionId }> = ({ active }) => (
           ease: [0.16, 1, 0.3, 1],
         }}
         onClick={() => scrollTo(item.id)}
-        className={`text-[12px] leading-none tracking-tight h-[18px] pl-11 pr-2.5 rounded-r-full transition-colors duration-300 ${
+        className={`text-[12px] leading-none tracking-tight h-[18px] my-[2px] pl-11 pr-2.5 rounded-r-full transition-colors duration-300 ${
           active === item.id
             ? "bg-pill text-ink"
             : "bg-transparent text-ink hover:bg-pill-faint"
@@ -71,7 +96,8 @@ export const SideNav: React.FC<{ active: SectionId }> = ({ active }) => (
       </motion.button>
     ))}
   </nav>
-);
+  );
+};
 
 /* Right contact rail — labels pull out smoothly from behind the icons on hover */
 export const ContactRail: React.FC = () => (
@@ -106,7 +132,9 @@ export const ContactRail: React.FC = () => (
 );
 
 /* Mobile header — stacked pills top-left, icons + name top-right */
-export const MobileHeader: React.FC<{ active: SectionId }> = ({ active }) => (
+export const MobileHeader: React.FC<{ active: SectionId }> = ({ active }) => {
+  const scrollTo = useNavTo();
+  return (
   <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-ink/[0.06] flex items-start justify-between pt-7 pb-5">
     <nav className="flex flex-col items-start gap-[7px]">
       {NAV_ITEMS.map((item) => (
@@ -141,4 +169,5 @@ export const MobileHeader: React.FC<{ active: SectionId }> = ({ active }) => (
       </h1>
     </div>
   </header>
-);
+  );
+};
