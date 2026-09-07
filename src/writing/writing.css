@@ -1,0 +1,581 @@
+/* ————————————————————————————————————————————————————————————————————————
+   /writing — editorial prose. Serif body (Substack), mono chrome (site),
+   Confluence-style panels, code, tables.
+   ———————————————————————————————————————————————————————————————————————— */
+
+.wr-prose {
+  font-family: var(--font-serif);
+  font-size: 16.5px;
+  line-height: 1.72;
+  color: var(--color-ink);
+  font-variant-numeric: oldstyle-nums;
+  word-wrap: break-word;
+}
+@media (max-width: 700px) {
+  .wr-prose {
+    font-size: 16px;
+  }
+}
+
+.wr-prose > * + * {
+  margin-top: 1.15em;
+}
+
+.wr-prose p {
+  margin: 0;
+}
+.wr-prose p + p {
+  margin-top: 1.15em;
+}
+
+/* — headings — */
+.wr-prose h1,
+.wr-prose h2,
+.wr-prose h3,
+.wr-prose h4 {
+  position: relative;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  scroll-margin-top: 96px;
+}
+.wr-prose h1 {
+  font-size: 22px;
+  margin-top: 2.4em;
+}
+.wr-prose h2 {
+  font-size: 17px;
+  margin-top: 2.6em;
+  padding-bottom: 0.45em;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+.wr-prose h3 {
+  font-size: 14px;
+  margin-top: 2em;
+}
+.wr-prose h4 {
+  font-size: 12.5px;
+  margin-top: 1.8em;
+  color: var(--color-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.wr-prose h1 + *,
+.wr-prose h2 + *,
+.wr-prose h3 + *,
+.wr-prose h4 + * {
+  margin-top: 0.9em;
+}
+
+/* anchor link on hover */
+.wr-anchor {
+  position: absolute;
+  left: -1.4em;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-faint);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.wr-anchor svg {
+  width: 13px;
+  height: 13px;
+}
+.wr-prose h1:hover .wr-anchor,
+.wr-prose h2:hover .wr-anchor,
+.wr-prose h3:hover .wr-anchor,
+.wr-prose h4:hover .wr-anchor {
+  opacity: 1;
+}
+.wr-anchor:hover {
+  color: var(--color-ink);
+}
+@media (max-width: 700px) {
+  .wr-anchor {
+    display: none;
+  }
+}
+
+/* journal date markers: `## September 3rd, 2026` */
+.wr-prose .wr-date {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 3.2em;
+  padding: 0;
+  border: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+.wr-prose .wr-date::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-pill);
+  flex: none;
+}
+.wr-prose .wr-date::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+.wr-prose .wr-date + * {
+  margin-top: 1.1em;
+}
+
+/* — inline — */
+.wr-prose a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-faint);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.2s;
+}
+.wr-prose a:hover {
+  text-decoration-color: var(--color-ink);
+}
+.wr-prose strong {
+  font-weight: 650;
+}
+.wr-prose em {
+  font-style: italic;
+}
+.wr-prose mark {
+  background: var(--color-pill-faint);
+  padding: 0 0.15em;
+  border-radius: 2px;
+}
+.wr-prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--color-card);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 7%, transparent);
+  padding: 0.08em 0.4em;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.wr-prose kbd {
+  font-family: var(--font-mono);
+  font-size: 0.78em;
+  border: 1px solid var(--color-faint);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0.05em 0.4em;
+}
+
+/* — lists — */
+.wr-prose ul,
+.wr-prose ol {
+  padding-left: 1.4em;
+}
+.wr-prose li {
+  padding-left: 0.2em;
+}
+.wr-prose li + li {
+  margin-top: 0.4em;
+}
+.wr-prose ul > li {
+  list-style: none;
+  position: relative;
+}
+.wr-prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.1em;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-pill);
+}
+.wr-prose ul ul > li::before {
+  background: transparent;
+  border: 1px solid var(--color-pill);
+}
+.wr-prose ol > li {
+  list-style: decimal;
+}
+.wr-prose ol > li::marker {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  color: var(--color-mute);
+}
+.wr-prose li > ul,
+.wr-prose li > ol {
+  margin-top: 0.4em;
+}
+.wr-prose li > p {
+  margin: 0;
+}
+/* task lists */
+.wr-prose li:has(> input[type="checkbox"]) {
+  list-style: none;
+}
+.wr-prose li:has(> input[type="checkbox"])::before {
+  display: none;
+}
+.wr-prose input[type="checkbox"] {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  margin: 0 0.55em 0 -1.35em;
+  vertical-align: -1px;
+  border: 1px solid var(--color-faint);
+  border-radius: 3px;
+  background: #fff;
+}
+.wr-prose input[type="checkbox"]:checked {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.5l2.3 2.3L9.5 3.8' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 11px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* — blockquote (pull quote) — */
+.wr-prose blockquote {
+  margin: 1.6em 0;
+  padding: 0.1em 0 0.1em 1.3em;
+  border-left: 2px solid var(--color-pill);
+  font-style: italic;
+  font-size: 1.04em;
+  color: color-mix(in srgb, var(--color-ink) 78%, transparent);
+}
+.wr-prose blockquote p + p {
+  margin-top: 0.7em;
+}
+.wr-prose blockquote em {
+  font-style: normal;
+}
+
+/* — hr — */
+.wr-prose hr {
+  border: 0;
+  height: 1px;
+  margin: 2.6em auto;
+  width: 64px;
+  background: var(--color-pill);
+}
+
+/* — callout panels — no borders; tints are mixed from the site's own
+   tokens (card / pill greys, keyword accents) so they sit in the palette */
+.wr-callout {
+  --cl: var(--color-mute);
+  --cl-bg: var(--color-card);
+  margin: 1.6em 0;
+  padding: 15px 20px 16px;
+  border-radius: 10px;
+  background: var(--cl-bg);
+  font-size: 0.94em;
+}
+.wr-callout-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cl);
+  margin-bottom: 7px;
+}
+.wr-callout-icon svg {
+  width: 13px;
+  height: 13px;
+}
+.wr-callout-body > * + * {
+  margin-top: 0.75em;
+}
+.wr-callout-body ul > li::before {
+  background: var(--cl);
+  opacity: 0.55;
+}
+.wr-callout-body :not(pre) > code {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: transparent;
+}
+.wr-callout-note {
+  --cl: var(--color-mute);
+  --cl-bg: color-mix(in srgb, var(--color-card) 50%, #fff);
+}
+.wr-callout-tip {
+  --cl: color-mix(in srgb, var(--color-pill) 55%, var(--color-ink));
+  --cl-bg: color-mix(in srgb, var(--color-pill-faint) 42%, #fff);
+}
+.wr-callout-info {
+  --cl: var(--color-acc-blue);
+  --cl-bg: color-mix(in srgb, var(--color-acc-blue) 5%, color-mix(in srgb, var(--color-card) 50%, #fff));
+}
+.wr-callout-warning {
+  --cl: var(--color-acc-orange);
+  --cl-bg: color-mix(in srgb, var(--color-acc-orange) 5.5%, color-mix(in srgb, var(--color-card) 50%, #fff));
+}
+.wr-callout-key {
+  --cl: var(--color-acc-gold);
+  --cl-bg: color-mix(in srgb, var(--color-acc-gold) 5.5%, color-mix(in srgb, var(--color-card) 50%, #fff));
+}
+.wr-callout-quote {
+  --cl: var(--color-acc-purple);
+  --cl-bg: color-mix(in srgb, var(--color-acc-purple) 5%, color-mix(in srgb, var(--color-card) 50%, #fff));
+  font-style: italic;
+}
+.wr-callout-quote .wr-callout-body p + p {
+  margin-top: 0.9em;
+}
+.wr-callout-quote em,
+.wr-callout-quote strong {
+  font-style: normal;
+}
+
+/* — code blocks — */
+.wr-code {
+  margin: 1.6em 0;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 9%, transparent);
+  background: #fbfcfb;
+  overflow: hidden;
+}
+.wr-code-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px 7px 14px;
+  background: var(--color-card);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 7%, transparent);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--color-mute);
+}
+.wr-code-title {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.wr-code-lang {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
+  font-size: 10px;
+}
+.wr-code-copy {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-mute);
+  transition: color 0.2s;
+}
+.wr-code-copy:hover {
+  color: var(--color-ink);
+}
+.wr-code-copy svg {
+  width: 12px;
+  height: 12px;
+}
+.wr-code pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  tab-size: 2;
+}
+.wr-code code {
+  font-family: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+/* highlight.js — mapped onto the site palette */
+.hljs-comment,
+.hljs-quote {
+  color: var(--color-mute);
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag {
+  color: var(--color-acc-purple);
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-template-tag {
+  color: #5a8a68;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-symbol,
+.hljs-bullet {
+  color: var(--color-acc-orange);
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-title.class_,
+.hljs-section,
+.hljs-name {
+  color: var(--color-acc-blue);
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-property {
+  color: var(--color-acc-gold);
+}
+.hljs-built_in,
+.hljs-type {
+  color: var(--color-acc-cyan);
+}
+.hljs-deletion {
+  color: var(--color-acc-red);
+}
+.hljs-meta {
+  color: var(--color-mute);
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}
+
+/* — tables — */
+.wr-table {
+  margin: 1.6em 0;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 9%, transparent);
+  border-radius: 8px;
+}
+.wr-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+.wr-prose th,
+.wr-prose td {
+  padding: 9px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 7%, transparent);
+}
+.wr-prose tr:last-child td {
+  border-bottom: 0;
+}
+.wr-prose th {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  background: var(--color-card);
+  white-space: nowrap;
+}
+.wr-prose tbody tr:hover td {
+  background: #fafbfa;
+}
+
+/* — images — */
+.wr-figure {
+  margin: 1.8em 0;
+}
+.wr-figure img {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+}
+.wr-figure figcaption {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-mute);
+  text-align: center;
+}
+
+/* — footnotes (gfm) — */
+.wr-prose sup a {
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  text-decoration: none;
+  padding: 0 0.15em;
+}
+.wr-prose .footnotes {
+  margin-top: 3em;
+  padding-top: 1.2em;
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
+  font-size: 0.86em;
+  color: var(--color-mute);
+}
+.wr-prose .footnotes h2 {
+  display: none;
+}
+.wr-prose .footnotes ol {
+  padding-left: 1.2em;
+}
+.wr-prose .footnotes ol > li::marker {
+  font-size: 0.85em;
+}
+
+/* — details / summary (native html works in markdown) — */
+.wr-prose details {
+  margin: 1.4em 0;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 9%, transparent);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.94em;
+}
+.wr-prose summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-mute);
+}
+.wr-prose details[open] summary {
+  margin-bottom: 0.6em;
+}
+
+/* — table of contents (sidebar) — */
+.wr-toc {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.wr-toc a {
+  display: block;
+  padding: 3px 0 3px 10px;
+  border-left: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
+  color: var(--color-mute);
+  transition: color 0.2s, border-color 0.2s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wr-toc a[data-depth="3"] {
+  padding-left: 22px;
+}
+.wr-toc a:hover {
+  color: var(--color-ink);
+}
+.wr-toc a[data-active="true"] {
+  color: var(--color-ink);
+  border-left-color: var(--color-ink);
+}

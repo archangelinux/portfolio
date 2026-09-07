@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { SideNav, ContactRail, MobileHeader, SectionId } from "@/scenes/navbar";
+import { useLocation } from "react-router-dom";
+import { SideNav, ContactRail, MobileHeader, SectionId, scrollToSection } from "@/scenes/navbar";
 import Experience from "@/scenes/experience";
 import Projects from "@/scenes/projects";
 import ToolsSection from "@/scenes/tools";
@@ -81,6 +82,18 @@ const Divider: React.FC = () => (
 const App: React.FC = () => {
   const active = useActiveSection();
 
+  // arriving from another route (nav pill on /writing) or via /#work — scroll
+  // to the requested section once the page has mounted
+  const location = useLocation();
+  useEffect(() => {
+    const fromState = (location.state as { scrollTo?: SectionId } | null)?.scrollTo;
+    const fromHash = location.hash.slice(1) as SectionId | "";
+    const target = fromState || fromHash;
+    if (!target) return;
+    const t = setTimeout(() => scrollToSection(target), 60);
+    return () => clearTimeout(t);
+  }, [location]);
+
   // mobile collage "expedited scroll": the collage's layout slot shrinks from
   // the bottom 1px per 1px scrolled, so the work section approaches at twice
   // the scroll speed. The photo canvas is top-anchored at a fixed size, so the
@@ -135,7 +148,7 @@ const App: React.FC = () => {
           {/* Mobile hero — the collage occupies a short layout slot but draws
               tall; on scroll the photos ride up over the intro text while
               shrinking and fading, so the scroll past them stays short */}
-          <div className="md:hidden pt-32">
+          <div className="md:hidden pt-40">
             <motion.div {...heroTextMotion(0.1)}>
               <Intro />
             </motion.div>
@@ -180,7 +193,7 @@ const App: React.FC = () => {
         <Divider />
 
         {/* ——— work ——— */}
-        <section id="work" className="pt-10 md:pt-28 pb-20 md:pb-28 scroll-mt-28 md:scroll-mt-10">
+        <section id="work" className="pt-10 md:pt-28 pb-20 md:pb-28 scroll-mt-36 md:scroll-mt-10">
           {/* match the hero images' width (hero container minus its padding) */}
           <div className="mx-auto w-full md:max-w-[calc(max(1010px,110svh_+_40px)_-_48px)]">
             <Experience />
@@ -190,7 +203,7 @@ const App: React.FC = () => {
         <Divider />
 
         {/* ——— projects ——— */}
-        <section id="projects" className="pt-20 md:pt-28 pb-20 md:pb-28 scroll-mt-28 md:scroll-mt-10">
+        <section id="projects" className="pt-20 md:pt-28 pb-20 md:pb-28 scroll-mt-36 md:scroll-mt-10">
           <Projects />
         </section>
 
