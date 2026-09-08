@@ -123,6 +123,11 @@ const useSpineColor = (src: string | undefined, fallback: string, override?: str
   return color;
 };
 
+// unscaled thickness of a spine: roughly 1px per 12 pages at full size
+const thickness = (b: Book) => Math.max(15, (b.pages ?? 300) / 12);
+const SHELF_THICKNESS = books.reduce((sum, b) => sum + thickness(b), 0);
+const SHELF_EXTRA = (books.length - 1) * 2 + 4; // `.books` gaps plus its left padding
+
 const CH = 0.6 * 1.04; // JetBrains Mono advance per glyph, plus letter-spacing
 const MIN_FS = 7;
 const SPINE_PAD = 30 + 6; // spine padding plus slack
@@ -145,8 +150,7 @@ const BookSpine: React.FC<BookProps> = ({ book, scale, rowBase, open, onToggle }
   const ink = book.spine?.textColor ?? inkFor(spine);
   const fav = book.shelf === "favourites";
 
-  // thickness is linear in page count (roughly 1px per 12 pages at full size)
-  const D = Math.round(Math.max(15, (book.pages ?? 300) / 12) * scale);
+  const D = Math.round(thickness(book) * scale);
   // shared row height (sized so the longest spine fits at MIN_FS) plus a few
   // px of per-book variation; the type then shrinks only as far as needed
   const H = Math.round(rowBase + (h % 30) * scale);
@@ -228,7 +232,19 @@ const Library: React.FC = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [openIsbn]);
 
-  const scale = isMobile ? 0.42 : 0.52;
+  // shrink the shelf so the whole row fits the column on narrow screens
+  const [rowWidth, setRowWidth] = useState<number | null>(null);
+  useEffect(() => {
+    const el = rowRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setRowWidth(entry.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const baseScale = isMobile ? 0.42 : 0.52;
+  // 8px of slack covers per-book rounding of the thicknesses
+  const fitScale = rowWidth ? (rowWidth - SHELF_EXTRA - 8) / SHELF_THICKNESS : baseScale;
+  const scale = Math.min(baseScale, fitScale);
   const rowBase = Math.max(
     280 * scale,
     ...books.map((b) => textUnits(b) * MIN_FS + SPINE_PAD + (b.author ? 8 : 0))
@@ -273,20 +289,6 @@ const Library: React.FC = () => {
           <br />
           here are a few of my favourite reads over the years
         </p>
-        {/* small hand-drawn arrow curling down-left onto the books */}
-        <svg
-          className="mt-1.5 -ml-4 w-[34px] h-[24px] text-ink/40"
-          viewBox="0 0 34 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M31 3c-4 7-12 12-24 15" />
-          <path d="M11 13l-4 5 6 3" />
-        </svg>
       </motion.div>
     </motion.div>
   );
