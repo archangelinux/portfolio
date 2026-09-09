@@ -6,7 +6,7 @@
    right and shows its covers' edges. No background on either element: a
    background on the perspective element would occlude faces behind z = 0. */
 .library-row {
-  perspective: 1100px;
+  perspective: var(--perspective, 1100px);
   /* seen from above and from the page column's centre: page tops and cover
      edges show, and the row parked at the left is viewed from the right */
   perspective-origin: 50% -10%;
@@ -61,7 +61,7 @@
   transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.32s;
 }
 .book.open .book-body {
-  transform: translate3d(0, -14px, calc(var(--w) + 24px));
+  transform: translate3d(0, -14px, calc(var(--w) + var(--pull, 24px)));
   transition: transform 0.45s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .book-block {
@@ -72,7 +72,8 @@
   transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .book.open .book-block {
-  transform: translateX(calc(var(--w) / -2 + var(--d) / 2)) rotateY(-90deg);
+  /* --open-x is computed per book so the cover stays inside the viewport */
+  transform: translateX(var(--open-x, calc(var(--w) / -2))) rotateY(-90deg);
   transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.34s;
 }
 .face {

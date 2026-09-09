@@ -134,22 +134,14 @@ const SPINE_PAD = 30 + 6; // spine padding plus slack
 const textUnits = (b: Book) =>
   (b.title ?? "").length * CH + (b.author ?? "").length * 0.82 * CH;
 
-interface BookProps {
-  book: Book;
-  scale: number;
-  rowBase: number;
-  open: boolean;
-  onToggle: () => void;
-}
+// the row's perspective and how far past its own depth an open book comes
+// forward; both are handed to the CSS as custom properties
+const PERSPECTIVE = 1100;
+const PULL = 24;
 
-const BookSpine: React.FC<BookProps> = ({ book, scale, rowBase, open, onToggle }) => {
-  const src = coverSrc(book);
+/** Pixel dimensions of one book at the given shelf scale. */
+const measure = (book: Book, scale: number, rowBase: number) => {
   const h = hash(book.isbn);
-  const fallback = CLOTH[h % CLOTH.length];
-  const spine = useSpineColor(src, fallback, book.spine?.color);
-  const ink = book.spine?.textColor ?? inkFor(spine);
-  const fav = book.shelf === "favourites";
-
   const D = Math.round(thickness(book) * scale);
   // shared row height (sized so the longest spine fits at MIN_FS) plus a few
   // px of per-book variation; the type then shrinks only as far as needed
@@ -157,12 +149,34 @@ const BookSpine: React.FC<BookProps> = ({ book, scale, rowBase, open, onToggle }
   const W = Math.round(H * 0.64);
   const room = H - SPINE_PAD - (book.author ? 8 : 0);
   const fs = Math.max(MIN_FS, Math.min(5.5 + D * 0.11, 11, room / textUnits(book)));
+  return { D, H, W, fs };
+};
+type Geometry = ReturnType<typeof measure>;
+
+interface BookProps {
+  book: Book;
+  geo: Geometry;
+  /** sideways shift of the turned block, in px, that places the cover */
+  openX: number;
+  open: boolean;
+  onToggle: () => void;
+}
+
+const BookSpine: React.FC<BookProps> = ({ book, geo, openX, open, onToggle }) => {
+  const src = coverSrc(book);
+  const h = hash(book.isbn);
+  const fallback = CLOTH[h % CLOTH.length];
+  const spine = useSpineColor(src, fallback, book.spine?.color);
+  const ink = book.spine?.textColor ?? inkFor(spine);
+  const fav = book.shelf === "favourites";
+  const { D, H, W, fs } = geo;
 
   const style = {
     "--h": `${H}px`,
     "--w": `${W}px`,
     "--d": `${D}px`,
     "--fs": `${fs}px`,
+    "--open-x": `${openX}px`,
     "--spine": spine,
     "--spine-ink": ink,
   } as CSSProperties;
@@ -232,15 +246,23 @@ const Library: React.FC = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [openIsbn]);
 
-  // shrink the shelf so the whole row fits the column on narrow screens
-  const [rowWidth, setRowWidth] = useState<number | null>(null);
+  // the row's width and where it sits in the viewport: the shelf shrinks to fit
+  // the column on narrow screens, and open covers are kept on screen
+  const [rowBox, setRowBox] = useState<{ width: number; left: number; vw: number } | null>(null);
   useEffect(() => {
     const el = rowRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(([entry]) => setRowWidth(entry.contentRect.width));
+    const ro = new ResizeObserver(([entry]) =>
+      setRowBox({
+        width: entry.contentRect.width,
+        left: el.getBoundingClientRect().left,
+        vw: document.documentElement.clientWidth,
+      })
+    );
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+  const rowWidth = rowBox?.width;
   const baseScale = isMobile ? 0.42 : 0.52;
   // 8px of slack covers per-book rounding of the thicknesses
   const fitScale = rowWidth ? (rowWidth - SHELF_EXTRA - 8) / SHELF_THICKNESS : baseScale;
@@ -249,6 +271,29 @@ const Library: React.FC = () => {
     280 * scale,
     ...books.map((b) => textUnits(b) * MIN_FS + SPINE_PAD + (b.author ? 8 : 0))
   );
+
+  const geos = books.map((b) => measure(b, scale, rowBase));
+  // Where each open cover goes. Turned in place, a cover's left edge lands on
+  // its spine's centre, so by default it is shifted back to sit centred over
+  // the spine. But the open book is also nearer the viewer than the shelf, and
+  // perspective magnifies it away from the row's centre line, so a cover near
+  // either end of the shelf can project past the screen edge. The target is
+  // therefore clamped in projected space to the viewport, with a small margin.
+  let x = 4; // `.books` left padding
+  const openXs = geos.map(({ D, W }) => {
+    const left = x;
+    x += D + 2; // spine plus the flex gap
+    let target = left + D / 2 - W / 2;
+    if (rowBox) {
+      const cx = rowBox.width / 2; // perspective-origin is the row's centre
+      const s = PERSPECTIVE / (PERSPECTIVE - (W + PULL + D / 2)); // magnification at the cover
+      const margin = 8;
+      const lo = cx + (margin - rowBox.left - cx) / s;
+      const hi = cx + (rowBox.vw - margin - rowBox.left - cx) / s - W;
+      target = Math.max(lo, Math.min(hi, target));
+    }
+    return target - left - D / 2;
+  });
 
   return (
     // the fade lives on the row, outside the preserve-3d `.books` context: any
@@ -259,6 +304,7 @@ const Library: React.FC = () => {
       animate={{ opacity: show ? 1 : 0 }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="library-row flex flex-col-reverse md:flex-row md:items-end gap-6 md:gap-5"
+      style={{ "--perspective": `${PERSPECTIVE}px`, "--pull": `${PULL}px` } as CSSProperties}
     >
       <motion.div
         initial={{ y: 16 }}
@@ -266,12 +312,12 @@ const Library: React.FC = () => {
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         className="books"
       >
-        {books.map((b) => (
+        {books.map((b, i) => (
           <BookSpine
             key={b.isbn}
             book={b}
-            scale={scale}
-            rowBase={rowBase}
+            geo={geos[i]}
+            openX={openXs[i]}
             open={openIsbn === b.isbn}
             onToggle={() => setOpenIsbn((cur) => (cur === b.isbn ? null : b.isbn))}
           />

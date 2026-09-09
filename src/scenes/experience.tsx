@@ -31,7 +31,7 @@ const roles: Record<string, Role> = {
     title: "Software Engineering Intern",
     company: "Wealthsimple",
     term: "Fall 2026",
-    blurb: "stock lending",
+    blurb: "brokerage / lending engineering",
     image: WealthsimplePrev,
     logo: WealthsimpleLogo,
     link: "https://www.wealthsimple.com/",
