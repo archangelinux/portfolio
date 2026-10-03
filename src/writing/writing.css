@@ -211,6 +211,18 @@
   font-size: 0.8em;
   color: var(--color-mute);
 }
+/* top-level numbered steps: bigger numbers in a wider gutter, more air between steps */
+.wr-prose > ol {
+  padding-left: 2.2em;
+}
+.wr-prose > ol > li + li {
+  margin-top: 1em;
+}
+.wr-prose > ol > li::marker {
+  font-size: 1.05em;
+  font-weight: 600;
+  color: var(--color-ink);
+}
 .wr-prose li > ul,
 .wr-prose li > ol {
   margin-top: 0.4em;

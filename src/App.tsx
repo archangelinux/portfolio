@@ -1,18 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { SideNav, ContactRail, MobileHeader, SectionId, scrollToSection } from "@/scenes/navbar";
-import Experience from "@/scenes/experience";
-import Projects from "@/scenes/projects";
-import ToolsSection from "@/scenes/tools";
-import Library from "@/scenes/library";
 
 import heroCampus from "@/assets/hero1.png";
 import heroCity from "@/assets/hero2.png";
 import heroPalms from "@/assets/hero3.png";
-import logoW from "@/assets/logo_w.svg";
+import depthCampus from "@/assets/hero1-depth.png";
+import depthCity from "@/assets/hero2-depth.png";
+import depthPalms from "@/assets/hero3-depth.png";
+import HeroDepth from "@/scenes/HeroDepth";
+import BookshelfDrawer from "@/scenes/BookshelfDrawer";
+import SiteFooter from "@/scenes/SiteFooter";
+import Library from "@/scenes/library";
+import HomePreview from "@/scenes/HomePreview";
 
-const SECTION_IDS: SectionId[] = ["me", "work", "projects"];
+const SECTION_IDS: SectionId[] = ["me"];
 
 const useActiveSection = (): SectionId => {
   const [active, setActive] = useState<SectionId>("me");
@@ -36,6 +39,13 @@ const useActiveSection = (): SectionId => {
   }, []);
   return active;
 };
+
+/** Each hero photo is a door into a page. */
+const DOORS = [
+  { src: heroCampus, depth: depthCampus, label: "work", sub: "where i've been building", to: "/work" },
+  { src: heroPalms, depth: depthPalms, label: "projects", sub: "things i've made", to: "/projects" },
+  { src: heroCity, depth: depthCity, label: "writing", sub: "essays and notes", to: "/writing" },
+];
 
 const Intro: React.FC = () => (
   <div className="text-[12px] leading-[1.55]">
@@ -75,10 +85,6 @@ const heroTextMotion = (delay: number) => ({
   transition: { duration: 1.1, delay, ease: [0.16, 1, 0.3, 1] as const },
 });
 
-const Divider: React.FC = () => (
-  <hr className="border-0 border-t border-ink/[0.08]" />
-);
-
 const App: React.FC = () => {
   const active = useActiveSection();
 
@@ -94,17 +100,17 @@ const App: React.FC = () => {
     return () => clearTimeout(t);
   }, [location]);
 
-  // mobile collage "expedited scroll": the collage's layout slot shrinks from
-  // the bottom 1px per 1px scrolled, so the work section approaches at twice
-  // the scroll speed. The photo canvas is top-anchored at a fixed size, so the
-  // shrink crops the photos from the bottom without any zooming.
-  const collageRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-  const slotH = useTransform(
-    scrollY,
-    (s) => `max(10svh, calc(74svh - ${Math.max(0, s - 20)}px))`
-  );
-  const collageFade = useTransform(scrollY, [180, 460], [1, 0]);
+
+  // on desktop the home page is exactly one screen: no scrolling (phones scroll down to the bookshelf)
+  useEffect(() => {
+    if (!window.matchMedia("(min-width: 850px)").matches) return;
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = prev;
+    };
+  }, []);
 
   return (
     <div className="app">
@@ -118,9 +124,10 @@ const App: React.FC = () => {
       {/* ——— me ——— hero scales with viewport height so large screens keep
           the laptop proportions; the rest of the page stays a 1080px column */}
       <div className="mx-auto px-6 max-w-[1080px] md:max-w-[max(1010px,calc(110svh+40px))]">
-        <section id="me" className="pt-4 pb-4 md:pb-6 scroll-mt-12">
+        <section id="me" className="pt-4 pb-4 md:py-0 scroll-mt-12">
           {/* Desktop hero — fills the first viewport, images base-aligned to the fold */}
-          <div className="hidden md:flex flex-col h-svh justify-end">
+          {/* the photos take whatever height is left, so it always fits one screen (no scrolling) */}
+          <div className="hidden md:flex flex-col h-svh pt-[max(84px,16svh)] pb-12">
             <div className="grid grid-cols-[auto_1fr] gap-10 items-end">
               <motion.h1
                 {...heroTextMotion(0.1)}
@@ -132,15 +139,12 @@ const App: React.FC = () => {
                 <Intro />
               </motion.div>
             </div>
-            <div className="grid grid-cols-3 gap-5 mt-12 mb-14 h-[55svh]">
-              {[heroCampus, heroPalms, heroCity].map((src, i) => (
-                <motion.img
-                  key={i}
-                  {...heroImgMotion(0.35 + i * 0.14)}
-                  src={src}
-                  alt=""
-                  className="w-full h-full object-cover rounded-md"
-                />
+            <div className="grid grid-cols-3 grid-rows-[minmax(0,1fr)] gap-5 mt-[clamp(20px,5svh,48px)] flex-1 min-h-0">
+              {/* each photo is a door: campus → work, palms → projects, city → writing */}
+              {DOORS.map(({ src, depth, label, sub, to }, i) => (
+                <motion.div key={i} {...heroImgMotion(0.35 + i * 0.14)} className="w-full h-full">
+                  <HeroDepth src={src} depth={depth} label={label} sub={sub} to={to} className="w-full h-full rounded-md cursor-pointer" />
+                </motion.div>
               ))}
             </div>
           </div>
@@ -148,91 +152,40 @@ const App: React.FC = () => {
           {/* Mobile hero — the collage occupies a short layout slot but draws
               tall; on scroll the photos ride up over the intro text while
               shrinking and fading, so the scroll past them stays short */}
-          <div className="md:hidden pt-40">
+          {/* Mobile hero: intro, then the collage filling the rest of the screen (no scrolling) */}
+          <div className="md:hidden h-[min(100svh,820px)] flex flex-col pt-40 pb-4">
             <motion.div {...heroTextMotion(0.1)}>
               <Intro />
             </motion.div>
-            <motion.div
-              ref={collageRef}
-              style={{ height: slotH }}
-              className="relative z-20 mt-6 overflow-hidden pointer-events-none"
-            >
-              <motion.div
-                style={{ opacity: collageFade }}
-                className="absolute top-0 left-0 right-0 h-[74svh] flex gap-4"
-              >
-                  <div className="w-[42%] flex flex-col gap-4 min-h-0">
-                    <motion.img
-                      {...heroImgMotion(0.15)}
-                      src={heroCity}
-                      alt=""
-                      className="w-full grow-[3] basis-0 min-h-0 object-cover rounded-md"
-                    />
-                    <motion.img
-                      {...heroImgMotion(0.35)}
-                      src={heroCampus}
-                      alt=""
-                      className="w-full grow-[2] basis-0 min-h-0 object-cover rounded-md"
-                    />
-                  </div>
-                  <div className="w-[58%] min-h-0">
-                    <motion.img
-                      {...heroImgMotion(0.25)}
-                      src={heroPalms}
-                      alt=""
-                      className="w-full h-full object-cover rounded-md"
-                    />
-                  </div>
+            <div className="mt-6 flex-1 min-h-0 flex gap-4">
+              <div className="w-[42%] flex flex-col gap-4 min-h-0">
+                <motion.div {...heroImgMotion(0.15)} className="w-full grow-[3] basis-0 min-h-0">
+                  <HeroDepth src={heroCity} depth={depthCity} label="writing" to="/writing" className="w-full h-full rounded-md" />
+                </motion.div>
+                <motion.div {...heroImgMotion(0.35)} className="w-full grow-[2] basis-0 min-h-0">
+                  <HeroDepth src={heroCampus} depth={depthCampus} label="work" to="/work" className="w-full h-full rounded-md" />
+                </motion.div>
+              </div>
+              <motion.div {...heroImgMotion(0.25)} className="w-[58%] min-h-0">
+                <HeroDepth src={heroPalms} depth={depthPalms} label="projects" to="/projects" className="w-full h-full rounded-md" />
               </motion.div>
-            </motion.div>
+            </div>
           </div>
         </section>
       </div>
 
-      <div className="max-w-[1080px] mx-auto px-6">
-        <Divider />
+      <BookshelfDrawer />
 
-        {/* ——— work ——— */}
-        <section id="work" className="pt-10 md:pt-28 pb-20 md:pb-28 scroll-mt-36 md:scroll-mt-10">
-          {/* match the hero images' width (hero container minus its padding) */}
-          <div className="mx-auto w-full md:max-w-[calc(max(1010px,110svh_+_40px)_-_48px)]">
-            <Experience />
-          </div>
+      {/* phones: a peek at each page, then a small bookshelf as the footer */}
+      <div className="md:hidden max-w-[1080px] mx-auto px-6">
+        <HomePreview />
+        <section className="pt-14 border-b border-ink/[0.08]">
+          <Library compact maxScale={0.28} />
         </section>
-
-        <Divider />
-
-        {/* ——— projects ——— */}
-        <section id="projects" className="pt-20 md:pt-28 pb-20 md:pb-28 scroll-mt-36 md:scroll-mt-10">
-          <Projects />
-        </section>
-
-        <Divider />
-
-        {/* ——— tools ——— */}
-        <section id="tools" className="pt-20 md:pt-28 pb-20 md:pb-28">
-          <ToolsSection />
-        </section>
-
-        {/* ——— library ——— */}
-        <section id="library" className="pt-16 md:pt-20 pb-0 border-b border-ink/[0.08]">
-          <Library />
-        </section>
-
-        {/* Footer */}
-        <footer className="py-5 flex items-center justify-between">
-          <span className="text-[11px] text-mute">© 2026 Angelina Wang</span>
-          <a
-            href="https://se-webring.xyz/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-[11px] text-mute hover:text-ink transition-colors"
-          >
-            <img src={logoW} alt="SE Webring" className="w-3.5 h-3.5 opacity-50" />
-            SE Webring
-          </a>
-        </footer>
       </div>
+
+      {/* bottom-left: fixed on desktop (no scrolling), at the end of the page on phones */}
+      <SiteFooter fixed />
     </div>
   );
 };

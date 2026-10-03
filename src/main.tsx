@@ -6,6 +6,8 @@ import "./index.css";
 import App from "./App.tsx";
 import WritingIndex from "./writing/WritingIndex.tsx";
 import WritingPost from "./writing/WritingPost.tsx";
+import WorkPage from "./pages/WorkPage.tsx";
+import ProjectsPage from "./pages/ProjectsPage.tsx";
 
 /* Start each route at the top (unless a hash is present — the page handles it) */
 const ScrollToTop = () => {
@@ -22,6 +24,8 @@ createRoot(document.getElementById("root")!).render(
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<App />} />
+        <Route path="/work" element={<WorkPage />} />
+        <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/writing" element={<WritingIndex />} />
         <Route path="/writing/:slug" element={<WritingPost />} />
         <Route path="*" element={<Navigate to="/" replace />} />

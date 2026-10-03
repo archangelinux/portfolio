@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&display=swap");
 
 /* ——— shelf row ———
-   The books stand directly on the footer's top rule. The vanishing point is
+   The books stand on the shelf line (.pg-shelf in projects.css). The vanishing point is
    the page column's centre, so a row parked at the left is seen from the
    right and shows its covers' edges. No background on either element: a
    background on the perspective element would occlude faces behind z = 0. */
@@ -16,7 +16,7 @@
   align-items: flex-end;
   gap: 2px;
   padding: 24px 0 0 4px;
-  margin-bottom: -2px; /* overlap the footer rule so the books rest on it */
+  margin-bottom: -1px; /* stand on the shelf line */
   max-width: 100%;
   transform-style: preserve-3d;
 }

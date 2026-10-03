@@ -130,6 +130,8 @@ const SHELF_EXTRA = (books.length - 1) * 2 + 4; // `.books` gaps plus its left p
 
 const CH = 0.6 * 1.04; // JetBrains Mono advance per glyph, plus letter-spacing
 const MIN_FS = 7;
+/** Compact shelves (a grid block) let spine type go smaller, so the books shrink in proportion. */
+const MIN_FS_COMPACT = 4;
 const SPINE_PAD = 30 + 6; // spine padding plus slack
 const textUnits = (b: Book) =>
   (b.title ?? "").length * CH + (b.author ?? "").length * 0.82 * CH;
@@ -140,7 +142,7 @@ const PERSPECTIVE = 1100;
 const PULL = 24;
 
 /** Pixel dimensions of one book at the given shelf scale. */
-const measure = (book: Book, scale: number, rowBase: number) => {
+const measure = (book: Book, scale: number, rowBase: number, minFs: number) => {
   const h = hash(book.isbn);
   const D = Math.round(thickness(book) * scale);
   // shared row height (sized so the longest spine fits at MIN_FS) plus a few
@@ -148,7 +150,7 @@ const measure = (book: Book, scale: number, rowBase: number) => {
   const H = Math.round(rowBase + (h % 30) * scale);
   const W = Math.round(H * 0.64);
   const room = H - SPINE_PAD - (book.author ? 8 : 0);
-  const fs = Math.max(MIN_FS, Math.min(5.5 + D * 0.11, 11, room / textUnits(book)));
+  const fs = Math.max(minFs, Math.min(5.5 + D * 0.11, 11, room / textUnits(book)));
   return { D, H, W, fs };
 };
 type Geometry = ReturnType<typeof measure>;
@@ -221,7 +223,13 @@ const BookSpine: React.FC<BookProps> = ({ book, geo, openX, open, onToggle }) =>
   );
 };
 
-const Library: React.FC = () => {
+/**
+ * `compact`: a small shelf for a grid block, label above the books (desktop projects).
+ * `bare`: no label or note (the home page's slide-in shelf).
+ * `maxScale`: cap the book size (the small phone footer shelf).
+ * Otherwise the original footer shelf: books standing on the footer rule, note after them.
+ */
+const Library: React.FC<{ compact?: boolean; bare?: boolean; maxScale?: number }> = ({ compact = false, bare = false, maxScale }) => {
   const isMobile = !useMediaQuery("(min-width: 850px)");
   const [openIsbn, setOpenIsbn] = useState<string | null>(null);
   const rowRef = useRef<HTMLDivElement>(null);
@@ -263,16 +271,17 @@ const Library: React.FC = () => {
     return () => ro.disconnect();
   }, []);
   const rowWidth = rowBox?.width;
-  const baseScale = isMobile ? 0.42 : 0.52;
+  const baseScale = maxScale ?? (isMobile ? 0.42 : 0.52);
   // 8px of slack covers per-book rounding of the thicknesses
+  const minFs = compact ? MIN_FS_COMPACT : MIN_FS;
   const fitScale = rowWidth ? (rowWidth - SHELF_EXTRA - 8) / SHELF_THICKNESS : baseScale;
   const scale = Math.min(baseScale, fitScale);
   const rowBase = Math.max(
     280 * scale,
-    ...books.map((b) => textUnits(b) * MIN_FS + SPINE_PAD + (b.author ? 8 : 0))
+    ...books.map((b) => textUnits(b) * minFs + SPINE_PAD * (compact ? 0.6 : 1) + (b.author ? 8 : 0))
   );
 
-  const geos = books.map((b) => measure(b, scale, rowBase));
+  const geos = books.map((b) => measure(b, scale, rowBase, minFs));
   // Where each open cover goes. Turned in place, a cover's left edge lands on
   // its spine's centre, so by default it is shifted back to sit centred over
   // the spine. But the open book is also nearer the viewer than the shelf, and
@@ -303,9 +312,21 @@ const Library: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: show ? 1 : 0 }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="library-row flex flex-col-reverse md:flex-row md:items-end gap-6 md:gap-5"
+      className={`library-row flex ${compact ? "flex-col gap-3" : "flex-col-reverse md:flex-row md:items-end gap-6 md:gap-5"}`}
       style={{ "--perspective": `${PERSPECTIVE}px`, "--pull": `${PULL}px` } as CSSProperties}
     >
+      {compact && !bare && (
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: show ? 1 : 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="text-[12px] leading-[1.55] text-mute"
+      >
+        <span className="font-semibold text-ink">on my shelf</span>
+        <br />
+        a few favourite reads over the years
+      </motion.p>
+      )}
       <motion.div
         initial={{ y: 16 }}
         animate={{ y: show ? 0 : 16 }}
@@ -324,18 +345,20 @@ const Library: React.FC = () => {
         ))}
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: show ? 1 : 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="shrink-0 flex flex-col self-start md:mt-5 pl-2 md:pl-0 md:ml-9"
-      >
-        <p className="text-[12px] leading-[1.55] text-mute max-w-[230px]">
-          <span className="font-semibold text-ink">you've reached the bottom!</span>
-          <br />
-          here are a few of my favourite reads over the years
-        </p>
-      </motion.div>
+      {!compact && !bare && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: show ? 1 : 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="shrink-0 flex flex-col self-start md:mt-5 pl-2 md:pl-0 md:ml-9"
+        >
+          <p className="text-[12px] leading-[1.55] text-mute max-w-[230px]">
+            <span className="font-semibold text-ink">you've reached the bottom!</span>
+            <br />
+            here are a few of my favourite reads over the years
+          </p>
+        </motion.div>
+      )}
     </motion.div>
   );
 };

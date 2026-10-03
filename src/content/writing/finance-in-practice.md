@@ -3,7 +3,7 @@ title: Finance in practice
 description: A running journal on learning finance the practical way, starting with four months at Wealthsimple.
 date: 2026-09-03
 tags: [finance, co-op, wealthsimple]
-kind: journal
+kind: note
 draft: true
 ---
 

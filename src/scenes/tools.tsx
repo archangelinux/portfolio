@@ -8,11 +8,8 @@ import {
   FaDocker,
   FaAws,
   FaGoogle,
-  FaFigma,
   FaReact,
   FaNodeJs,
-  FaGitAlt,
-  FaLinux,
   FaMicrosoft,
 } from "react-icons/fa";
 import {
@@ -32,15 +29,7 @@ import {
   SiSupabase,
   SiMongodb,
 } from "react-icons/si";
-import {
-  Globe,
-  Plug,
-  Cpu,
-  Brain,
-  RefreshCw,
-  GitBranch,
-  Database,
-} from "lucide-react";
+import { Database } from "lucide-react";
 
 interface Tool {
   icon: React.ReactNode;
@@ -99,21 +88,6 @@ const categories: Category[] = [
       { icon: <SiMongodb />, label: "MongoDB", color: "cyan" },
     ],
   },
-  {
-    id: "tools",
-    label: "tools & concepts",
-    tools: [
-      { icon: <FaGitAlt />, label: "Git", color: "red" },
-      { icon: <FaLinux />, label: "Linux", color: "gold" },
-      { icon: <Globe className="w-3.5 h-3.5" />, label: "RESTful APIs", color: "cyan" },
-      { icon: <Plug className="w-3.5 h-3.5" />, label: "WebSockets", color: "orange" },
-      { icon: <Cpu className="w-3.5 h-3.5" />, label: "Distributed Sys", color: "blue" },
-      { icon: <Brain className="w-3.5 h-3.5" />, label: "GenAI/LLMs", color: "purple" },
-      { icon: <RefreshCw className="w-3.5 h-3.5" />, label: "SDLC/Agile", color: "cyan" },
-      { icon: <GitBranch className="w-3.5 h-3.5" />, label: "CI/CD", color: "orange" },
-      { icon: <FaFigma />, label: "Figma", color: "purple" },
-    ],
-  },
 ];
 
 const iconColor: Record<string, string> = {
@@ -124,14 +98,17 @@ const iconColor: Record<string, string> = {
   red: "text-acc-red",
   crimson: "text-acc-crimson",
   purple: "text-acc-purple",
-  ink: "text-ink/70",
+  ink: "text-ink/90",
 };
 
-const ToolsSection: React.FC = () => (
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+const ToolsSection: React.FC = () => {
+  return (
+  <div className="relative md:flex">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10 w-full">
     {categories.map((cat, ci) => (
       <motion.div
         key={cat.id}
+        className="relative"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
@@ -140,8 +117,8 @@ const ToolsSection: React.FC = () => (
         <h3 className="text-[13px] font-bold mb-3">{cat.label}</h3>
         <ul className="flex flex-col gap-[7px]">
           {cat.tools.map((tool) => (
-            <li key={tool.label} className="flex items-center gap-2.5 text-[12px] text-ink/80">
-              <span className={`text-[14px] leading-none ${iconColor[tool.color] ?? "text-ink/70"}`}>
+            <li key={tool.label} className="flex items-center gap-2.5 text-[12px] text-ink">
+              <span className={`text-[14px] leading-none ${iconColor[tool.color] ?? "text-ink/90"}`}>
                 {tool.icon}
               </span>
               {tool.label}
@@ -150,7 +127,9 @@ const ToolsSection: React.FC = () => (
         </ul>
       </motion.div>
     ))}
+    </div>
   </div>
-);
+  );
+};
 
 export default ToolsSection;

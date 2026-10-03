@@ -3,13 +3,14 @@ import { Link, useParams, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { SideNav, ContactRail, MobileHeader } from "@/scenes/navbar";
+import SiteFooter from "@/scenes/SiteFooter";
 import { posts, getPost, formatDate, PostKind } from "./posts";
 import Markdown, { slugify } from "./Markdown";
+import Thumbnail from "./Thumbnail";
 import "./writing.css";
 
 const KIND_LABEL: Record<PostKind, string> = {
-  writeup: "write-up",
-  journal: "journal",
+  essay: "essay",
   note: "note",
 };
 
@@ -157,6 +158,12 @@ const WritingPost: React.FC = () => {
               )}
             </motion.header>
 
+            {post.thumbnail && (
+              <motion.div {...enter(0.12)} className="mt-8">
+                <Thumbnail src={post.thumbnail} />
+              </motion.div>
+            )}
+
             <motion.article {...enter(0.16)} className="mt-10">
               <Markdown source={post.body} />
             </motion.article>
@@ -201,6 +208,7 @@ const WritingPost: React.FC = () => {
             </motion.aside>
           )}
         </div>
+        <SiteFooter />
       </div>
     </div>
   );

@@ -2,19 +2,18 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SideNav, ContactRail, MobileHeader } from "@/scenes/navbar";
+import SiteFooter from "@/scenes/SiteFooter";
 import { posts, formatDate, PostKind } from "./posts";
 import "./writing.css";
 
 const KIND_LABEL: Record<PostKind, string> = {
-  writeup: "write-up",
-  journal: "journal",
+  essay: "essay",
   note: "note",
 };
 
 const FILTERS: { id: PostKind | "all"; label: string }[] = [
   { id: "all", label: "all" },
-  { id: "writeup", label: "write-ups" },
-  { id: "journal", label: "journals" },
+  { id: "essay", label: "essays" },
   { id: "note", label: "notes" },
 ];
 
@@ -38,7 +37,7 @@ const WritingIndex: React.FC = () => {
 
         <main className="pt-40 pb-24 mx-auto max-w-[680px]">
           <motion.header {...fade(0)}>
-            <h1 className="font-serif text-[30px] md:text-[36px] font-semibold tracking-[-0.015em] leading-none [font-variation-settings:'opsz'_60]">
+            <h1 className="page-title">
               writing
             </h1>
             <div className="mt-5 flex items-center gap-1.5">
@@ -74,22 +73,32 @@ const WritingIndex: React.FC = () => {
                           <span className="text-[11px] text-mute tabular-nums">
                             {formatDate(p.date).replace(`, ${year}`, "")}
                           </span>
-                          <span className="min-w-0">
-                            <span className="block font-serif text-[18px] font-semibold tracking-[-0.01em] leading-snug group-hover:underline underline-offset-4 decoration-faint">
-                              {p.title}
-                              {p.draft && (
-                                <span className="ml-2 text-[10px] font-normal text-acc-orange">draft</span>
-                              )}
-                            </span>
-                            {p.description && (
-                              <span className="block mt-1 font-serif text-[14px] text-mute leading-relaxed">
-                                {p.description}
+                          <span className="min-w-0 flex items-start gap-4">
+                            <span className="min-w-0 flex-1">
+                              <span className="block font-serif text-[18px] font-semibold tracking-[-0.01em] leading-snug group-hover:underline underline-offset-4 decoration-faint">
+                                {p.title}
+                                {p.draft && (
+                                  <span className="ml-2 text-[10px] font-normal text-acc-orange">draft</span>
+                                )}
                               </span>
-                            )}
-                            <span className="md:hidden block mt-1.5 text-[10.5px] text-faint">
-                              {KIND_LABEL[p.kind]} · {p.readingMinutes} min
-                              {p.tags.length > 0 && ` · ${p.tags.join(", ")}`}
+                              {p.description && (
+                                <span className="block mt-1 font-serif text-[14px] text-mute leading-relaxed">
+                                  {p.description}
+                                </span>
+                              )}
+                              <span className="md:hidden block mt-1.5 text-[10.5px] text-faint">
+                                {KIND_LABEL[p.kind]} · {p.readingMinutes} min
+                                {p.tags.length > 0 && ` · ${p.tags.join(", ")}`}
+                              </span>
                             </span>
+                            {p.thumbnail && (
+                              <img
+                                src={p.thumbnail}
+                                alt=""
+                                loading="lazy"
+                                className="shrink-0 mt-1 w-[84px] md:w-[120px] aspect-[4/3] rounded-md object-cover ring-1 ring-ink/[0.06] transition-opacity duration-300 group-hover:opacity-85"
+                              />
+                            )}
                           </span>
                           <span className="hidden md:flex items-center gap-1.5 text-[10.5px] text-faint whitespace-nowrap">
                             <span className="px-1.5 h-[16px] inline-flex items-center rounded-full bg-card">
@@ -108,6 +117,7 @@ const WritingIndex: React.FC = () => {
             )}
           </div>
         </main>
+        <SiteFooter />
       </div>
     </div>
   );

@@ -8,8 +8,8 @@ import {
   FaRegEnvelope,
 } from "react-icons/fa6";
 
-/* "me" / "work" / "projects" are sections of the home page; "writing" is its
-   own route (/writing) and is highlighted whenever we're on it */
+/* every item is its own page: "me" is the home page (the hero), "work",
+   "projects" and "writing" each have a route and are highlighted when on it */
 export type SectionId = "me" | "work" | "projects" | "writing";
 
 const NAV_ITEMS: { id: SectionId; label: string }[] = [
@@ -19,7 +19,7 @@ const NAV_ITEMS: { id: SectionId; label: string }[] = [
   { id: "writing", label: "writing" },
 ];
 
-const PAGE_ROUTES: Partial<Record<SectionId, string>> = { writing: "/writing" };
+const PAGE_ROUTES: Partial<Record<SectionId, string>> = { me: "/", work: "/work", projects: "/projects", writing: "/writing" };
 
 const CONTACT_ITEMS = [
   {

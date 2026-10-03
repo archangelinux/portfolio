@@ -28,7 +28,8 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
-    "swiper": "^11.2.6"
+    "swiper": "^11.2.6",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -37,6 +38,7 @@
     "@types/react": "^19.0.10",
     "@types/react-anchor-link-smooth-scroll": "^1.0.2",
     "@types/react-dom": "^19.0.4",
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "daisyui": "^5.5.18",

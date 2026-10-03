@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="-1 -1 26 26">
+  <!-- a closed hand, holding on (Lucide's shape): soft mint fill, deep green line, white halo for contrast on any background -->
+  <defs>
+    <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9f2de"/>
+      <stop offset="1" stop-color="#9fd4ab"/>
+    </linearGradient>
+    <path id="hand" d="M2 14a2 2 0 0 1 4 0V9a2 2 0 0 1 4 0V8a2 2 0 0 1 4 0V9a2 2 0 0 1 4 0V11a2 2 0 0 1 4 0v3a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8Z"/>
+  </defs>
+  <use href="#hand" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+  <use href="#hand" fill="url(#fill)"/>
+  <g fill="none" stroke="#2f6b43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <use href="#hand"/>
+    <path d="M6 14V12M10 9v1M14 8v2.4M18 9v2.5"/>
+  </g>
+</svg>

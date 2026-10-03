@@ -24,7 +24,8 @@ description: One or two sentences. Shown on the index and under the title.
 date: 2026-09-03            # ordering + display
 updated: 2026-09-05         # optional
 tags: [finance, co-op]      # optional
-kind: journal               # journal | writeup | note  (default: writeup)
+kind: essay                 # essay | note  (default: note)
+thumbnail: my-post.png      # optional; file in src/assets
 draft: true                 # optional; hidden in production
 ---
 ```
