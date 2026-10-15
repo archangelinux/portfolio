@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { SideNav, ContactRail, MobileHeader } from "@/scenes/navbar";
 import SiteFooter from "@/scenes/SiteFooter";
 import { posts, getPost, formatDate, PostKind } from "./posts";
-import Markdown, { slugify } from "./Markdown";
+import Markdown, { uniqueSlugger } from "./Markdown";
 import Thumbnail from "./Thumbnail";
 import "./writing.css";
 
@@ -24,14 +24,16 @@ interface TocItem {
  *  so a long journal can be jumped through by entry. */
 const buildToc = (body: string): TocItem[] => {
   const items: TocItem[] = [];
+  const slug = uniqueSlugger(); //counts every h1-h4 like rehypeHeadingIds does, so repeated names get the same -1, -2 ids
   let inFence = false;
   for (const line of body.split("\n")) {
     if (/^\s*(```|~~~)/.test(line)) inFence = !inFence;
     if (inFence) continue;
-    const m = line.match(/^(##|###)\s+(.+?)\s*#*\s*$/);
+    const m = line.match(/^(#{1,4})\s+(.+?)\s*#*\s*$/);
     if (!m) continue;
-    const text = m[2].replace(/[*_`~]/g, "");
-    items.push({ depth: m[1].length as 2 | 3, text, id: slugify(text) });
+    const text = m[2].replace(/[*`~]/g, "");
+    const id = slug(text);
+    if (m[1].length === 2 || m[1].length === 3) items.push({ depth: m[1].length as 2 | 3, text, id });
   }
   return items;
 };

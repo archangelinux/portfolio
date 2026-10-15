@@ -1,116 +1,8 @@
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import libraryData from "@/data/library.json";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import "./library.css";
-
-interface Book {
-  isbn: string;
-  title?: string;
-  author?: string;
-  shelf?: string;
-  rating?: number | null;
-  note?: string;
-  pages?: number;
-  cover?: string;
-  spine?: { color?: string; textColor?: string; image?: string };
-}
-
-const books = (libraryData as { books: Book[] }).books.filter((b) => b.isbn);
-
-// covers fetched by `npm run covers`, keyed by isbn
-const fetchedCovers = import.meta.glob<string>("../assets/library/covers/*.{jpg,jpeg,png,webp}", {
-  eager: true,
-  import: "default",
-});
-// hand-supplied covers referenced from library.json's `cover` field
-const customCovers = import.meta.glob<string>("../assets/library/*.{jpg,jpeg,png,webp}", {
-  eager: true,
-  import: "default",
-});
-
-const coverSrc = (b: Book): string | undefined => {
-  if (b.cover && !b.cover.startsWith("TODO")) return customCovers[`../assets/library/${b.cover}`];
-  return Object.entries(fetchedCovers).find(([k]) => k.includes(`/${b.isbn}.`))?.[1];
-};
-
-const hash = (s: string) => {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
-  return Math.abs(h);
-};
-
-// vintage cloth colours for books with no cover to sample from
-const CLOTH = ["#6d2f2b", "#2f4a3d", "#2c3d5c", "#7a5a1e", "#4a3a5e", "#5c4033"];
-
-const luminance = (hex: string) => {
-  const n = parseInt(hex.slice(1), 16);
-  return 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
-};
-const inkFor = (bg: string) => (luminance(bg) > 150 ? "#2b2118" : "#efe4c9");
-
-/** Pick the most-present saturated colour from a cover image, then dim it a touch. */
-const dominantColor = (img: HTMLImageElement): string => {
-  const S = 24;
-  const c = document.createElement("canvas");
-  c.width = S;
-  c.height = S;
-  const ctx = c.getContext("2d");
-  if (!ctx) return CLOTH[0];
-  ctx.drawImage(img, 0, 0, S, S);
-  const { data } = ctx.getImageData(0, 0, S, S);
-  const buckets = new Map<number, { r: number; g: number; b: number; score: number; n: number }>();
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i], g = data[i + 1], b = data[i + 2];
-    const max = Math.max(r, g, b), min = Math.min(r, g, b);
-    if (max > 238) continue; // ignore white scan borders
-    const sat = max === 0 ? 0 : (max - min) / max;
-    const key = ((r >> 5) << 6) | ((g >> 5) << 3) | (b >> 5);
-    const e = buckets.get(key) ?? { r: 0, g: 0, b: 0, score: 0, n: 0 };
-    e.r += r; e.g += g; e.b += b; e.score += 0.3 + sat; e.n++;
-    buckets.set(key, e);
-  }
-  let best: { r: number; g: number; b: number; score: number; n: number } | null = null;
-  for (const e of buckets.values()) if (!best || e.score > best.score) best = e;
-  if (!best) return CLOTH[0];
-  const n = best.n;
-  // pull toward the site's muted grade: 18% toward mid-grey, slightly dimmed
-  const tone = (v: number) => Math.round(Math.min(255, ((v / n) * 0.74 + 150 * 0.26) * 0.97));
-  return `#${[tone(best.r), tone(best.g), tone(best.b)].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
-};
-
-const colorCache = new Map<string, string>();
-const colorLoads = new Map<string, Promise<string | undefined>>();
-/** Load a cover once and sample its spine colour; shared by every caller. */
-const loadSpineColor = (src: string) => {
-  let p = colorLoads.get(src);
-  if (!p) {
-    p = new Promise<string | undefined>((resolve) => {
-      const img = new Image();
-      img.onload = () => {
-        try {
-          const c = dominantColor(img);
-          colorCache.set(src, c);
-          resolve(c);
-        } catch {
-          resolve(undefined);
-        }
-      };
-      img.onerror = () => resolve(undefined);
-      img.src = src;
-    });
-    colorLoads.set(src, p);
-  }
-  return p;
-};
-/** Resolves once every spine colour is known, so the shelf can appear in one go. */
-const loadAllSpineColors = () =>
-  Promise.all(
-    books.flatMap((b) => {
-      const src = coverSrc(b);
-      return src && !b.spine?.color ? [loadSpineColor(src)] : [];
-    })
-  );
+import { books, coverSrc, hash, CLOTH, inkFor, colorCache, loadSpineColor, loadAllSpineColors, thickness, type Book } from "./books";
 
 const useSpineColor = (src: string | undefined, fallback: string, override?: string) => {
   const [color, setColor] = useState(override ?? (src && colorCache.get(src)) ?? fallback);
@@ -123,8 +15,6 @@ const useSpineColor = (src: string | undefined, fallback: string, override?: str
   return color;
 };
 
-// unscaled thickness of a spine: roughly 1px per 12 pages at full size
-const thickness = (b: Book) => Math.max(15, (b.pages ?? 300) / 12);
 const SHELF_THICKNESS = books.reduce((sum, b) => sum + thickness(b), 0);
 const SHELF_EXTRA = (books.length - 1) * 2 + 4; // `.books` gaps plus its left padding
 
@@ -257,23 +147,28 @@ const Library: React.FC<{ compact?: boolean; bare?: boolean; maxScale?: number }
   // the row's width and where it sits in the viewport: the shelf shrinks to fit
   // the column on narrow screens, and open covers are kept on screen
   const [rowBox, setRowBox] = useState<{ width: number; left: number; vw: number } | null>(null);
+  const measureRow = () => {
+    const el = rowRef.current;
+    if (!el) return;
+    setRowBox({
+      width: el.clientWidth,
+      left: el.getBoundingClientRect().left,
+      vw: document.documentElement.clientWidth,
+    });
+  };
   useEffect(() => {
     const el = rowRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(([entry]) =>
-      setRowBox({
-        width: entry.contentRect.width,
-        left: el.getBoundingClientRect().left,
-        vw: document.documentElement.clientWidth,
-      })
-    );
+    const ro = new ResizeObserver(measureRow);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
   const rowWidth = rowBox?.width;
   const baseScale = maxScale ?? (isMobile ? 0.42 : 0.52);
   // 8px of slack covers per-book rounding of the thicknesses
-  const minFs = compact ? MIN_FS_COMPACT : MIN_FS;
+  // a capped footer shelf shrinks its spine type too, so the books keep their
+  // proportions (book height is set by the type, thickness by the scale)
+  const minFs = compact ? MIN_FS_COMPACT : MIN_FS * Math.min(1, (maxScale ?? 0.52) / 0.52);
   const fitScale = rowWidth ? (rowWidth - SHELF_EXTRA - 8) / SHELF_THICKNESS : baseScale;
   const scale = Math.min(baseScale, fitScale);
   const rowBase = Math.max(
@@ -340,7 +235,12 @@ const Library: React.FC<{ compact?: boolean; bare?: boolean; maxScale?: number }
             geo={geos[i]}
             openX={openXs[i]}
             open={openIsbn === b.isbn}
-            onToggle={() => setOpenIsbn((cur) => (cur === b.isbn ? null : b.isbn))}
+            onToggle={() => {
+              // re-measure on open: a row that slid in (the home drawer) was
+              // measured off screen, which would clamp covers to the far left
+              measureRow();
+              setOpenIsbn((cur) => (cur === b.isbn ? null : b.isbn));
+            }}
           />
         ))}
       </motion.div>

@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "covers": "node scripts/fetch-covers.mjs"
+    "covers": "node scripts/fetch-covers.mjs",
+    "sync:guide": "node scripts/sync-guide.mjs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

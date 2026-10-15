@@ -17,6 +17,18 @@ export const slugify = (s: string) =>
     .trim()
     .replace(/[\s_]+/g, "-");
 
+/** slugify, but repeated headings get -1, -2, ... (GitHub style) so every heading has its own id.
+ *  Make one per document; the TOC and the rendered headings must count the same headings in the same order. */
+export const uniqueSlugger = () => {
+  const seen = new Map<string, number>();
+  return (text: string) => {
+    const base = slugify(text);
+    const n = seen.get(base) ?? 0;
+    seen.set(base, n + 1);
+    return n === 0 ? base : `${base}-${n}`;
+  };
+};
+
 interface HastNode {
   type: string;
   value?: string;
@@ -48,15 +60,72 @@ const DATE_HEADING =
    headings — anchor on hover; date-shaped headings become journal markers
    ———————————————————————————————————————————————————————————————————————— */
 
+/** marks a paragraph that is only bold text ("**How to get reliable numbers**") as a label for what follows */
+const rehypeLabels = () => (tree: HastNode) => {
+  const walk = (n: HastNode) => {
+    if (n.type === "element" && n.tagName === "p") {
+      const kids = (n.children ?? []).filter((c) => !(c.type === "text" && !(c.value ?? "").trim()));
+      if (kids.length === 1 && kids[0].type === "element" && kids[0].tagName === "strong") {
+        n.properties = { ...n.properties, className: ["wr-label"] };
+      }
+      return;
+    }
+    (n.children ?? []).forEach(walk);
+  };
+  walk(tree);
+};
+
+/** gives every h1-h4 a unique id before rendering (see uniqueSlugger) */
+const rehypeHeadingIds = () => (tree: HastNode) => {
+  const slug = uniqueSlugger();
+  const walk = (n: HastNode) => {
+    if (n.type === "element" && /^h[1-4]$/.test(n.tagName ?? "")) {
+      n.properties = { ...n.properties, id: slug(hastText(n)) };
+      return;
+    }
+    (n.children ?? []).forEach(walk);
+  };
+  walk(tree);
+};
+
+/** "### Implementation" etc. — the recurring section names in a how-to post get a colored label */
+const SECTION_KINDS = new Set(["implementation", "shapes", "testing", "benchmark"]);
+
+/** wraps each "### Implementation" / Shapes / Testing / Benchmark section (the h3 and everything
+ *  up to the next h1-h3 or divider) in <section class="wr-sec" data-kind=...>, drawn as a bordered box */
+const rehypeSectionBoxes = () => (tree: HastNode) => {
+  const kids = tree.children ?? [];
+  const out: HastNode[] = [];
+  let box: HastNode | null = null;
+  for (const n of kids) {
+    const isHead = n.type === "element" && /^h[1-3]$/.test(n.tagName ?? "");
+    //a --- rule, or a paragraph that is only a dash, also ends the box
+    const isBreak = n.type === "element" && (n.tagName === "hr" || (n.tagName === "p" && /^[—–-]$/.test(hastText(n).trim())));
+    if (isBreak) box = null;
+    if (isHead) {
+      box = null;
+      const kind = hastText(n).trim().toLowerCase();
+      if (n.tagName === "h3" && SECTION_KINDS.has(kind)) {
+        box = { type: "element", tagName: "section", properties: { className: ["wr-sec"], dataKind: kind }, children: [] };
+        out.push(box);
+      }
+    }
+    if (box) box.children!.push(n);
+    else out.push(n);
+  }
+  tree.children = out;
+};
+
 const heading =
   (Tag: "h1" | "h2" | "h3" | "h4") =>
-  ({ children, node, ...rest }: React.HTMLAttributes<HTMLHeadingElement> & ExtraProps) => {
+  ({ children, node, id: givenId, ...rest }: React.HTMLAttributes<HTMLHeadingElement> & ExtraProps) => {
     const text = reactText(children);
-    const id = slugify(text);
+    const id = givenId ?? slugify(text);
     const isDate = DATE_HEADING.test(text.trim());
+    const kind = Tag === "h3" && SECTION_KINDS.has(text.trim().toLowerCase()) ? text.trim().toLowerCase() : undefined;
     void node;
     return (
-      <Tag id={id} className={isDate ? "wr-date" : undefined} {...rest}>
+      <Tag id={id} className={isDate ? "wr-date" : undefined} data-kind={kind} {...rest}>
         <a href={`#${id}`} className="wr-anchor" aria-label={`Link to ${text}`}>
           <LinkIcon />
         </a>
@@ -196,7 +265,7 @@ const Markdown: React.FC<{ source: string }> = ({ source }) => (
   <div className="wr-prose">
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkCallouts, remarkCodeMeta]}
-      rehypePlugins={[rehypeRaw, [rehypeHighlight, { detect: false }]]}
+      rehypePlugins={[rehypeRaw, rehypeHeadingIds, rehypeLabels, rehypeSectionBoxes, [rehypeHighlight, { detect: false }]]}
       components={components}
     >
       {source}

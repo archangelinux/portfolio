@@ -106,7 +106,10 @@
     grid-template-rows: 1fr;
   }
 }
-.card:focus-within .card-more,
+/* keyboard focus only: a mouse click or a tap focuses the card too, and
+   :focus-within would then hold the panel open after the pointer leaves */
+.card:has(:focus-visible) .card-more,
+.card:focus-visible .card-more,
 .card.is-open .card-more {
   grid-template-rows: 1fr;
 }
@@ -116,7 +119,8 @@
     display: none;
   }
 }
-.card:focus-within .card-row-tags,
+.card:has(:focus-visible) .card-row-tags,
+.card:focus-visible .card-row-tags,
 .card.is-open .card-row-tags {
   display: none;
 }

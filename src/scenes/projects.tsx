@@ -299,10 +299,10 @@ const Links: React.FC<{ p: Project }> = ({ p }) => {
  * A project card: the image fills the card, with a translucent dark panel
  * along the bottom holding the name, one-liner and tags in white. On hover
  * (or keyboard focus) the panel extends upward over the image to reveal the
- * long description, full tags and links; on touch screens a tap opens it.
+ * long description, full tags and links. On touch screens a tap opens it and
+ * a second tap closes it; the grid keeps only one open at a time.
  */
-const ProjectCard: React.FC<{ p: Project }> = ({ p }) => {
-  const [open, setOpen] = useState(false);
+const ProjectCard: React.FC<{ p: Project; open: boolean; onTap: () => void }> = ({ p, open, onTap }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -324,7 +324,7 @@ const ProjectCard: React.FC<{ p: Project }> = ({ p }) => {
     return () => ro.disconnect();
   }, []);
   const tap = () => {
-    if (window.matchMedia("(hover: none)").matches) setOpen((o) => !o);
+    if (window.matchMedia("(hover: none)").matches) onTap();
   };
   const dark = p.tone === "dark";
   const strong = dark ? "text-white" : "text-ink";
@@ -398,11 +398,31 @@ const useDealIn = (ref: React.RefObject<HTMLDivElement | null>) => {
 const Projects: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   useDealIn(ref);
+  // touch screens: the one card whose panel is up
+  const [openKey, setOpenKey] = useState<string | null>(null);
+  // a tap anywhere outside the cards puts it back down
+  useEffect(() => {
+    if (!openKey) return;
+    const onDown = (e: PointerEvent) => {
+      if (!(e.target as Element).closest?.(".card")) setOpenKey(null);
+    };
+    window.addEventListener("pointerdown", onDown);
+    return () => window.removeEventListener("pointerdown", onDown);
+  }, [openKey]);
   return (
   <div ref={ref} className="cards relative">
     {ROWS.map((key) => {
       const p = projects.find((q) => q.title === key);
-      return p && <ProjectCard key={key} p={p} />;
+      return (
+        p && (
+          <ProjectCard
+            key={key}
+            p={p}
+            open={openKey === key}
+            onTap={() => setOpenKey((k) => (k === key ? null : key))}
+          />
+        )
+      );
     })}
   </div>
   );

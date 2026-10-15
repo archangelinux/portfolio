@@ -17,15 +17,25 @@
   }
 }
 
-.wr-prose > * + * {
+.wr-prose > * + *,
+.wr-sec > * + * {
   margin-top: 1.15em;
 }
 
-.wr-prose p {
+/* reset browser margins, but at zero specificity so the spacing rules above still apply to p */
+:where(.wr-prose p) {
   margin: 0;
 }
 .wr-prose p + p {
   margin-top: 1.15em;
+}
+/* a paragraph that is only bold text labels the list under it: more space above, little below */
+.wr-prose .wr-label {
+  margin-top: 1.6em;
+}
+.wr-prose .wr-label + ul,
+.wr-prose .wr-label + ol {
+  margin-top: 0.4em;
 }
 
 /* — headings — */
@@ -55,11 +65,53 @@
   margin-top: 2em;
 }
 .wr-prose h4 {
-  font-size: 12.5px;
+  font-size: 13px;
   margin-top: 1.8em;
-  color: var(--color-mute);
+  padding-left: 10px;
+  border-left: 2px solid var(--color-pill);
+}
+
+/* section labels in how-to posts: ### Implementation / Shapes / Testing / Benchmark */
+.wr-prose h3[data-kind] {
+  width: fit-content;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  color: var(--k);
+  background: color-mix(in srgb, var(--k) 10%, #fff);
+}
+.wr-prose [data-kind="implementation"] { --k: var(--color-acc-blue); }
+.wr-prose [data-kind="shapes"] { --k: var(--color-acc-purple); }
+.wr-prose [data-kind="testing"] { --k: var(--color-acc-cyan); }
+.wr-prose [data-kind="benchmark"] { --k: var(--color-acc-orange); }
+
+/* the whole section as a bordered box, its label sitting on the top edge */
+.wr-sec {
+  position: relative;
+  margin-top: 2.6em;
+  padding: 22px 20px 18px;
+  border: 1.5px solid color-mix(in srgb, var(--k) 55%, #fff);
+  border-radius: 10px;
+}
+.wr-sec + .wr-sec {
+  margin-top: 2.2em;
+}
+.wr-sec > h3[data-kind] {
+  position: absolute;
+  top: 0;
+  left: 16px;
+  margin: 0;
+  transform: translateY(-50%);
+  border: 1.5px solid color-mix(in srgb, var(--k) 55%, #fff); /* opaque tint on white hides the border line behind it */
+}
+.wr-sec > h3[data-kind] + * {
+  margin-top: 0;
+}
+.wr-sec > :last-child {
+  margin-bottom: 0;
 }
 .wr-prose h1 + *,
 .wr-prose h2 + *,
@@ -212,13 +264,16 @@
   color: var(--color-mute);
 }
 /* top-level numbered steps: bigger numbers in a wider gutter, more air between steps */
-.wr-prose > ol {
+.wr-prose > ol,
+.wr-sec > ol {
   padding-left: 2.2em;
 }
-.wr-prose > ol > li + li {
+.wr-prose > ol > li + li,
+.wr-sec > ol > li + li {
   margin-top: 1em;
 }
-.wr-prose > ol > li::marker {
+.wr-prose > ol > li::marker,
+.wr-sec > ol > li::marker {
   font-size: 1.05em;
   font-weight: 600;
   color: var(--color-ink);

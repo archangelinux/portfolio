@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { SideNav, ContactRail, MobileHeader } from "@/scenes/navbar";
 import SiteFooter from "@/scenes/SiteFooter";
+import Library from "@/scenes/library";
 import { posts, formatDate, PostKind } from "./posts";
 import "./writing.css";
 
@@ -35,8 +36,8 @@ const WritingIndex: React.FC = () => {
       <div className="max-w-[1080px] mx-auto px-6">
         <MobileHeader active="writing" />
 
-        <main className="pt-40 pb-24 mx-auto max-w-[680px]">
-          <motion.header {...fade(0)}>
+        <main className="pt-40 pb-24">
+          <motion.header {...fade(0)} className="mb-12 md:mb-16">
             <h1 className="page-title">
               writing
             </h1>
@@ -55,7 +56,7 @@ const WritingIndex: React.FC = () => {
             </div>
           </motion.header>
 
-          <div className="mt-12 space-y-12">
+          <div className="space-y-12">
             {years.map((year, yi) => (
               <section key={year}>
                 <motion.h2 {...fade(1 + yi)} className="text-[11px] text-faint tracking-[0.12em] mb-4">
@@ -117,6 +118,11 @@ const WritingIndex: React.FC = () => {
             )}
           </div>
         </main>
+
+        {/* the old footer shelf: books standing on the closing rule */}
+        <section className="md:mb-14 border-b border-ink/[0.08]">
+          <Library maxScale={0.44} />
+        </section>
         <SiteFooter />
       </div>
     </div>

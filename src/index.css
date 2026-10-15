@@ -31,6 +31,18 @@
   --font-serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
 }
 
+:root {
+  /* desktop hero width: follows the window height (so the portrait photos
+     keep their shape), never wider than the middle of the window */
+  --hero-w: min(112svh, 70vw);
+  /* one thousandth of the hero width: the hero's type is sized in these, so
+     the name and intro shrink with the photos on smaller screens */
+  --hero-u: calc(var(--hero-w) / 1000);
+  --hero-top: 23svh; /* space above the hero (the intro starts here) */
+  --hero-intro-fs: max(11px, calc(var(--hero-u) * 10.8));
+  --hero-name-fs: calc(var(--hero-u) * 36.4);
+}
+
 html,
 body {
   overflow-x: clip;
@@ -99,32 +111,20 @@ button,
   cursor: url("./assets/grabbing-cursor.svg") 16 17, grabbing !important;
 }
 
-/* ——— bookshelf: books slide in from the right on their own ——— */
-.shelf-slide .books {
-  border-bottom: 1px solid rgba(22, 22, 22, 0.14);
-}
 
 /* ——— hero doors ———
    Like the Wealthsimple offer cards: a soft dark fade rises from the bottom of
-   the photo, with a clean bold title and a quiet line under it, bottom-left. */
+   the photo, with a clean bold title bottom-left. */
 .hero-door-label {
   background: linear-gradient(to top, rgba(14, 18, 16, 0.62) 0%, rgba(14, 18, 16, 0.28) 30%, rgba(14, 18, 16, 0) 55%);
 }
 .hero-door-title {
   font-family: "Inter", -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   font-weight: 650;
-  font-size: clamp(20px, 1.9vw, 28px);
+  font-size: 24px;
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: #ffffff;
-}
-.hero-door-sub {
-  font-family: "Inter", -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
-  font-weight: 400;
-  font-size: clamp(12px, 1vw, 14px);
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.86);
-  margin-top: 4px;
 }
 @media (hover: none) {
   .hero-door-label {
@@ -133,9 +133,6 @@ button,
   }
   .hero-door-title {
     font-size: 17px;
-  }
-  .hero-door-sub {
-    display: none;
   }
 }
 

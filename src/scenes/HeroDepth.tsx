@@ -15,7 +15,7 @@ import type { DepthScene } from "./heroDepthScene";
  * reduced motion keeps the photo still.
  */
 /** Also a door: hovering shows the page name; clicking ripples, the photo grows to fill the screen, and that page opens. */
-const HeroDepth: React.FC<{ src: string; depth: string; label: string; sub?: string; to: string; className?: string }> = ({ src, depth, label, sub, to, className = "" }) => {
+const HeroDepth: React.FC<{ src: string; depth: string; label: string; to: string; className?: string }> = ({ src, depth, label, to, className = "" }) => {
   const navigate = useNavigate();
   const [hover, setHover] = useState(false);
   // where the ripple starts (the click, or the photo's centre from the keyboard)
@@ -26,6 +26,16 @@ const HeroDepth: React.FC<{ src: string; depth: string; label: string; sub?: str
     setOpening(at ?? { x: b.left + b.width / 2, y: b.top + b.height / 2 });
     window.setTimeout(() => navigate(to), 700);
   };
+  // the wave's final radius: past the farthest screen corner from where it
+  // starts, with room to spare, so its slow last stretch is all off screen
+  // (the photos run to the bottom edge, so any corner left uncovered shows them)
+  const reach = opening
+    ? 2.2 * Math.max(
+        ...[[0, 0], [window.innerWidth, 0], [0, window.innerHeight], [window.innerWidth, window.innerHeight]].map(([cx, cy]) =>
+          Math.hypot(cx - opening.x, cy - opening.y)
+        )
+      )
+    : 0;
   const boxRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<Promise<DepthScene> | null>(null);
@@ -108,7 +118,6 @@ const HeroDepth: React.FC<{ src: string; depth: string; label: string; sub?: str
         }`}
       >
         <span className="hero-door-title">{label}</span>
-        {sub && <span className="hero-door-sub">{sub}</span>}
       </div>
       {opening &&
         createPortal(
@@ -121,15 +130,23 @@ const HeroDepth: React.FC<{ src: string; depth: string; label: string; sub?: str
                 className="absolute rounded-full border border-white/70"
                 style={{ left: opening.x, top: opening.y, width: 40, height: 40, marginLeft: -20, marginTop: -20 }}
                 initial={{ scale: 0, opacity: 0.9 }}
-                animate={{ scale: Math.hypot(window.innerWidth, window.innerHeight) / 16, opacity: 0 }}
+                animate={{ scale: reach / 20, opacity: 0 }}
                 transition={{ duration: 0.75, delay, ease: [0.2, 0.7, 0.3, 1] }}
               />
             ))}
+            {/* finishes the wash: a circle always reaches the screen's
+                corners last, and the photos run into the bottom ones */}
+            <motion.span
+              className="absolute inset-0 bg-white"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.14, delay: 0.24, ease: "linear" }}
+            />
             <motion.span
               className="absolute rounded-full bg-white"
               style={{ left: opening.x, top: opening.y, width: 40, height: 40, marginLeft: -20, marginTop: -20 }}
               initial={{ scale: 0 }}
-              animate={{ scale: Math.hypot(window.innerWidth, window.innerHeight) / 18 }}
+              animate={{ scale: reach / 20 }}
               transition={{ duration: 0.7, delay: 0.12, ease: [0.55, 0, 0.3, 1] }}
             />
           </div>,

@@ -1,12 +1,16 @@
 import React from "react";
 import logoW from "@/assets/logo_w.svg";
 
-/** © and the SE Webring link, bottom-left on every page (fixed on the desktop home page, which doesn't scroll). */
-const SiteFooter: React.FC<{ fixed?: boolean }> = ({ fixed = false }) => (
+/**
+ * © over the SE Webring link. On desktop it is fixed bottom-left on every
+ * page, lined up with the side nav's labels; on phones it sits at the end of
+ * the page. `padded` adds the side gutter when it isn't inside a padded column.
+ */
+const SiteFooter: React.FC<{ padded?: boolean }> = ({ padded = false }) => (
   <footer
-    className={`flex items-center gap-4 text-[11px] text-mute ${
-      fixed ? "px-6 py-5 md:p-0 md:fixed md:bottom-4 md:left-6 md:z-30" : "pt-16 pb-6"
-    }`}
+    className={`flex flex-col items-start gap-1.5 text-[11px] text-mute pt-16 pb-6 ${
+      padded ? "px-6" : ""
+    } md:p-0 md:fixed md:bottom-4 md:left-11 md:z-30`}
   >
     <span>© 2026 Angelina Wang</span>
     <a
